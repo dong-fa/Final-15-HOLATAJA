@@ -20,7 +20,7 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.TOKEN_DONGFA }}
         with:
-          source-directory: "output"
+          source-directory: 'output'
           destination-github-username: dong-fa
           destination-repository-name: Final-15-HOLATAJA
           user-email: ${{ secrets.EMAIL_DONGFA }}
