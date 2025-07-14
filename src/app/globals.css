@@ -12,28 +12,30 @@
   --color-lightgray: #d1dee5;
   --color-disabled: #e0e0e0;
   --color-hover: #2c93bd;
+  --color-text: #1e1e1e;
+  --color-background: #fafafa;
 }
 
 @layer components {
   .title {
-    @apply text-[2rem] font-bold leading-[140%];
+    @apply text-[2rem] text-text font-bold leading-[140%];
   }
   .sub-title {
-    @apply text-2xl font-bold leading-[140%];
+    @apply text-2xl  text-text font-bold leading-[140%];
   }
   .contents-title {
-    @apply text-[1.125rem] font-semibold leading-[140%];
+    @apply text-[1.125rem]  text-text font-semibold leading-[140%];
   }
   .contents {
-    @apply text-[1rem] font-normal leading-[140%];
+    @apply text-[1rem]  text-text font-normal leading-[140%];
   }
   .label-l {
-    @apply text-[1.125rem] font-normal leading-[150%];
+    @apply text-[1.125rem]  text-text font-normal leading-[150%];
   }
   .label-m {
-    @apply text-[1rem] font-normal leading-[150%];
+    @apply text-[1rem]  text-text font-normal leading-[150%];
   }
   .label-s {
-    @apply text-[0.875rem] font-normal leading-[150%];
+    @apply text-[0.875rem]  text-text font-normal leading-[150%];
   }
 }
