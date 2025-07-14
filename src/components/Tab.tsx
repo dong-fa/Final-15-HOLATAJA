@@ -40,17 +40,17 @@ export default function Tab() {
   const [activeTab, setActiveTab] = useState('profile');
 
   return (
-    <>
+    <div className="w-full mx-auto">
       {/* Tab Nav */}
-      <nav className="w-full  mx-auto border-b-2 border-b-lightgray">
+      <nav className="">
         {tabItems.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={
               activeTab === tab.id
-                ? 'inline-block w-auto p-4 text-primary font-bold border-b-2 border-b-primary'
-                : 'inline-block w-auto p-4 text-secondary hover:border-b-2 hover:border-b-lightgray'
+                ? 'inline-block w-auto p-4 cursor-pointer text-primary font-bold border-b-2 border-b-primary'
+                : 'inline-block w-auto p-4 cursor-pointer text-secondary hover:border-b-2 hover:border-b-primary'
             }
           >
             {tab.title}
@@ -58,8 +58,11 @@ export default function Tab() {
         ))}
       </nav>
 
+      {/* Gray Line */}
+      <hr className=" border-t-2 border-lightgray relative top-[-2px] -z-1" />
+
       {/* Tab Content */}
-      <div className="w-full mx-auto mt-4">{tabItems.find(tab => tab.id === activeTab)?.content}</div>
-    </>
+      <div className=" mt-4">{tabItems.find(tab => tab.id === activeTab)?.content}</div>
+    </div>
   );
 }
