@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 
-export default function Tab() {
-  interface TabItem {
-    id: string;
-    title: string;
-    content: React.ReactNode;
-  }
+interface TabItem {
+  id: string;
+  title: string;
+  content: React.ReactNode;
+}
 
+export default function Tab() {  
+  
   const tabItems: TabItem[] = [
     {
       id: 'profile',
