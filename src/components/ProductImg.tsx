@@ -39,7 +39,7 @@ function ProductImg({ src, swipe }: ProductImgProps) {
             <SwiperSlide key={img.id}>
               <div className="rounded-lg relative overflow-hidden w-full aspect-square">
                 {/* alt값 추가 필요 */}
-                <Image src={img.src} alt="" layout="fill" objectFit="cover"></Image>
+                <Image src={src} alt="" fill className="object-cover" />
                 <button
                   className={`${buttonBg} rounded-full w-6 h-6 text-white flex justify-center items-center absolute bottom-4 right-4 cursor-pointer`}
                   onClick={() => setLiked(!liked)}
@@ -57,11 +57,11 @@ function ProductImg({ src, swipe }: ProductImgProps) {
           </div>
         </Swiper>
       ) : (
-        <div className="rounded-lg relative overflow-hidden w-full aspect-square">
+        <div className="rounded-lg relative overflow-hidden w-full h-full">
           {/* alt값 추가 필요 */}
-          <Image src={src} alt="" layout="fill" objectFit="cover"></Image>
+          <Image src={src} alt="" fill className="object-cover" />
           <button
-            className={`${buttonBg} rounded-full w-6 h-6 text-white flex justify-center items-center absolute bottom-4 right-4 cursor-pointer`}
+            className={`${buttonBg} rounded-full w-6 h-6 text-white flex justify-center items-center absolute bottom-2.5 right-2.5 cursor-pointer`}
             onClick={() => setLiked(!liked)}
           >
             <Star fill="#fff" size={16} />
