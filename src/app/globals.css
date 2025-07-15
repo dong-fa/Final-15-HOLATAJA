@@ -30,7 +30,7 @@
     @apply text-[1rem]  text-text font-normal leading-[140%];
   }
   .label-l {
-    @apply text-[1.125rem]  text-text font-normal leading-[150%];
+    @apply text-[1.125rem]  text-text font-semibold leading-[150%];
   }
   .label-m {
     @apply text-[1rem]  text-text font-normal leading-[150%];
