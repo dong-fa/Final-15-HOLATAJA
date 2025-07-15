@@ -26,9 +26,6 @@
   .contents-title {
     @apply text-[1.125rem]  text-text font-semibold leading-[140%];
   }
-  .contents {
-    @apply text-[1rem]  text-text font-normal leading-[140%];
-  }
   .label-l {
     @apply text-[1.125rem]  text-text font-normal leading-[150%];
   }
