@@ -10,11 +10,11 @@ import { PaymentOption } from '../types/payment'; // 결제 옵션의 타입을 
 type PaymentRadioProps = {
   options: PaymentOption[];
   selected: string;
-  onSelectOption: (id: string) => void;
+  selectOption: (id: string) => void;
 };
 
 // 결제 수단 라디오 버튼 컴포넌트
-export default function PaymentRadio({ options, selected, onSelectOption }: PaymentRadioProps) {
+export default function PaymentRadio({ options, selected, selectOption }: PaymentRadioProps) {
   return (
     // 결제 수단들을 세로로 나열, 각 옵션 사이에 간격(gap-4)
     <div className="flex flex-col gap-4">
@@ -27,7 +27,7 @@ export default function PaymentRadio({ options, selected, onSelectOption }: Paym
             name="payment" // 같은 그룹으로 묶어서 하나만 선택 가능하게 함
             value={option.id} // 이 버튼의 값은 결제 수단 id
             checked={selected === option.id} // 현재 선택된 결제 수단이면 체크됨
-            onChange={() => onSelectOption(option.id)} // 클릭하면 해당 id를 부모 컴포넌트로 전달
+            onChange={() => selectOption(option.id)} // 클릭하면 해당 id를 부모 컴포넌트로 전달
             className={`
               appearance-none // 브라우저 기본 라디오 버튼 스타일 제거
               w-5 h-5 // 버튼 크기
