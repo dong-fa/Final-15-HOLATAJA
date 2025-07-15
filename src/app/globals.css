@@ -36,3 +36,24 @@
     @apply text-[0.875rem]  text-text font-normal leading-[150%];
   }
 }
+
+.swiper {
+  .swiper-button-prev,
+  .swiper-button-next {
+    width: auto;
+    color: #fff;
+
+    &::after {
+      display: none;
+    }
+  }
+
+  .swiper-pagination-bullet {
+    background: var(--color-darkgray);
+    border: 1px solid var(--color-darkgray);
+
+    &.swiper-pagination-bullet-active {
+      background: #fff;
+    }
+  }
+}
