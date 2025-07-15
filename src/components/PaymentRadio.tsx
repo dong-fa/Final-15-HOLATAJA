@@ -1,4 +1,3 @@
-// components/PaymentRadio.tsx
 'use client';
 
 import Image from 'next/image';
@@ -10,7 +9,7 @@ type PaymentRadioProps = {
   onSelectOption: (id: string) => void;
 };
 
-const PaymentRadio = ({ options, selected, onSelectOption }: PaymentRadioProps) => {
+export default function PaymentRadio({ options, selected, onSelectOption }: PaymentRadioProps) {
   return (
     <div className="flex flex-col gap-4">
       {options.map(option => (
@@ -50,6 +49,4 @@ const PaymentRadio = ({ options, selected, onSelectOption }: PaymentRadioProps) 
       ))}
     </div>
   );
-};
-
-export default PaymentRadio;
+}
