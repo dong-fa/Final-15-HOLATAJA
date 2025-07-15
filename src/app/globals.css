@@ -5,7 +5,7 @@
 
   --color-primary: #40a6d6;
   --color-secondary: #2e7aa3;
-  --color-accent: #b8dcf0;
+  --color-accent: #e6f4f9;
   --color-negative: #ff4d4f;
   --color-darkgray: #808080;
   --color-gray: #b2c7d1;
@@ -26,16 +26,34 @@
   .contents-title {
     @apply text-[1.125rem]  text-text font-semibold leading-[140%];
   }
-  .contents {
-    @apply text-[1rem]  text-text font-normal leading-[140%];
-  }
   .label-l {
-    @apply text-[1.125rem]  text-text font-normal leading-[150%];
+    @apply text-[1.125rem]  text-text font-semibold leading-[150%];
   }
   .label-m {
     @apply text-[1rem]  text-text font-normal leading-[150%];
   }
   .label-s {
     @apply text-[0.875rem]  text-text font-normal leading-[150%];
+  }
+}
+
+.swiper {
+  .swiper-button-prev,
+  .swiper-button-next {
+    width: auto;
+    color: #fff;
+
+    &::after {
+      display: none;
+    }
+  }
+
+  .swiper-pagination-bullet {
+    background: var(--color-darkgray);
+    border: 1px solid var(--color-darkgray);
+
+    &.swiper-pagination-bullet-active {
+      background: #fff;
+    }
   }
 }
