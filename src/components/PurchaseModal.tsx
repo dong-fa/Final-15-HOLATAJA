@@ -2,14 +2,13 @@ import React from 'react';
 import { X } from 'lucide-react'; // Lucide 아이콘 import
 import Button from '@/components/Button';
 
-// 자식 컴포넌트에 전달할 props 타입 정의
+// 부모 컴포넌트로부터 전달할 props 타입 정의
 interface PurchaseModalProps {
   isOpen: boolean; // 모달 열림 여부
   handleClose: () => void; // 모달 닫기 함수
   handleConfirm: () => void; // 구매 확인 처리 함수
 }
 
-// 자식 컴포넌트 함수 선언식
 export default function PurchaseModal({ isOpen, handleClose, handleConfirm }: PurchaseModalProps) {
   // 열려있지 않으면 렌더링하지 않음
   if (!isOpen) return null;
