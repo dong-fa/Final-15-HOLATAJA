@@ -7,9 +7,11 @@ interface PurchaseModalProps {
   isOpen: boolean; // 모달 열림 여부
   handleClose: () => void; // 모달 닫기 함수
   handleConfirm: () => void; // 구매 확인 처리 함수
+  title: string; // 모달 제목(동적)
+  description: string; // 모달 본문 메세지(동적)
 }
 
-export default function PurchaseModal({ isOpen, handleClose, handleConfirm }: PurchaseModalProps) {
+export default function PurchaseModal({ isOpen, handleClose, handleConfirm, title, description }: PurchaseModalProps) {
   // 열려있지 않으면 렌더링하지 않음
   if (!isOpen) return null;
 
@@ -23,10 +25,10 @@ export default function PurchaseModal({ isOpen, handleClose, handleConfirm }: Pu
         </button>
 
         {/* 모달 제목 */}
-        <h2 className="sub-title text-center mb-4">구매 결정</h2>
+        <h2 className="sub-title text-center mb-4">{title}</h2>
 
         {/* 모달 본문 */}
-        <p className="label-m text-center mb-6">정말 구매하시겠습니까?</p>
+        <p className="label-m text-center mb-6">{description}</p>
 
         {/* 버튼 그룹 */}
         <div className="flex justify-center gap-4">
