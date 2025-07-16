@@ -12,6 +12,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ProductImgProps {
   src: string;
+  alt: string;
   swipe?: boolean;
 }
 
@@ -21,7 +22,7 @@ const imgList = [
   { id: 2, src: '/image2.png' },
 ];
 
-function ProductImg({ src, swipe }: ProductImgProps) {
+function ProductImg({ src, alt, swipe }: ProductImgProps) {
   const [liked, setLiked] = useState(false);
 
   const buttonBg = liked ? 'bg-[#FFCC00]' : 'bg-darkgray';
@@ -29,6 +30,7 @@ function ProductImg({ src, swipe }: ProductImgProps) {
   return (
     <>
       {swipe ? (
+        // 제품 상세에 들어갈 슬라이드형 이미지
         <Swiper
           modules={[Navigation, Pagination]}
           navigation={{ nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }}
@@ -39,7 +41,7 @@ function ProductImg({ src, swipe }: ProductImgProps) {
             <SwiperSlide key={img.id}>
               <div className="rounded-lg relative overflow-hidden w-full aspect-square">
                 {/* alt값 추가 필요 */}
-                <Image src={src} alt="" fill className="object-cover" />
+                <Image src={src} alt={alt} fill className="object-cover" />
                 <button
                   className={`${buttonBg} rounded-full w-6 h-6 text-white flex justify-center items-center absolute bottom-4 right-4 cursor-pointer`}
                   onClick={() => setLiked(!liked)}
@@ -57,9 +59,9 @@ function ProductImg({ src, swipe }: ProductImgProps) {
           </div>
         </Swiper>
       ) : (
+        // 제품 목록에 들어갈 고정형 이미지
         <div className="rounded-lg relative overflow-hidden w-full h-full">
-          {/* alt값 추가 필요 */}
-          <Image src={src} alt="" fill className="object-cover" />
+          <Image src={src} alt={alt} fill className="object-cover" />
           <button
             className={`${buttonBg} rounded-full w-6 h-6 text-white flex justify-center items-center absolute bottom-2.5 right-2.5 cursor-pointer`}
             onClick={() => setLiked(!liked)}
