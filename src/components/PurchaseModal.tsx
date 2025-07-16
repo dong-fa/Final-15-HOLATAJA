@@ -1,5 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react'; // Lucide 아이콘 import
+import Button from '@/components/Button';
 
 // 자식 컴포넌트에 전달할 props 타입 정의
 interface PurchaseModalProps {
@@ -14,10 +15,7 @@ export default function PurchaseModal({ isOpen, handleClose, handleConfirm }: Pu
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-30 z-50"
-      // 화면 전체를 덮는 어두운 배경
-    >
+    <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-30 z-50">
       {/* 모달 박스 */}
       <div className="relative bg-white rounded-lg shadow-lg p-8 w-[400px]">
         {/* 오른쪽 상단 닫기 버튼 */}
@@ -34,14 +32,12 @@ export default function PurchaseModal({ isOpen, handleClose, handleConfirm }: Pu
         {/* 버튼 그룹 */}
         <div className="flex justify-center gap-4">
           {/* 취소 버튼 */}
-          <button onClick={handleClose} className="px-6 py-2 border border-primary text-primary rounded-md hover:bg-accent transition">
+          <Button outlined onClick={handleClose}>
             취소
-          </button>
+          </Button>
 
           {/* 확인 버튼 */}
-          <button onClick={handleConfirm} className="px-6 py-2 bg-primary text-white rounded-md hover:bg-hover transition">
-            확인
-          </button>
+          <Button onClick={handleConfirm}>확인</Button>
         </div>
       </div>
     </div>
