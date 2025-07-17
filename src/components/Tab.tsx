@@ -2,43 +2,20 @@
 
 import { useState } from 'react';
 
-interface TabItem {
+export interface TabItem {
   id: string;
   title: string;
   content: React.ReactNode;
 }
 
-export default function Tab() {  
-  
-  const tabItems: TabItem[] = [
-    {
-      id: 'profile',
-      title: '회원 정보',
-      content: <div className="sub-title">회원 정보</div>,
-    },
-    {
-      id: 'purchase-history',
-      title: '구매 내역',
-      content: <div className="sub-title">구매 내역</div>,
-    },
-    {
-      id: 'wishlist',
-      title: '찜 목록',
-      content: <div className="sub-title">찜 목록</div>,
-    },
-    {
-      id: 'reviews',
-      title: '나의 구매 후기',
-      content: <div className="sub-title">나의 구매 후기</div>,
-    },
-    {
-      id: 'qna',
-      title: '나의 Q&A',
-      content: <div className="sub-title">나의 Q&A</div>,
-    },
-  ];
+// 범용적으로 사용할 수 있도록 props로 tabItems/초기 탭 ID를 받음
+interface TabProps {
+  tabItems: TabItem[];
+  defaultActiveTabId?: string; // 초기 탭 설정용 (선택사항, 미입력 시 )
+}
 
-  const [activeTab, setActiveTab] = useState('profile');
+export default function Tab({ tabItems, defaultActiveTabId }: TabProps) {
+  const [activeTab, setActiveTab] = useState(defaultActiveTabId ?? tabItems[0]?.id);
 
   return (
     <div className="w-full mx-auto">
