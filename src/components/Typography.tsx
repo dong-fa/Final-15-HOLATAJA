@@ -7,15 +7,15 @@ interface TypoProps {
 }
 
 export function Title({ children, className }: TypoProps) {
-  return <h1 className={`title ${className ?? ''}`}>{children}</h1>;
+  return <h2 className={`title ${className ?? ''}`}>{children}</h2>;
 }
 
 export function SubTitle({ children, className }: TypoProps) {
-  return <h2 className={`sub-title ${className ?? ''}`}>{children}</h2>;
+  return <h3 className={`sub-title ${className ?? ''}`}>{children}</h3>;
 }
 
 export function ContentsTitle({ children, className }: TypoProps) {
-  return <h3 className={`contents-title ${className ?? ''}`}>{children}</h3>;
+  return <h4 className={`contents-title ${className ?? ''}`}>{children}</h4>;
 }
 
 export function Contents({ children, className, size }: TypoProps) {
