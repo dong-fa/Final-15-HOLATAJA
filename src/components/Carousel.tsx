@@ -98,9 +98,9 @@ export default function Carousel() {
       >
         {slideData.map((slide, i) => (
           <SwiperSlide key={i}>
-            <div className="relative w-full h-[20rem] sm:h-[25rem] md:h-[30rem]">
-              <Image src={slide.src} alt={slide.title} className="w-full h-full object-cover object-center" fill />
-              <div className="absolute inset-0 bg-black/15">
+            <div className="relative w-full h-[20rem] sm:h-[25rem] md:h-[30rem] ">
+              <Image src={slide.src} alt={slide.title} className="w-full h-full object-cover object-center rounded-xl" fill />
+              <div className="absolute inset-0 bg-black/25 rounded-xl">
                 <div className="absolute inset-0 flex justify-center items-center px-6">
                   <div
                     className={`flex flex-col text-white font-bold z-10 max-w-5xl w-full
@@ -109,7 +109,7 @@ export default function Carousel() {
                     <h1 className="sr-only">Hero section title</h1>
                     <h2 className="title text-background text-4xl">{slide.title}</h2>
                     <p className="contents text-background">{slide.description}</p>
-                    <Link className={`${slide.buttonStyle} px-5 py-2 mt-5 rounded cursor-pointer w-fit`} href={slide.link}>
+                    <Link className={`${slide.buttonStyle} px-4 py-2 md:px-8 md:py-3 mt-5 rounded cursor-pointer w-fit`} href={slide.link}>
                       상세 페이지로 이동
                     </Link>
                   </div>
