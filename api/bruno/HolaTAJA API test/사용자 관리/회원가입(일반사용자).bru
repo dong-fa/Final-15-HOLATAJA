@@ -1,0 +1,23 @@
+meta {
+  name: 회원가입(일반사용자)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/users/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "test2@test.com",
+    "password": "testtesttest",
+    "name": "test",
+    "phone": "01011112222",
+    "address": "히히 알모 (알아서 모하게 라는 뜻)",
+    "type": "user",
+    "image": "files/openmarket/profile.jpg"
+  }
+}

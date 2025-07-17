@@ -1,0 +1,20 @@
+meta {
+  name: Q&A 등록
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{url}}/posts
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "product_id":"3",
+    "type": "qna",
+    "title": "키보드 자판이 러시아어로 되어있어요",
+    "content": "무상교환 안 되면 푸틴한테 연락합니다."
+  }
+}
