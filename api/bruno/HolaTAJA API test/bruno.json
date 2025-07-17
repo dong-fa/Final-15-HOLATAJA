@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "name": "15팀API",
+  "name": "15팀 API",
   "type": "collection",
   "ignore": [
     "node_modules",
