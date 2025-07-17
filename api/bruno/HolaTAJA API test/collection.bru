@@ -9,7 +9,6 @@ auth {
 auth:bearer {
   token: {{accessToken}}
 }
-
 script:post-response {
   // 로그인 성공 후
   if(res.status === 200){
