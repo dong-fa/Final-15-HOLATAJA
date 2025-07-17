@@ -1,0 +1,11 @@
+meta {
+  name: 구매 내역 목록
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{url}}/orders/
+  body: json
+  auth: inherit
+}

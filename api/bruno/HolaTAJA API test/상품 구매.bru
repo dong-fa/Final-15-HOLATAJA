@@ -1,0 +1,26 @@
+meta {
+  name: 상품 구매
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}/orders/
+  body: json
+  auth: inherit
+}
+
+headers {
+  : 
+}
+
+body:json {
+  {
+    "products": [
+      {
+        "_id": 4,
+        "quantity": 111
+      }
+    ]
+  }
+}
