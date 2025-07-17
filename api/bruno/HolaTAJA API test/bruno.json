@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "15팀API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
