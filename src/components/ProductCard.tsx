@@ -15,8 +15,8 @@ export default function ProductCard({ _id, imageSrc, title, price }: ProductCard
   const formatPrice = price.toLocaleString();
 
   return (
-    <div className="w-full h-40 md:h-44 rounded relative">
-      <div className="w-full h-[70%] rounded relative">
+    <div className="w-full h-60 md:h-64 rounded">
+      <div className="w-full h-40 md:h-44 rounded relative">
         <ProductImg title={title} srcList={imageSrc} />
       </div>
       <h3 className="text-xs md:text-sm text-gray-700 leading-5 line-clamp-2 webkit-line-clamp-2">{title}</h3>
