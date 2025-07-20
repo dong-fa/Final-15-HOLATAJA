@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
+
 import Carousel from '@/components/Carousel';
 import Tab, { TabItem } from '@/components/Tab';
 import SearchBar from '@/app/products/SearchBar';
@@ -7,89 +9,144 @@ import CategoryToggle from '@/app/products/CategoryToggle';
 import ProductCard from '@/components/ProductCard';
 import { Title } from '@/components/Typography';
 
-const productList = [
-  {
-    _id: 1,
-    imageSrc: '/product_images/nuphy_air60/nuphy_air60_lunagray_detail_01.webp',
-    title: 'NUPHY AIR60 V2 기계식 키보드 청축 블루투스 유/무선 미니 컴팩트 60% 레이아웃 RGB 백라이트 게이밍 키보드',
-    price: 119000,
-    category: 'BLUE',
-  },
-  {
-    _id: 2,
-    imageSrc: '/carousel_images/carousel-image9.webp',
-    title: '로지텍 MX Keys Mini 무선 키보드',
-    price: 89000,
-    category: 'OTHER',
-  },
-  {
-    _id: 3,
-    imageSrc: '/carousel_images/carousel-image11.webp',
-    title: '애플 매직 키보드 한국어',
-    price: 129000,
-    category: 'OTHER',
-  },
-  {
-    _id: 4,
-    imageSrc: '/carousel_images/carousel-image12.webp',
-    title: '레이저 헌츠맨 V3 Pro 게이밍 키보드 광축 RGB 백라이트 유선 기계식 키보드 프리미엄 모델',
-    price: 199000,
-    category: 'OTHER',
-  },
-  {
-    _id: 5,
-    imageSrc: '/carousel_images/carousel-image4.webp',
-    title: 'NUPHY AIR60 V2 기계식 키보드 청축 블루투스 유/무선 미니 컴팩트 60% 레이아웃 RGB 백라이트 게이밍 키보드',
-    price: 119000,
-    category: 'BLUE',
-  },
-  {
-    _id: 6,
-    imageSrc: '/carousel_images/carousel-image11.webp',
-    title: '로지텍 MX Keys Mini 무선 키보드',
-    price: 89000,
-    category: 'OTHER',
-  },
-  {
-    _id: 7,
-    imageSrc: '/carousel_images/carousel-image9.webp',
-    title: '애플 매직 키보드 한국어',
-    price: 129000,
-    category: 'RED',
-  },
-  {
-    _id: 8,
-    imageSrc: '/carousel_images/carousel-image11.webp',
-    title: '레이저 헌츠맨 V3 Pro 게이밍 키보드 광축 RGB 백라이트 유선 기계식 키보드 프리미엄 모델',
-    price: 199000,
-    category: 'BROWN',
-  },
-];
+import useAxiosInstance from '@/hooks/useAxiosInstance';
+
+interface Product {
+  _id: number;
+  imgSrc: string;
+  title: string;
+  price: number;
+  category: 'ALL' | 'BLUE' | 'BROWN' | 'RED' | 'OTHER';
+
+  // 화면에 표시 안 되는 부분
+  quantity: number;
+  createdAt: string;
+}
+
+interface RawItem {
+  _id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  createdAt: string;
+  updatedAt: string;
+  options: number;
+  replies: number;
+  bookmarks: number;
+  buyQuantity: number;
+  show: boolean;
+  active: boolean;
+  shippingFees: number;
+
+  extra: {
+    category: 'BLUE' | 'BROWN' | 'RED' | 'OTHER';
+    isNew: boolean;
+  };
+
+  mainImages?: {
+    name: string;
+    originalname: string;
+    path: string;
+  }[];
+
+  seller: {
+    _id: number;
+    seller_id: number;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    image: string;
+  };
+}
 
 export default function ProductPage() {
+  // axios instance
+  const axios = useAxiosInstance();
+  const [productList, setProductList] = useState<Product[]>([]);
+
+  // DB에서 이미지 binary값 받아와서 url로 변환해주는 함수
+  const getImageUrl = async (path: string): Promise<string> => {
+    console.log('API 서버에 이미지 파일 요청');
+    try {
+      const res = await axios.get(path, { responseType: 'blob' }); // blob 형식으로 binary 값 받아오기
+      return URL.createObjectURL(res.data); // 브라우저가 이해할 수 있는 Object URL 생성해서 전달
+    } catch (err) {
+      console.error(err);
+      alert('이미지 호출에 실패했습니다.');
+    }
+    return '';
+  };
+
+  // API에서 상품 목록을 불러와 변환 + 이미지 처리 하는 함수
+  const fetchProductList = async () => {
+    try {
+      console.log('API 서버에 목록 정보 요청');
+      const res = await axios.get(`/products/`);
+      const rawItems = res.data.item;
+      console.log(rawItems); // 응답 데이터 확인
+      // rawItems.map((item, index) => console.log(item.extra.category[0], index)); // test
+
+      // 받아온 데이터를 Interface에 맞게 변환
+      const transformedItems = await Promise.all(
+        rawItems.map(async (item: RawItem): Promise<Product> => {
+          const imagePath = item.mainImages?.[0]?.path;
+
+          const imageUrl = imagePath ? await getImageUrl(imagePath) : '/product_images/holataja_circle.webp'; // 이미지 없는 경우 기본 로고 이미지 넣기
+
+          return {
+            _id: item._id,
+            imgSrc: imageUrl,
+            title: item.name,
+            price: item.price,
+            category: item.extra.category,
+            quantity: item.quantity,
+            createdAt: item.createdAt,
+          };
+        }),
+      );
+
+      // console.log(transformedItems); // 변환 데이터 확인
+      setProductList(transformedItems);
+
+      // const res = await axios.get(`/bookmarks/product`);
+      // console.log(res);
+    } catch (err) {
+      console.error(err);
+      alert('목록 조회에 실패했습니다.');
+    }
+  };
+
+  useEffect(() => {
+    fetchProductList();
+  }, []);
+
   // Tab category에 맞게 content 만들어주는 함수
-  function getTabContent(category: string) {
-    const filtered = productList.filter(product => product.category === category);
+  function getTabContent(category: Product['category'] | 'ALL') {
+    const filtered = category === 'ALL' ? productList : productList.filter(product => product.category === category);
     return (
       <>
         <SearchBar />
         <CategoryToggle />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {filtered.map((product, index) => (
-            <ProductCard key={index} _id={product._id} imageSrc={[product.imageSrc]} title={product.title} price={product.price} />
+            <ProductCard key={index} _id={product._id} imageSrc={[product.imgSrc]} title={product.title} price={product.price} />
           ))}
         </div>
       </>
     );
   }
 
-  // quantity 1 이상, 축 분류에 맞는 제품 가져오기
-  const tabItems: TabItem[] = [
-    { id: 'BLUE', title: '청축(Click Tactile)', content: getTabContent('BLUE') },
-    { id: 'BROWN', title: '갈축(Soft Tactile)', content: getTabContent('BROWN') },
-    { id: 'RED', title: '적축(Linear)', content: getTabContent('RED') },
-    { id: 'OTHER', title: '기타', content: getTabContent('OTHER') },
-  ];
+  const tabItems: TabItem[] = useMemo(
+    () => [
+      { id: 'ALL', title: '전체 보기', content: getTabContent('ALL') },
+      { id: 'BLUE', title: '청축(Click Tactile)', content: getTabContent('BLUE') },
+      { id: 'BROWN', title: '갈축(Soft Tactile)', content: getTabContent('BROWN') },
+      { id: 'RED', title: '적축(Linear)', content: getTabContent('RED') },
+      { id: 'OTHER', title: '기타', content: getTabContent('OTHER') },
+    ],
+    [productList],
+  );
 
   return (
     <>
