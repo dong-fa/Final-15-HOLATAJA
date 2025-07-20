@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@/components/Button';
 import Image from 'next/image';
 
@@ -11,12 +11,86 @@ type PaymentMethod = 'simple' | 'card' | 'bank';
 type SimplePaymentOption = 'toss' | 'naver';
 
 /**
+ * 배송지 정보 타입 정의
+ * 주문자의 배송지 관련 정보를 담는 인터페이스
+ */
+interface DeliveryInfo {
+  /** 수령인 이름 */
+  name: string;
+  /** 연락처 (휴대폰 번호) */
+  phone: string;
+  /** 배송 주소 */
+  address: string;
+  /** 우편번호 */
+  postalCode: string;
+}
+
+// 결제 처리에 필요한 모든 정보를 담는 타입
+interface PaymentData {
+  deliveryInfo: DeliveryInfo; // 배송지 정보 (이름, 연락처, 주소, 우편번호 등)
+  orderInfo: OrderInfo; // 주문 정보 (상품 목록, 금액 등)
+  paymentMethod: PaymentMethod; // 결제 방법 ('simple', 'card', 'bank' 중 하나)
+  paymentDetails: {
+    // 결제 방법에 따라 달라지는 상세 정보
+    type: PaymentMethod; // 실제 결제 타입 ('simple', 'card', 'bank')
+    option?: SimplePaymentOption; // 간편결제일 때 선택된 옵션 ('toss' 또는 'naver')
+    cardNumber?: string; // 카드 결제일 때 카드 번호
+    expiryDate?: string; // 카드 결제일 때 유효기간
+    cvc?: string; // 카드 결제일 때 CVC 번호
+    cardPassword?: string; // 카드 결제일 때 카드 비밀번호 앞 2자리
+    selectedBank?: string; // 무통장 입금일 때 선택한 은행
+    depositorName?: string; // 무통장 입금일 때 입금자명
+  };
+}
+
+/**
+ * 상품 정보 타입 정의
+ * 주문할 개별 상품의 정보를 담는 인터페이스
+ */
+interface ProductInfo {
+  /** 상품 고유 ID */
+  id: string;
+  /** 상품명 */
+  name: string;
+  /** 상품 이미지 경로 */
+  image: string;
+  /** 선택한 상품 옵션 (색상, 사이즈 등) */
+  options: string;
+  /** 주문 수량 */
+  quantity: number;
+  /** 개별 상품 가격 */
+  price: number;
+}
+
+/**
+ * 주문 정보 타입 정의
+ * 전체 주문에 대한 상품 목록과 금액 정보를 담는 인터페이스
+ */
+interface OrderInfo {
+  /** 주문 상품 목록 */
+  products: ProductInfo[];
+  /** 상품 금액 합계 (배송비 제외) */
+  subtotal: number;
+  /** 배송비 */
+  shippingFee: number;
+  /** 총 주문 금액 (상품 금액 + 배송비) */
+  total: number;
+}
+
+// CheckoutPage 컴포넌트의 Props 타입 정의
+interface CheckoutPageProps {
+  deliveryInfo?: DeliveryInfo;
+  orderInfo?: OrderInfo;
+  onDeliveryChange?: () => void;
+  onPaymentComplete?: (paymentData: PaymentData) => void;
+}
+
+/**
  * 결제 페이지 컴포넌트
  * /checkout 경로에서 표시되는 메인 결제 페이지
  */
-export default function CheckoutPage() {
+export default function CheckoutPage({ deliveryInfo, orderInfo, onDeliveryChange, onPaymentComplete }: CheckoutPageProps) {
   // 현재 선택된 결제 방법을 관리하는 상태
-  // 기본값은 'simple' (간편결제)
   const [activePaymentMethod, setActivePaymentMethod] = useState<PaymentMethod>('simple');
 
   // 간편결제에서 선택된 옵션을 관리하는 상태
@@ -36,9 +110,47 @@ export default function CheckoutPage() {
     depositorName: '',
   });
 
+  // 로딩 상태 관리
+  const [isLoading, setIsLoading] = useState(false);
+
+  // 기본값 설정 (Props로 받지 못한 경우를 대비)
+  const defaultDeliveryInfo: DeliveryInfo = {
+    name: '박철환',
+    phone: '010-1234-5678',
+    address: '서울특별시 송파구 우리집',
+    postalCode: '00000',
+  };
+
+  const defaultOrderInfo: OrderInfo = {
+    products: [
+      {
+        id: '1',
+        name: '타게 버텍 키보드 한국에서 들여와서 배송은 땀 오래 걸림',
+        image: '/product_images/nuphy_kick75/nuphy_kick75_detail_01.webp',
+        options: '갈축 / 흰색',
+        quantity: 1,
+        price: 1200000,
+      },
+      {
+        id: '2',
+        name: '조금 싼 키보드 중국에서 만들어서 배송은 더 오래 걸림수도 대충',
+        image: '/product_images/nuphy_halo75/nuphy_halo75_detail_01.webp',
+        options: '갈축 / 흰색',
+        quantity: 2,
+        price: 30000,
+      },
+    ],
+    subtotal: 1230000,
+    shippingFee: 3000,
+    total: 1233000,
+  };
+
+  // 실제 데이터 또는 기본값 사용
+  const currentDeliveryInfo = deliveryInfo || defaultDeliveryInfo;
+  const currentOrderInfo = orderInfo || defaultOrderInfo;
+
   /**
    * 결제 방법 탭을 변경하는 함수
-   * @param method - 선택할 결제 방법 ('simple', 'card', 'bank')
    */
   const handlePaymentMethodChange = (method: PaymentMethod) => {
     setActivePaymentMethod(method);
@@ -47,7 +159,6 @@ export default function CheckoutPage() {
 
   /**
    * 간편결제 옵션을 변경하는 함수
-   * @param option - 선택할 간편결제 옵션 ('toss', 'naver')
    */
   const handleSimplePaymentChange = (option: SimplePaymentOption) => {
     setSelectedSimplePayment(option);
@@ -56,8 +167,6 @@ export default function CheckoutPage() {
 
   /**
    * 카드 정보 입력 필드를 업데이트하는 함수
-   * @param field - 업데이트할 필드명
-   * @param value - 새로운 값
    */
   const handleCardInfoChange = (field: keyof typeof cardInfo, value: string) => {
     setCardInfo(prev => ({
@@ -68,8 +177,6 @@ export default function CheckoutPage() {
 
   /**
    * 무통장 입금 정보를 업데이트하는 함수
-   * @param field - 업데이트할 필드명
-   * @param value - 새로운 값
    */
   const handleBankInfoChange = (field: keyof typeof bankInfo, value: string) => {
     setBankInfo(prev => ({
@@ -79,8 +186,26 @@ export default function CheckoutPage() {
   };
 
   /**
+   * 배송지 변경 버튼 클릭 핸들러
+   */
+  const handleDeliveryChange = () => {
+    if (onDeliveryChange) {
+      onDeliveryChange();
+    } else {
+      // 기본 동작 (모달 열기, 다른 페이지로 이동 등)
+      alert('배송지 변경 기능');
+    }
+  };
+
+  /**
+   * 금액 포맷팅 함수
+   */
+  const formatPrice = (price: number) => {
+    return price.toLocaleString('ko-KR') + '원';
+  };
+
+  /**
    * 간편결제 탭의 내용을 렌더링하는 함수
-   * 토스페이, 네이버페이 등의 간편결제 옵션을 표시
    */
   const renderSimplePaymentContent = () => {
     return (
@@ -88,7 +213,7 @@ export default function CheckoutPage() {
         <h4 className="text-lg font-semibold mb-4">간편결제 선택</h4>
 
         {/* 토스페이 옵션 */}
-        <div className="payment-option mb-3 p-3 border rounded-lg hover:bg-gray-100 cursor-pointer">
+        <div className="payment-option mb-3 p-3 cursor-pointer">
           <label className="flex items-center cursor-pointer">
             <input
               type="radio"
@@ -106,7 +231,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* 네이버페이 옵션 */}
-        <div className="payment-option mb-3 p-3 border rounded-lg hover:bg-gray-100 cursor-pointer">
+        <div className="payment-option mb-3 p-3  cursor-pointer">
           <label className="flex items-center cursor-pointer">
             <input
               type="radio"
@@ -118,7 +243,6 @@ export default function CheckoutPage() {
             />
             <div className="flex items-center">
               <Image src="/npay-logo.png" alt="네이버페이" width={82.08} height={28} className="w-[82.08px] h-[28px] object-contain" />
-
               <span className="text-base font-medium px-[55.92px] pt-1.5 text-[var(--color-primary)]">네이버페이</span>
             </div>
           </label>
@@ -129,7 +253,6 @@ export default function CheckoutPage() {
 
   /**
    * 카드 결제 탭의 내용을 렌더링하는 함수
-   * 카드 번호, 유효기간, CVC 등의 입력 필드를 표시
    */
   const renderCardPaymentContent = () => {
     return (
@@ -151,7 +274,6 @@ export default function CheckoutPage() {
 
         {/* 유효기간과 CVC를 한 줄에 배치 */}
         <div className="grid grid-cols-2 gap-4 mb-4">
-          {/* 유효기간 입력 */}
           <div>
             <label className="block text-sm font-medium mb-2">유효기간</label>
             <input
@@ -163,8 +285,6 @@ export default function CheckoutPage() {
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
-          {/* CVC 입력 */}
           <div>
             <label className="block text-sm font-medium mb-2">CVC</label>
             <input
@@ -196,14 +316,12 @@ export default function CheckoutPage() {
 
   /**
    * 무통장 입금 탭의 내용을 렌더링하는 함수
-   * 은행 선택, 입금자명 등의 정보를 표시
    */
   const renderBankPaymentContent = () => {
     return (
       <div className="tab-content p-4 bg-gray-50 rounded-lg">
         <h4 className="text-lg font-semibold mb-4">무통장 입금 정보</h4>
 
-        {/* 은행 선택 */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">입금 은행 선택</label>
           <select
@@ -220,7 +338,6 @@ export default function CheckoutPage() {
           </select>
         </div>
 
-        {/* 입금자명 입력 */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">입금자명</label>
           <input
@@ -232,7 +349,6 @@ export default function CheckoutPage() {
           />
         </div>
 
-        {/* 입금 계좌 정보 (선택된 은행이 있을 때만 표시) */}
         {bankInfo.selectedBank && (
           <div className="bg-blue-50 p-4 rounded-lg">
             <h5 className="font-semibold mb-2">입금 계좌 정보</h5>
@@ -252,7 +368,6 @@ export default function CheckoutPage() {
 
   /**
    * 현재 선택된 결제 방법에 따라 적절한 탭 내용을 렌더링하는 함수
-   * switch문을 사용하여 각 결제 방법별로 다른 컨텐츠를 반환
    */
   const renderActiveTabContent = () => {
     switch (activePaymentMethod) {
@@ -263,35 +378,51 @@ export default function CheckoutPage() {
       case 'bank':
         return renderBankPaymentContent();
       default:
-        // 예상치 못한 경우를 대비한 기본값
         return <div>결제 방법을 선택해주세요.</div>;
     }
   };
 
   /**
    * 최종 결제 버튼 클릭 시 실행되는 함수
-   * 실제 결제 처리 로직이 들어갈 곳
    */
-  const handleCheckout = () => {
-    // 여기에 실제 결제 처리 로직을 구현
-    console.log('결제 처리 시작');
-    console.log('선택된 결제 방법:', activePaymentMethod);
+  const handleCheckout = async () => {
+    setIsLoading(true); // 결제 처리 중임을 표시 (버튼 비활성화 등)
 
-    // 각 결제 방법에 따른 처리
-    switch (activePaymentMethod) {
-      case 'simple':
-        console.log('간편결제 선택:', selectedSimplePayment);
-        break;
-      case 'card':
-        console.log('카드 정보:', cardInfo);
-        break;
-      case 'bank':
-        console.log('무통장 입금 정보:', bankInfo);
-        break;
+    try {
+      // 결제에 필요한 모든 정보를 하나의 객체로 만듦
+      const paymentData: PaymentData = {
+        deliveryInfo: currentDeliveryInfo, // 배송지 정보 (이름, 연락처, 주소, 우편번호 등)
+        orderInfo: currentOrderInfo, // 주문 정보 (상품 목록, 금액 등)
+        paymentMethod: activePaymentMethod, // 현재 선택된 결제 방법 ('simple', 'card', 'bank')
+        paymentDetails:
+          activePaymentMethod === 'simple'
+            ? // 간편결제일 때: type과 선택된 간편결제 옵션만 포함
+              { type: 'simple' as PaymentMethod, option: selectedSimplePayment }
+            : // 카드 결제일 때: type과 카드 정보(cardInfo) 포함
+              activePaymentMethod === 'card'
+              ? { type: 'card' as PaymentMethod, ...cardInfo }
+              : // 무통장 입금일 때: type과 은행 정보(bankInfo) 포함
+                { type: 'bank' as PaymentMethod, ...bankInfo },
+      };
+
+      // 결제 처리가 시작됐다는 로그와 결제 데이터를 콘솔에 출력
+      console.log('결제 처리 시작', paymentData);
+
+      if (onPaymentComplete) {
+        // 만약 부모 컴포넌트에서 결제 완료 처리를 위한 함수를 props로 넘겨줬다면
+        await onPaymentComplete(paymentData); // 그 함수를 실행해서 결제 데이터를 전달
+      } else {
+        // 부모에서 별도 처리가 없으면 기본 결제 처리 로직 실행
+        // 실제 서비스에서는 여기서 결제 API를 호출해야 함
+        alert('결제가 처리되었습니다!'); // 임시로 알림창만 띄움
+      }
+    } catch (error) {
+      // 결제 처리 중 에러가 발생하면
+      console.error('결제 처리 오류:', error); // 에러 내용을 콘솔에 출력
+      alert('결제 처리 중 오류가 발생했습니다.'); // 사용자에게 에러 알림
+    } finally {
+      setIsLoading(false); // 결제 처리(성공/실패 상관없이) 끝나면 로딩 상태 해제
     }
-
-    // 실제로는 여기서 결제 API를 호출하거나 결제 SDK를 사용
-    alert('결제가 처리되었습니다!');
   };
 
   return (
@@ -305,14 +436,13 @@ export default function CheckoutPage() {
           <div>
             <h2 className="text-xl font-semibold mb-4">배송지</h2>
             <div className="space-y-2 text-gray-700">
-              <p className="font-medium">박철환</p>
-              <p>010-천하회-게이징짱</p>
-              <p>서울특별시 송 비번 동네 200층레이 아파트</p>
-              <p>우) 00000</p>
+              <p className="font-medium">{currentDeliveryInfo.name}</p>
+              <p>{currentDeliveryInfo.phone}</p>
+              <p>{currentDeliveryInfo.address}</p>
+              <p>우) {currentDeliveryInfo.postalCode}</p>
             </div>
           </div>
-          {/* 배송지 변경 버튼 - Button 컴포넌트 사용 */}
-          <Button size="small" outlined onClick={() => alert('배송지 변경 기능')}>
+          <Button size="small" outlined onClick={handleDeliveryChange}>
             변경하기
           </Button>
         </div>
@@ -324,58 +454,34 @@ export default function CheckoutPage() {
 
         {/* 상품 목록 */}
         <div className="space-y-4">
-          {/* 첫 번째 상품 */}
-          <div className="flex items-center space-x-4">
-            <Image
-              src="/product_images/nuphy_kick75/nuphy_kick75_detail_01.webp"
-              alt="NuPhy Kick75 상세 이미지 1"
-              width={80}
-              height={80}
-              className="w-20 h-20 object-cover rounded-lg"
-            />
-            <div className="flex-1">
-              <h3 className="font-medium">타게 버텍 키보드 한국에서 들여와서 배송은 땀 오래 걸림</h3>
-              <p className="text-sm text-gray-500">옵션: 갈축 / 흰색</p>
-              <p className="text-sm text-gray-500">1개</p>
+          {currentOrderInfo.products.map(product => (
+            <div key={product.id} className="flex items-center space-x-4">
+              <Image src={product.image} alt={product.name} width={80} height={80} className="w-20 h-20 object-cover rounded-lg" />
+              <div className="flex-1">
+                <h3 className="font-medium">{product.name}</h3>
+                <p className="text-sm text-gray-500">옵션: {product.options}</p>
+                <p className="text-sm text-gray-500">{product.quantity}개</p>
+              </div>
+              <div className="text-right">
+                <p className="font-semibold">{formatPrice(product.price)}</p>
+              </div>
             </div>
-            <div className="text-right">
-              <p className="font-semibold">1,200,000원</p>
-            </div>
-          </div>
-
-          {/* 두 번째 상품 */}
-          <div className="flex items-center space-x-4">
-            <Image
-              src="/product_images/nuphy_halo75/nuphy_halo75_detail_01.webp"
-              alt="NuPhy halo75 상세 이미지 1"
-              width={80}
-              height={80}
-              className="w-20 h-20 object-cover rounded-lg"
-            />
-            <div className="flex-1">
-              <h3 className="font-medium">조금 싼 키보드 중국에서 만들어서 배송은 더 오래 걸림수도 대충</h3>
-              <p className="text-sm text-gray-500">옵션: 갈축 / 흰색</p>
-              <p className="text-sm text-gray-500">2개</p>
-            </div>
-            <div className="text-right">
-              <p className="font-semibold">30,000원</p>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* 주문 금액 요약 */}
         <div className="mt-6 pt-6 border-t">
           <div className="flex justify-between items-center mb-2">
             <span className="text-gray-600">상품 금액</span>
-            <span>1,230,000원</span>
+            <span>{formatPrice(currentOrderInfo.subtotal)}</span>
           </div>
           <div className="flex justify-between items-center mb-2">
             <span className="text-gray-600">배송비</span>
-            <span>3,000원</span>
+            <span>{formatPrice(currentOrderInfo.shippingFee)}</span>
           </div>
           <div className="flex justify-between items-center text-xl font-bold">
             <span>주문 금액</span>
-            <span>1,233,000원</span>
+            <span>{formatPrice(currentOrderInfo.total)}</span>
           </div>
         </div>
       </div>
@@ -384,19 +490,16 @@ export default function CheckoutPage() {
       <div className="bg-gray-50 p-6 rounded-lg mb-8">
         <h2 className="text-xl font-semibold mb-4">결제 수단</h2>
 
-        {/* 결제 방법 탭 헤더 - Button 컴포넌트들 사용 */}
+        {/* 결제 방법 탭 헤더 */}
         <div className="flex space-x-2 mb-6">
-          {/* 간편결제 탭 버튼 */}
           <Button
             size="medium"
-            select={activePaymentMethod === 'simple'} // 현재 선택된 탭이면 select 스타일
-            outlined={activePaymentMethod !== 'simple'} // 선택되지 않은 탭이면 outlined 스타일
+            select={activePaymentMethod === 'simple'}
+            outlined={activePaymentMethod !== 'simple'}
             onClick={() => handlePaymentMethodChange('simple')}
           >
             간편결제
           </Button>
-
-          {/* 카드 결제 탭 버튼 */}
           <Button
             size="medium"
             select={activePaymentMethod === 'card'}
@@ -405,8 +508,6 @@ export default function CheckoutPage() {
           >
             제휴/신용카드 결제
           </Button>
-
-          {/* 무통장 입금 탭 버튼 */}
           <Button
             size="medium"
             select={activePaymentMethod === 'bank'}
@@ -427,13 +528,13 @@ export default function CheckoutPage() {
           size="full"
           submit
           onClick={handleCheckout}
-          // 결제 정보가 모두 입력되었는지 확인하여 disabled 설정
           disabled={
+            isLoading ||
             (activePaymentMethod === 'card' && (!cardInfo.cardNumber || !cardInfo.expiryDate || !cardInfo.cvc)) ||
             (activePaymentMethod === 'bank' && (!bankInfo.selectedBank || !bankInfo.depositorName))
           }
         >
-          결제하기
+          {isLoading ? '결제 처리 중...' : '결제하기'}
         </Button>
       </div>
     </div>
