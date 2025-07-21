@@ -24,9 +24,10 @@ function Select({
   disabled,
   size = 'medium',
   placeholder,
+  className,
   ...props
 }: SelectProps) {
-  const disabledStyle = disabled ? 'bg-disabled' : ' ';
+  const disabledStyle = disabled ? 'bg-disabled' : '';
 
   return (
     <div className="flex justify-between items-center gap-4">
@@ -39,7 +40,7 @@ function Select({
         id={id}
         name={name}
         value={selectedValue}
-        className={`w-full px-4 ${size === 'medium' ? 'py-2.5' : 'py-1.5'} border-lightgray border rounded-md focus:outline focus:border-primary ${disabledStyle}`}
+        className={`w-full px-4 ${size === 'medium' ? 'py-2.5' : 'py-1.5'} bg-white border-lightgray border rounded-md focus:outline focus:border-primary ${disabledStyle} ${className}`}
         {...props}
       >
         <option value="">{placeholder}</option>

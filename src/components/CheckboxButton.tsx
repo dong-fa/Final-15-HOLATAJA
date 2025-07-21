@@ -1,39 +1,31 @@
-import React from 'react';
+import React, { InputHTMLAttributes } from 'react';
+import { Check } from 'lucide-react';
 
-type CheckboxButtonProps = {
-  checked: boolean;
-  onCheck: () => void;
-};
+interface CheckboxButtonProps extends InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+}
 
-export default function CheckboxButton({ checked, onCheck }: CheckboxButtonProps) {
+export default function CheckboxButton({ checked, onChange, label, className, ...props }: CheckboxButtonProps) {
   return (
-    <label className="items-center cursor-pointer mt-5">
-      <input type="checkbox" checked={checked} onChange={onCheck} className="sr-only" />
+    <label className="flex items-center cursor-pointer">
+      <input type="checkbox" checked={checked} onChange={onChange} className="sr-only" {...props} />
       <div
         className={`
       w-5 h-5
       rounded
-      inline-block
       border-2
       transition-colors
-      
-      ${checked ? 'bg-[var(--color-primary)] border-[var(--color-primary)]' : 'bg-transparent border-[var(--color-gray)]'}
+      bg-white
+      flex
+      justify-center
+      items-center
+      ${checked ? 'border-primary' : 'border-gray'}
+      ${className}
     `}
       >
-        {checked && (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-3.5 h-3.5 text-white"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={3}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        )}
+        {checked && <Check size={14} color="var(--color-primary)" strokeWidth={3} />}
       </div>
-      <span className="ml-2 text-[1rem] text-[var(--color-secondary)] align-top">개인정보 수집 및 이용 약관에 동의합니다</span>
+      <span className="ml-2 text-[1rem] text-secondary align-top">{label}</span>
     </label>
   );
 }
