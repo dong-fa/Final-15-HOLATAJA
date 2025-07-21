@@ -1,83 +1,63 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Button from '@/components/Button';
 import Image from 'next/image';
+import Select from '@/components/Select';
 
-// 결제 방법의 타입을 정의 (간편결제, 체크/신용카드 결제, 무통장입급)
+// -----------------------------
+// 타입 및 인터페이스 정의
+// -----------------------------
+
+// 결제 방식 타입
 type PaymentMethod = 'simple' | 'card' | 'bank';
-
-// 간편결제 옵션들의 타입 정의
+// 간편결제 옵션 타입
 type SimplePaymentOption = 'toss' | 'naver';
 
-/**
- * 배송지 정보 타입 정의
- * 주문자의 배송지 관련 정보를 담는 인터페이스
- */
+// 배송지 정보 타입
 interface DeliveryInfo {
-  /** 수령인 이름 */
   name: string;
-  /** 연락처 (휴대폰 번호) */
   phone: string;
-  /** 배송 주소 */
   address: string;
-  /** 우편번호 */
   postalCode: string;
 }
 
-// 결제 처리에 필요한 모든 정보를 담는 타입
-interface PaymentData {
-  deliveryInfo: DeliveryInfo; // 배송지 정보 (이름, 연락처, 주소, 우편번호 등)
-  orderInfo: OrderInfo; // 주문 정보 (상품 목록, 금액 등)
-  paymentMethod: PaymentMethod; // 결제 방법 ('simple', 'card', 'bank' 중 하나)
-  paymentDetails: {
-    // 결제 방법에 따라 달라지는 상세 정보
-    type: PaymentMethod; // 실제 결제 타입 ('simple', 'card', 'bank')
-    option?: SimplePaymentOption; // 간편결제일 때 선택된 옵션 ('toss' 또는 'naver')
-    cardNumber?: string; // 카드 결제일 때 카드 번호
-    expiryDate?: string; // 카드 결제일 때 유효기간
-    cvc?: string; // 카드 결제일 때 CVC 번호
-    cardPassword?: string; // 카드 결제일 때 카드 비밀번호 앞 2자리
-    selectedBank?: string; // 무통장 입금일 때 선택한 은행
-    depositorName?: string; // 무통장 입금일 때 입금자명
-  };
-}
-
-/**
- * 상품 정보 타입 정의
- * 주문할 개별 상품의 정보를 담는 인터페이스
- */
+// 상품 정보 타입
 interface ProductInfo {
-  /** 상품 고유 ID */
   id: string;
-  /** 상품명 */
   name: string;
-  /** 상품 이미지 경로 */
   image: string;
-  /** 선택한 상품 옵션 (색상, 사이즈 등) */
   options: string;
-  /** 주문 수량 */
   quantity: number;
-  /** 개별 상품 가격 */
   price: number;
 }
 
-/**
- * 주문 정보 타입 정의
- * 전체 주문에 대한 상품 목록과 금액 정보를 담는 인터페이스
- */
+// 주문 정보 타입
 interface OrderInfo {
-  /** 주문 상품 목록 */
   products: ProductInfo[];
-  /** 상품 금액 합계 (배송비 제외) */
   subtotal: number;
-  /** 배송비 */
   shippingFee: number;
-  /** 총 주문 금액 (상품 금액 + 배송비) */
   total: number;
 }
 
-// CheckoutPage 컴포넌트의 Props 타입 정의
+// 결제 데이터 타입 (결제 완료 시 전달)
+interface PaymentData {
+  deliveryInfo: DeliveryInfo;
+  orderInfo: OrderInfo;
+  paymentMethod: PaymentMethod;
+  paymentDetails: {
+    type: PaymentMethod;
+    option?: SimplePaymentOption;
+    cardNumber?: string;
+    expiryDate?: string;
+    cvc?: string;
+    cardPassword?: string;
+    selectedBank?: string;
+    depositorName?: string;
+  };
+}
+
+// 컴포넌트 Props 타입
 interface CheckoutPageProps {
   deliveryInfo?: DeliveryInfo;
   orderInfo?: OrderInfo;
@@ -85,35 +65,30 @@ interface CheckoutPageProps {
   onPaymentComplete?: (paymentData: PaymentData) => void;
 }
 
-/**
- * 결제 페이지 컴포넌트
- * /checkout 경로에서 표시되는 메인 결제 페이지
- */
-export default function CheckoutPage({ deliveryInfo, orderInfo, onDeliveryChange, onPaymentComplete }: CheckoutPageProps) {
-  // 현재 선택된 결제 방법을 관리하는 상태
+// -----------------------------
+// CheckoutPage 컴포넌트
+// -----------------------------
+export default function CheckoutPage({ deliveryInfo, orderInfo, onPaymentComplete }: CheckoutPageProps) {
+  // 결제 방법(탭) 상태
   const [activePaymentMethod, setActivePaymentMethod] = useState<PaymentMethod>('simple');
-
-  // 간편결제에서 선택된 옵션을 관리하는 상태
+  // 간편결제 옵션 상태
   const [selectedSimplePayment, setSelectedSimplePayment] = useState<SimplePaymentOption>('toss');
-
-  // 카드 결제 정보를 관리하는 상태
+  // 카드 결제 정보 상태
   const [cardInfo, setCardInfo] = useState({
     cardNumber: '',
     expiryDate: '',
     cvc: '',
     cardPassword: '',
   });
-
-  // 무통장 입금 정보를 관리하는 상태
+  // 무통장 입금 정보 상태
   const [bankInfo, setBankInfo] = useState({
     selectedBank: '',
     depositorName: '',
   });
-
-  // 로딩 상태 관리
+  // 결제 처리 중 로딩 상태
   const [isLoading, setIsLoading] = useState(false);
 
-  // 기본값 설정 (Props로 받지 못한 경우를 대비)
+  // 기본 배송지 정보 (props가 없을 때 사용)
   const defaultDeliveryInfo: DeliveryInfo = {
     name: '박철환',
     phone: '010-1234-5678',
@@ -121,6 +96,15 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onDeliveryChange
     postalCode: '00000',
   };
 
+  // 결제에만 사용하는 배송지 정보 state
+  const [currentDeliveryInfo, setCurrentDeliveryInfo] = useState<DeliveryInfo>(deliveryInfo || defaultDeliveryInfo);
+
+  // 배송지 수정 모드 상태
+  const [isEditingDelivery, setIsEditingDelivery] = useState(false);
+  // 배송지 수정 입력값 상태 (수정 모드에서 사용)
+  const [editDeliveryInfo, setEditDeliveryInfo] = useState<DeliveryInfo>(currentDeliveryInfo);
+
+  // 기본 주문 정보 (props가 없을 때 사용)
   const defaultOrderInfo: OrderInfo = {
     products: [
       {
@@ -144,30 +128,24 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onDeliveryChange
     shippingFee: 3000,
     total: 1233000,
   };
-
-  // 실제 데이터 또는 기본값 사용
-  const currentDeliveryInfo = deliveryInfo || defaultDeliveryInfo;
+  // 주문 정보는 수정하지 않으므로 변수로 관리
   const currentOrderInfo = orderInfo || defaultOrderInfo;
 
-  /**
-   * 결제 방법 탭을 변경하는 함수
-   */
+  // -----------------------------
+  // 핸들러 함수들
+  // -----------------------------
+
+  // 결제 방법(탭) 변경
   const handlePaymentMethodChange = (method: PaymentMethod) => {
     setActivePaymentMethod(method);
-    console.log(`결제 방법이 ${method}로 변경되었습니다.`);
   };
 
-  /**
-   * 간편결제 옵션을 변경하는 함수
-   */
+  // 간편결제 옵션 변경
   const handleSimplePaymentChange = (option: SimplePaymentOption) => {
     setSelectedSimplePayment(option);
-    console.log(`간편결제 옵션이 ${option}로 변경되었습니다.`);
   };
 
-  /**
-   * 카드 정보 입력 필드를 업데이트하는 함수
-   */
+  // 카드 정보 입력 변경
   const handleCardInfoChange = (field: keyof typeof cardInfo, value: string) => {
     setCardInfo(prev => ({
       ...prev,
@@ -175,9 +153,7 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onDeliveryChange
     }));
   };
 
-  /**
-   * 무통장 입금 정보를 업데이트하는 함수
-   */
+  // 무통장 입금 정보 입력 변경
   const handleBankInfoChange = (field: keyof typeof bankInfo, value: string) => {
     setBankInfo(prev => ({
       ...prev,
@@ -185,190 +161,199 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onDeliveryChange
     }));
   };
 
-  /**
-   * 배송지 변경 버튼 클릭 핸들러
-   */
+  // 배송지 변경 버튼 클릭 시 수정 모드로 전환
   const handleDeliveryChange = () => {
-    if (onDeliveryChange) {
-      onDeliveryChange();
-    } else {
-      // 기본 동작 (모달 열기, 다른 페이지로 이동 등)
-      alert('배송지 변경 기능');
-    }
+    setEditDeliveryInfo(currentDeliveryInfo); // 현재 배송지 정보로 초기화
+    setIsEditingDelivery(true); // 수정 모드 활성화
   };
 
-  /**
-   * 금액 포맷팅 함수
-   */
+  // 배송지 입력값 변경 핸들러 (수정 모드에서 사용)
+  const handleDeliveryInputChange = (field: keyof DeliveryInfo, value: string) => {
+    setEditDeliveryInfo(prev => ({ ...prev, [field]: value }));
+  };
+
+  // 배송지 저장 버튼 클릭 시
+  const handleSaveDeliveryInfo = () => {
+    setCurrentDeliveryInfo(editDeliveryInfo); // 수정된 정보 저장
+    setIsEditingDelivery(false); // 수정 모드 종료
+  };
+
+  // 배송지 취소 버튼 클릭 시
+  const handleCancelEdit = () => {
+    setIsEditingDelivery(false); // 수정 모드 종료
+  };
+
+  // 금액 포맷팅 함수 (숫자를 "1,000원" 형태로 변환)
   const formatPrice = (price: number) => {
     return price.toLocaleString('ko-KR') + '원';
   };
 
-  /**
-   * 간편결제 탭의 내용을 렌더링하는 함수
-   */
-  const renderSimplePaymentContent = () => {
-    return (
-      <div className="tab-content p-4 bg-gray-50 rounded-lg">
-        <h4 className="text-lg font-semibold mb-4">간편결제 선택</h4>
+  // -----------------------------
+  // 결제 탭별 렌더 함수
+  // -----------------------------
 
-        {/* 토스페이 옵션 */}
-        <div className="payment-option mb-3 p-3 cursor-pointer">
-          <label className="flex items-center cursor-pointer">
-            <input
-              type="radio"
-              name="simplePayment"
-              value="toss"
-              checked={selectedSimplePayment === 'toss'}
-              onChange={() => handleSimplePaymentChange('toss')}
-              className="mr-3"
+  // 간편결제 탭 내용
+  const renderSimplePaymentContent = () => (
+    <div className="tab-content p-3 sm:p-4 bg-gray-50 rounded-lg">
+      <h4 className="text-base sm:text-lg font-semibold mb-4">간편결제 선택</h4>
+      {/* 토스페이 옵션 */}
+      <div className="payment-option mb-3 p-2 sm:p-3 cursor-pointer">
+        <label className="flex items-center cursor-pointer">
+          <input
+            type="radio"
+            name="simplePayment"
+            value="toss"
+            checked={selectedSimplePayment === 'toss'}
+            onChange={() => handleSimplePaymentChange('toss')}
+            className="mr-2 sm:mr-3"
+          />
+          <div className="flex items-center">
+            <Image
+              src="/toss-logo.png"
+              alt="토스페이"
+              width={123.88}
+              height={24}
+              className="w-[80px] sm:w-[123.88px] h-[16px] sm:h-[24px] object-contain"
             />
-            <div className="flex items-center">
-              <Image src="/toss-logo.png" alt="토스페이" width={123.88} height={24} className="w-[123.88px] h-[24px] object-contain" />
-              <span className="text-base font-medium px-[15.12px] pt-1.5 text-[var(--color-primary)]">토스페이</span>
-            </div>
-          </label>
-        </div>
-
-        {/* 네이버페이 옵션 */}
-        <div className="payment-option mb-3 p-3  cursor-pointer">
-          <label className="flex items-center cursor-pointer">
-            <input
-              type="radio"
-              name="simplePayment"
-              value="naver"
-              checked={selectedSimplePayment === 'naver'}
-              onChange={() => handleSimplePaymentChange('naver')}
-              className="mr-3"
-            />
-            <div className="flex items-center">
-              <Image src="/npay-logo.png" alt="네이버페이" width={82.08} height={28} className="w-[82.08px] h-[28px] object-contain" />
-              <span className="text-base font-medium px-[55.92px] pt-1.5 text-[var(--color-primary)]">네이버페이</span>
-            </div>
-          </label>
-        </div>
+            <span className="text-sm sm:text-base font-medium px-2 sm:px-[15.12px] pt-1.5 text-[var(--color-primary)]">토스페이</span>
+          </div>
+        </label>
       </div>
-    );
-  };
+      {/* 네이버페이 옵션 */}
+      <div className="payment-option mb-3 p-2 sm:p-3 cursor-pointer">
+        <label className="flex items-center cursor-pointer">
+          <input
+            type="radio"
+            name="simplePayment"
+            value="naver"
+            checked={selectedSimplePayment === 'naver'}
+            onChange={() => handleSimplePaymentChange('naver')}
+            className="mr-2 sm:mr-3"
+          />
+          <div className="flex items-center">
+            <Image
+              src="/npay-logo.png"
+              alt="네이버페이"
+              width={82.08}
+              height={28}
+              className="w-[55px] sm:w-[82.08px] h-[19px] sm:h-[28px] object-contain"
+            />
+            <span className="text-sm sm:text-base font-medium px-4 sm:px-[55.92px] pt-1.5 text-[var(--color-primary)]">네이버페이</span>
+          </div>
+        </label>
+      </div>
+    </div>
+  );
 
-  /**
-   * 카드 결제 탭의 내용을 렌더링하는 함수
-   */
-  const renderCardPaymentContent = () => {
-    return (
-      <div className="tab-content p-4 bg-gray-50 rounded-lg">
-        <h4 className="text-lg font-semibold mb-4">카드 정보 입력</h4>
-
-        {/* 카드 번호 입력 */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">카드 번호</label>
+  // 카드 결제 탭 내용
+  const renderCardPaymentContent = () => (
+    <div className="tab-content p-3 sm:p-4 bg-gray-50 rounded-lg">
+      <h4 className="text-base sm:text-lg font-semibold mb-4">카드 정보 입력</h4>
+      {/* 카드 번호 */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2">카드 번호</label>
+        <input
+          type="text"
+          placeholder="0000-0000-0000-0000"
+          maxLength={19}
+          value={cardInfo.cardNumber}
+          onChange={e => handleCardInfoChange('cardNumber', e.target.value)}
+          className="w-full p-2 sm:p-3 border border-[var(--color-lightgray)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--color-background)] text-sm sm:text-base"
+        />
+      </div>
+      {/* 유효기간 & CVC */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label className="block text-sm font-medium mb-2">유효기간</label>
           <input
             type="text"
-            placeholder="0000-0000-0000-0000"
-            maxLength={19}
-            value={cardInfo.cardNumber}
-            onChange={e => handleCardInfoChange('cardNumber', e.target.value)}
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="MM/YY"
+            maxLength={5}
+            value={cardInfo.expiryDate}
+            onChange={e => handleCardInfoChange('expiryDate', e.target.value)}
+            className="w-full p-2 sm:p-3 border border-[var(--color-lightgray)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--color-background)] text-sm sm:text-base"
           />
         </div>
-
-        {/* 유효기간과 CVC를 한 줄에 배치 */}
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="block text-sm font-medium mb-2">유효기간</label>
-            <input
-              type="text"
-              placeholder="MM/YY"
-              maxLength={5}
-              value={cardInfo.expiryDate}
-              onChange={e => handleCardInfoChange('expiryDate', e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">CVC</label>
-            <input
-              type="text"
-              placeholder="000"
-              maxLength={3}
-              value={cardInfo.cvc}
-              onChange={e => handleCardInfoChange('cvc', e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-
-        {/* 카드 비밀번호 입력 */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">카드 비밀번호 앞 2자리</label>
+        <div>
+          <label className="block text-sm font-medium mb-2">CVC</label>
           <input
-            type="password"
-            placeholder="**"
-            maxLength={2}
-            value={cardInfo.cardPassword}
-            onChange={e => handleCardInfoChange('cardPassword', e.target.value)}
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            type="text"
+            placeholder="000"
+            maxLength={3}
+            value={cardInfo.cvc}
+            onChange={e => handleCardInfoChange('cvc', e.target.value)}
+            className="w-full p-2 sm:p-3 border border-[var(--color-lightgray)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--color-background)] text-sm sm:text-base"
           />
         </div>
       </div>
-    );
-  };
+      {/* 카드 비밀번호 */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2">카드 비밀번호 앞 2자리</label>
+        <input
+          type="password"
+          placeholder="**"
+          maxLength={2}
+          value={cardInfo.cardPassword}
+          onChange={e => handleCardInfoChange('cardPassword', e.target.value)}
+          className="w-full p-2 sm:p-3 border border-[var(--color-lightgray)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--color-background)] text-sm sm:text-base"
+        />
+      </div>
+    </div>
+  );
 
-  /**
-   * 무통장 입금 탭의 내용을 렌더링하는 함수
-   */
+  // 무통장 입금 탭 내용
   const renderBankPaymentContent = () => {
+    const bankOptions = ['국민은행', '신한은행', '우리은행', '하나은행', '농협', '카카오뱅크'];
     return (
-      <div className="tab-content p-4 bg-gray-50 rounded-lg">
-        <h4 className="text-lg font-semibold mb-4">무통장 입금 정보</h4>
-
+      <div className="tab-content p-3 sm:p-4 bg-gray-50 rounded-lg">
+        <h4 className="text-base sm:text-lg font-semibold mb-4">무통장 입금 정보</h4>
+        {/* 은행 선택 */}
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">입금 은행 선택</label>
-          <select
-            value={bankInfo.selectedBank}
+          <Select
+            label="입금 은행 선택"
+            showLabel={true}
+            options={bankOptions}
+            id="selectedBank"
+            name="selectedBank"
+            selectedValue={bankInfo.selectedBank}
             onChange={e => handleBankInfoChange('selectedBank', e.target.value)}
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">은행을 선택하세요</option>
-            <option value="kb">국민은행</option>
-            <option value="shinhan">신한은행</option>
-            <option value="woori">우리은행</option>
-            <option value="hana">하나은행</option>
-            <option value="nh">농협은행</option>
-          </select>
+            size="medium"
+            placeholder="은행을 선택하세요"
+            className="!w-full sm:!w-48"
+          />
         </div>
-
+        {/* 입금자명 입력 */}
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">입금자명</label>
+          <h4 className="text-base sm:text-lg font-semibold mb-4">입금자명</h4>
+          <label className="block text-sm font-medium mb-2"></label>
           <input
             type="text"
             placeholder="입금자명을 입력하세요"
             value={bankInfo.depositorName}
             onChange={e => handleBankInfoChange('depositorName', e.target.value)}
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 sm:p-3 border border-[var(--color-lightgray)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--color-background)] text-sm sm:text-base"
           />
         </div>
-
+        {/* 선택된 은행 계좌 정보 표시 */}
         {bankInfo.selectedBank && (
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <h5 className="font-semibold mb-2">입금 계좌 정보</h5>
-            <p className="text-sm text-gray-700">
-              {bankInfo.selectedBank === 'kb' && '국민은행 123-456-789012'}
-              {bankInfo.selectedBank === 'shinhan' && '신한은행 987-654-321098'}
-              {bankInfo.selectedBank === 'woori' && '우리은행 1002-123-456789'}
-              {bankInfo.selectedBank === 'hana' && '하나은행 111-222-333444'}
-              {bankInfo.selectedBank === 'nh' && '농협은행 999-888-777666'}
+          <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
+            <h5 className="font-semibold mb-2 text-sm sm:text-base">입금 계좌 정보</h5>
+            <p className="text-xs sm:text-sm text-gray-700">
+              {bankInfo.selectedBank === '국민은행' && '국민은행 123-456-789012'}
+              {bankInfo.selectedBank === '신한은행' && '신한은행 987-654-321098'}
+              {bankInfo.selectedBank === '우리은행' && '우리은행 1002-123-456789'}
+              {bankInfo.selectedBank === '하나은행' && '하나은행 111-222-333444'}
+              {bankInfo.selectedBank === '농협은행' && '농협은행 999-888-777666'}
+              {bankInfo.selectedBank === '카카오뱅크' && '카카오뱅크 3333-02-9023121'}
             </p>
-            <p className="text-sm text-gray-700 mt-1">예금주: (주)올라타자</p>
+            <p className="text-xs sm:text-sm text-gray-700 mt-1">예금주: (주)올라타자</p>
           </div>
         )}
       </div>
     );
   };
 
-  /**
-   * 현재 선택된 결제 방법에 따라 적절한 탭 내용을 렌더링하는 함수
-   */
+  // 결제 방법에 따라 탭 내용 렌더링
   const renderActiveTabContent = () => {
     switch (activePaymentMethod) {
       case 'simple':
@@ -382,104 +367,158 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onDeliveryChange
     }
   };
 
-  /**
-   * 최종 결제 버튼 클릭 시 실행되는 함수
-   */
+  // 결제 버튼 클릭 시 결제 데이터 생성 및 처리
   const handleCheckout = async () => {
-    setIsLoading(true); // 결제 처리 중임을 표시 (버튼 비활성화 등)
-
+    setIsLoading(true);
     try {
-      // 결제에 필요한 모든 정보를 하나의 객체로 만듦
       const paymentData: PaymentData = {
-        deliveryInfo: currentDeliveryInfo, // 배송지 정보 (이름, 연락처, 주소, 우편번호 등)
-        orderInfo: currentOrderInfo, // 주문 정보 (상품 목록, 금액 등)
-        paymentMethod: activePaymentMethod, // 현재 선택된 결제 방법 ('simple', 'card', 'bank')
+        deliveryInfo: currentDeliveryInfo,
+        orderInfo: currentOrderInfo,
+        paymentMethod: activePaymentMethod,
         paymentDetails:
           activePaymentMethod === 'simple'
-            ? // 간편결제일 때: type과 선택된 간편결제 옵션만 포함
-              { type: 'simple' as PaymentMethod, option: selectedSimplePayment }
-            : // 카드 결제일 때: type과 카드 정보(cardInfo) 포함
-              activePaymentMethod === 'card'
-              ? { type: 'card' as PaymentMethod, ...cardInfo }
-              : // 무통장 입금일 때: type과 은행 정보(bankInfo) 포함
-                { type: 'bank' as PaymentMethod, ...bankInfo },
+            ? { type: 'simple', option: selectedSimplePayment }
+            : activePaymentMethod === 'card'
+              ? { type: 'card', ...cardInfo }
+              : { type: 'bank', ...bankInfo },
       };
-
-      // 결제 처리가 시작됐다는 로그와 결제 데이터를 콘솔에 출력
-      console.log('결제 처리 시작', paymentData);
-
+      // 결제 완료 콜백이 있으면 실행
       if (onPaymentComplete) {
-        // 만약 부모 컴포넌트에서 결제 완료 처리를 위한 함수를 props로 넘겨줬다면
-        await onPaymentComplete(paymentData); // 그 함수를 실행해서 결제 데이터를 전달
+        await onPaymentComplete(paymentData);
       } else {
-        // 부모에서 별도 처리가 없으면 기본 결제 처리 로직 실행
-        // 실제 서비스에서는 여기서 결제 API를 호출해야 함
-        alert('결제가 처리되었습니다!'); // 임시로 알림창만 띄움
+        alert('결제가 처리되었습니다!');
       }
     } catch (error) {
-      // 결제 처리 중 에러가 발생하면
-      console.error('결제 처리 오류:', error); // 에러 내용을 콘솔에 출력
-      alert('결제 처리 중 오류가 발생했습니다.'); // 사용자에게 에러 알림
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert('결제 처리 중 오류가 발생했습니다.');
+      }
     } finally {
-      setIsLoading(false); // 결제 처리(성공/실패 상관없이) 끝나면 로딩 상태 해제
+      setIsLoading(false);
     }
   };
 
+  // -----------------------------
+  // 렌더링 영역
+  // -----------------------------
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white">
+    <div className="max-w-4xl mx-auto p-3 sm:p-6 bg-white">
       {/* 페이지 제목 */}
-      <h1 className="text-3xl font-bold mb-8">결제</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">결제</h1>
 
       {/* 배송지 정보 섹션 */}
-      <div className="bg-gray-50 p-6 rounded-lg mb-8">
-        <div className="flex justify-between items-start">
-          <div>
-            <h2 className="text-xl font-semibold mb-4">배송지</h2>
+      <div className="bg-gray-50 p-4 sm:p-6 rounded-lg mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0">
+          <div className="flex-1">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4">배송지</h2>
             <div className="space-y-2 text-gray-700">
-              <p className="font-medium">{currentDeliveryInfo.name}</p>
-              <p>{currentDeliveryInfo.phone}</p>
-              <p>{currentDeliveryInfo.address}</p>
-              <p>우) {currentDeliveryInfo.postalCode}</p>
+              {/* 배송지 수정 모드: 인풋 필드로 표시 */}
+              {isEditingDelivery ? (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">수령인 이름</label>
+                    <input
+                      type="text"
+                      value={editDeliveryInfo.name}
+                      onChange={e => handleDeliveryInputChange('name', e.target.value)}
+                      className="w-full p-2 border rounded text-sm sm:text-base"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">연락처</label>
+                    <input
+                      type="text"
+                      value={editDeliveryInfo.phone}
+                      onChange={e => handleDeliveryInputChange('phone', e.target.value)}
+                      className="w-full p-2 border rounded text-sm sm:text-base"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">주소</label>
+                    <input
+                      type="text"
+                      value={editDeliveryInfo.address}
+                      onChange={e => handleDeliveryInputChange('address', e.target.value)}
+                      className="w-full p-2 border rounded text-sm sm:text-base"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">우편번호</label>
+                    <input
+                      type="text"
+                      value={editDeliveryInfo.postalCode}
+                      onChange={e => handleDeliveryInputChange('postalCode', e.target.value)}
+                      className="w-full p-2 border rounded text-sm sm:text-base"
+                    />
+                  </div>
+                  {/* 저장/취소 버튼 */}
+                  <div className="flex gap-2 mt-2">
+                    <Button size="small" outlined onClick={handleCancelEdit}>
+                      취소
+                    </Button>
+                    <Button size="small" onClick={handleSaveDeliveryInfo}>
+                      저장
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                // 배송지 정보 표시
+                <>
+                  <p className="font-medium text-sm sm:text-base">{currentDeliveryInfo.name}</p>
+                  <p className="text-sm sm:text-base">{currentDeliveryInfo.phone}</p>
+                  <p className="text-sm sm:text-base">{currentDeliveryInfo.address}</p>
+                  <p className="text-sm sm:text-base">우) {currentDeliveryInfo.postalCode}</p>
+                </>
+              )}
             </div>
           </div>
-          <Button size="small" outlined onClick={handleDeliveryChange}>
-            변경하기
-          </Button>
+          {/* 변경하기 버튼: 수정 모드가 아닐 때만 표시 */}
+          {!isEditingDelivery && (
+            <div className="sm:ml-4 self-start">
+              <Button size="small" outlined onClick={handleDeliveryChange}>
+                변경하기
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
       {/* 주문 상품 정보 섹션 */}
-      <div className="bg-gray-50 p-6 rounded-lg mb-8">
-        <h2 className="text-xl font-semibold mb-4">주문 상품</h2>
-
-        {/* 상품 목록 */}
+      <div className="bg-gray-50 p-4 sm:p-6 rounded-lg mb-6 sm:mb-8">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">주문 상품</h2>
         <div className="space-y-4">
           {currentOrderInfo.products.map(product => (
-            <div key={product.id} className="flex items-center space-x-4">
-              <Image src={product.image} alt={product.name} width={80} height={80} className="w-20 h-20 object-cover rounded-lg" />
-              <div className="flex-1">
-                <h3 className="font-medium">{product.name}</h3>
-                <p className="text-sm text-gray-500">옵션: {product.options}</p>
-                <p className="text-sm text-gray-500">{product.quantity}개</p>
+            <div key={product.id} className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+              <Image
+                src={product.image}
+                alt={product.name}
+                width={80}
+                height={80}
+                className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg mx-auto sm:mx-0"
+              />
+              <div className="flex-1 text-center sm:text-left">
+                <h3 className="font-medium text-sm sm:text-base">{product.name}</h3>
+                <p className="text-xs sm:text-sm text-gray-500">옵션: {product.options}</p>
+                <p className="text-xs sm:text-sm text-gray-500">{product.quantity}개</p>
               </div>
-              <div className="text-right">
-                <p className="font-semibold">{formatPrice(product.price)}</p>
+              <div className="text-center sm:text-right">
+                <p className="font-semibold text-sm sm:text-base">{formatPrice(product.price)}</p>
               </div>
             </div>
           ))}
         </div>
-
         {/* 주문 금액 요약 */}
         <div className="mt-6 pt-6 border-t">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-gray-600">상품 금액</span>
-            <span>{formatPrice(currentOrderInfo.subtotal)}</span>
+            <span className="text-gray-600 text-sm sm:text-base">상품 금액</span>
+            <span className="text-sm sm:text-base">{formatPrice(currentOrderInfo.subtotal)}</span>
           </div>
           <div className="flex justify-between items-center mb-2">
-            <span className="text-gray-600">배송비</span>
-            <span>{formatPrice(currentOrderInfo.shippingFee)}</span>
+            <span className="text-gray-600 text-sm sm:text-base">배송비</span>
+            <span className="text-sm sm:text-base">{formatPrice(currentOrderInfo.shippingFee)}</span>
           </div>
-          <div className="flex justify-between items-center text-xl font-bold">
+          <div className="flex justify-between items-center text-lg sm:text-xl font-bold">
             <span>주문 금액</span>
             <span>{formatPrice(currentOrderInfo.total)}</span>
           </div>
@@ -487,45 +526,46 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onDeliveryChange
       </div>
 
       {/* 결제 수단 선택 섹션 */}
-      <div className="bg-gray-50 p-6 rounded-lg mb-8">
-        <h2 className="text-xl font-semibold mb-4">결제 수단</h2>
-
-        {/* 결제 방법 탭 헤더 */}
-        <div className="flex space-x-2 mb-6">
+      <div className="bg-gray-50 p-4 sm:p-6 rounded-lg mb-6 sm:mb-8">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">결제 수단</h2>
+        {/* 결제 방법 탭 버튼 */}
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mb-6">
           <Button
-            size="medium"
-            select={activePaymentMethod === 'simple'}
-            outlined={activePaymentMethod !== 'simple'}
+            size="large"
+            outlined={activePaymentMethod === 'simple'}
+            select={activePaymentMethod === 'simple' ? false : true}
             onClick={() => handlePaymentMethodChange('simple')}
+            className="w-full sm:w-auto"
           >
             간편결제
           </Button>
           <Button
-            size="medium"
-            select={activePaymentMethod === 'card'}
-            outlined={activePaymentMethod !== 'card'}
+            size="large"
+            outlined={activePaymentMethod === 'card'}
+            select={activePaymentMethod === 'card' ? false : true}
             onClick={() => handlePaymentMethodChange('card')}
+            className="w-full sm:w-auto"
           >
-            제휴/신용카드 결제
+            체크/신용카드 결제
           </Button>
           <Button
-            size="medium"
-            select={activePaymentMethod === 'bank'}
-            outlined={activePaymentMethod !== 'bank'}
+            size="large"
+            outlined={activePaymentMethod === 'bank'}
+            select={activePaymentMethod === 'bank' ? false : true}
             onClick={() => handlePaymentMethodChange('bank')}
+            className="w-full sm:w-auto"
           >
             무통장 입금
           </Button>
         </div>
-
-        {/* 선택된 탭의 내용을 표시하는 영역 */}
+        {/* 선택된 결제 방법의 상세 입력 영역 */}
         <div className="tab-content-wrapper">{renderActiveTabContent()}</div>
       </div>
 
       {/* 최종 결제 버튼 */}
-      <div className="mt-8">
+      <div className="mt-6 sm:mt-8 flex justify-center sm:justify-end">
         <Button
-          size="full"
+          size="medium"
           submit
           onClick={handleCheckout}
           disabled={
@@ -533,6 +573,7 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onDeliveryChange
             (activePaymentMethod === 'card' && (!cardInfo.cardNumber || !cardInfo.expiryDate || !cardInfo.cvc)) ||
             (activePaymentMethod === 'bank' && (!bankInfo.selectedBank || !bankInfo.depositorName))
           }
+          className="w-full sm:w-auto"
         >
           {isLoading ? '결제 처리 중...' : '결제하기'}
         </Button>
