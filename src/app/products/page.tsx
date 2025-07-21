@@ -44,6 +44,7 @@ interface RawItem {
   };
 
   mainImages?: {
+    type: 'detail' | 'info';
     name: string;
     originalname: string;
     path: string;
@@ -90,7 +91,7 @@ export default function ProductPage() {
       // 받아온 데이터를 Interface에 맞게 변환
       const transformedItems = await Promise.all(
         rawItems.map(async (item: RawItem): Promise<Product> => {
-          const imagePath = item.mainImages?.[0]?.path;
+          const imagePath = item.mainImages?.find(img => img.type === 'detail')?.path;
 
           const imageUrl = imagePath ? await getImageUrl(imagePath) : '/product_images/holataja_circle.webp'; // 이미지 없는 경우 기본 로고 이미지 넣기
 
