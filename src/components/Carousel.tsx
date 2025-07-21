@@ -99,7 +99,7 @@ export default function Carousel() {
         {slideData.map((slide, i) => (
           <SwiperSlide key={i}>
             <div className="relative w-full h-[20rem] sm:h-[25rem] md:h-[30rem] ">
-              <Image src={slide.src} alt={slide.title} className="w-full h-full object-cover object-center rounded-xl" fill />
+              <Image src={slide.src} alt={slide.title} className="w-full h-full object-cover object-center rounded-xl" fill sizes="100vw" priority />
               <div className="absolute inset-0 bg-black/25 rounded-xl">
                 <div className="absolute inset-0 flex justify-center items-center px-6">
                   <div
