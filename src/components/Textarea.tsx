@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface TextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, ''> {
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   id: string;
   name: string;
   error?: boolean;
