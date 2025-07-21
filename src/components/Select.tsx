@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { SelectHTMLAttributes } from 'react';
 
-interface SelectProps {
+interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'size'> {
   label?: string;
   showLabel?: boolean;
   options: string[];
@@ -9,9 +9,8 @@ interface SelectProps {
   selectedValue: string;
   error?: boolean;
   errorMessage?: string;
-  disabled?: boolean;
-  placeholder?: string;
   size?: 'medium' | 'small';
+  placeholder?: string;
 }
 
 function Select({
@@ -21,17 +20,16 @@ function Select({
   id,
   name,
   selectedValue,
-  error = false,
+  // error = false,
   disabled,
   size = 'medium',
   placeholder,
   ...props
 }: SelectProps) {
-  const errorStyle = error ? 'placeholder:text-negative' : 'placeholder:text-gray-400';
   const disabledStyle = disabled ? 'bg-disabled' : ' ';
 
   return (
-    <div className="flex justify-between items-centerb gap-4">
+    <div className="flex justify-between items-center gap-4">
       {label && (
         <label className={showLabel ? 'shrink-0 label-m' : 'sr-only'} htmlFor={id}>
           {label}
@@ -41,7 +39,7 @@ function Select({
         id={id}
         name={name}
         value={selectedValue}
-        className={`w-full px-4 ${size === 'medium' ? 'py-2.5' : 'py-1.5'} border-lightgray border rounded-md focus:outline focus:border-primary ${errorStyle} ${disabledStyle}`}
+        className={`w-full px-4 ${size === 'medium' ? 'py-2.5' : 'py-1.5'} border-lightgray border rounded-md focus:outline focus:border-primary ${disabledStyle}`}
         {...props}
       >
         <option value="">{placeholder}</option>

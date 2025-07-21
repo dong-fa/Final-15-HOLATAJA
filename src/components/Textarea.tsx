@@ -1,12 +1,10 @@
 import React from 'react';
 
-interface TextareaProps {
+interface TextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, ''> {
   id: string;
   name: string;
   error?: boolean;
   errorMessage?: string;
-  disabled?: boolean;
-  placeholder?: string;
 }
 
 function Textarea({ id, name, error = false, errorMessage, disabled, placeholder, ...props }: TextareaProps) {
