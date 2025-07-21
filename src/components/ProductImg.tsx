@@ -11,18 +11,13 @@ import 'swiper/css/pagination';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ProductImgProps {
-  src: string;
-  alt: string;
+  title: string;
+  // 하나의 이미지라도 배열 형태로 전달받음
+  srcList: string[];
   swipe?: boolean;
 }
 
-// 슬라이드 이미지 배열
-const imgList = [
-  { id: 1, src: '/image.png' },
-  { id: 2, src: '/image2.png' },
-];
-
-function ProductImg({ src, alt, swipe }: ProductImgProps) {
+function ProductImg({ title, srcList, swipe }: ProductImgProps) {
   const [liked, setLiked] = useState(false);
 
   const buttonBg = liked ? 'bg-[#FFCC00]' : 'bg-darkgray';
@@ -37,11 +32,11 @@ function ProductImg({ src, alt, swipe }: ProductImgProps) {
           pagination={{ clickable: true }}
           className="w-full"
         >
-          {imgList.map(img => (
-            <SwiperSlide key={img.id}>
+          {srcList.map((src, idx) => (
+            <SwiperSlide key={idx}>
               <div className="rounded-lg relative overflow-hidden w-full aspect-square">
                 {/* alt값 추가 필요 */}
-                <Image src={src} alt={alt} fill className="object-cover" />
+                <Image src={src} alt={title + '이미지'} fill className="object-cover" />
                 <button
                   className={`${buttonBg} rounded-full w-6 h-6 text-white flex justify-center items-center absolute bottom-4 right-4 cursor-pointer`}
                   onClick={() => setLiked(!liked)}
@@ -61,7 +56,7 @@ function ProductImg({ src, alt, swipe }: ProductImgProps) {
       ) : (
         // 제품 목록에 들어갈 고정형 이미지
         <div className="rounded-lg relative overflow-hidden w-full h-full">
-          <Image src={src} alt={alt} fill className="object-cover" />
+          <Image src={srcList[0]} alt={title + '이미지'} fill className="object-cover" sizes="(min-width: 768px) 100vw, 100vw" />
           <button
             className={`${buttonBg} rounded-full w-6 h-6 text-white flex justify-center items-center absolute bottom-2.5 right-2.5 cursor-pointer`}
             onClick={() => setLiked(!liked)}

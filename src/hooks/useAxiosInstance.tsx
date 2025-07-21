@@ -26,6 +26,23 @@ function useAxiosInstance() {
     return config;
   });
 
+  //에러 핸들링 + 토큰 저장
+  instance.interceptors.response.use(
+    response => {
+      console.log('API 응답성공', response.data);
+      return response;
+    },
+
+    error => {
+      console.error('API 에러', error);
+
+      if (error.response) {
+        const { status, data } = error.response;
+        alert(`서버 에러 (${status}): ${data.message || '알 수 없는 오류가 발생했습니다'}`);
+      }
+      return Promise.reject(error);
+    },
+  );
   return instance;
 }
 

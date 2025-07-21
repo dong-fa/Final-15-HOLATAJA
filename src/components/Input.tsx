@@ -11,7 +11,6 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
   size?: InputSize;
   error?: boolean;
   errorMessage?: string;
-  required?: boolean;
   disabled?: boolean;
   gap?: string;
 }
@@ -24,7 +23,6 @@ export default function Input({
   type,
   value,
   onChange,
-  required = false,
   error = false,
   disabled = false,
   errorMessage,
@@ -53,7 +51,7 @@ export default function Input({
   return (
     <div className={`${sizeStyles.container} ${gap}`}>
       {label && (
-        <label className={`${currentSize.label}`} htmlFor={id}>
+        <label className={`min-w-[93px] ${currentSize.label}`} htmlFor={id}>
           {label}
         </label>
       )}
@@ -62,7 +60,6 @@ export default function Input({
         id={id}
         type={type}
         placeholder={error ? errorMessage || placeholder : placeholder}
-        required={required}
         disabled={disabled}
         value={value}
         onChange={onChange}
