@@ -37,10 +37,9 @@ function useAxiosInstance() {
       console.error('API 에러', error);
 
       if (error.response) {
-        const { status, data } = error.response;
-        alert(`서버 에러 (${status}): ${data.message || '알 수 없는 오류가 발생했습니다'}`);
+        const { data } = error.response;
+        alert(`${data.message || '알 수 없는 오류가 발생했습니다'}`);
       }
-      return Promise.reject(error);
     },
   );
   return instance;
