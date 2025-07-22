@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Button from '@/components/Button';
 import Image from 'next/image';
 import Select from '@/components/Select';
+import Input from '@/components/Input';
 
 // -----------------------------
 // 타입 및 인터페이스 정의
@@ -194,7 +195,7 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onPaymentComplet
 
   // 간편결제 탭 내용
   const renderSimplePaymentContent = () => (
-    <div className="tab-content p-3 sm:p-4 bg-gray-50 rounded-lg">
+    <div className="tab-content p-3 sm:p-4 rounded-lg">
       <h4 className="text-base sm:text-lg font-semibold mb-4">간편결제 선택</h4>
       {/* 토스페이 옵션 */}
       <div className="payment-option mb-3 p-2 sm:p-3 cursor-pointer">
@@ -247,55 +248,63 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onPaymentComplet
 
   // 카드 결제 탭 내용
   const renderCardPaymentContent = () => (
-    <div className="tab-content p-3 sm:p-4 bg-gray-50 rounded-lg">
+    <div className="tab-content p-3 sm:p-4 rounded-lg">
       <h4 className="text-base sm:text-lg font-semibold mb-4">카드 정보 입력</h4>
       {/* 카드 번호 */}
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-2">카드 번호</label>
-        <input
+        <label className="block text-sm font-medium mb-2" htmlFor="cardNumber">
+          카드 번호
+        </label>
+        <Input
+          id="cardNumber"
           type="text"
           placeholder="0000-0000-0000-0000"
           maxLength={19}
           value={cardInfo.cardNumber}
           onChange={e => handleCardInfoChange('cardNumber', e.target.value)}
-          className="w-full p-2 sm:p-3 border border-[var(--color-lightgray)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--color-background)] text-sm sm:text-base"
         />
       </div>
       {/* 유효기간 & CVC */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-4">
         <div>
-          <label className="block text-sm font-medium mb-2">유효기간</label>
-          <input
+          <label className="block text-sm font-medium mb-2" htmlFor="expiryTitle">
+            유효기간
+          </label>
+          <Input
+            id="expiryTitle"
             type="text"
             placeholder="MM/YY"
             maxLength={5}
             value={cardInfo.expiryDate}
             onChange={e => handleCardInfoChange('expiryDate', e.target.value)}
-            className="w-full p-2 sm:p-3 border border-[var(--color-lightgray)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--color-background)] text-sm sm:text-base"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-2">CVC</label>
-          <input
+          <label className="block text-sm font-medium mb-2" htmlFor="cvcNumber">
+            CVC
+          </label>
+          <Input
+            id="cvcNumber"
             type="text"
             placeholder="000"
             maxLength={3}
             value={cardInfo.cvc}
             onChange={e => handleCardInfoChange('cvc', e.target.value)}
-            className="w-full p-2 sm:p-3 border border-[var(--color-lightgray)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--color-background)] text-sm sm:text-base"
           />
         </div>
       </div>
       {/* 카드 비밀번호 */}
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-2">카드 비밀번호 앞 2자리</label>
-        <input
+        <label className="block text-sm font-medium mb-2" htmlFor="pwdNumber">
+          카드 비밀번호 앞 2자리
+        </label>
+        <Input
+          id="pwdNumber"
           type="password"
           placeholder="**"
           maxLength={2}
           value={cardInfo.cardPassword}
           onChange={e => handleCardInfoChange('cardPassword', e.target.value)}
-          className="w-full p-2 sm:p-3 border border-[var(--color-lightgray)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--color-background)] text-sm sm:text-base"
         />
       </div>
     </div>
@@ -305,7 +314,7 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onPaymentComplet
   const renderBankPaymentContent = () => {
     const bankOptions = ['국민은행', '신한은행', '우리은행', '하나은행', '농협', '카카오뱅크'];
     return (
-      <div className="tab-content p-3 sm:p-4 bg-gray-50 rounded-lg">
+      <div className="tab-content p-3 sm:p-4 rounded-lg">
         <h4 className="text-base sm:text-lg font-semibold mb-4">무통장 입금 정보</h4>
         {/* 은행 선택 */}
         <div className="mb-4">
@@ -319,19 +328,19 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onPaymentComplet
             onChange={e => handleBankInfoChange('selectedBank', e.target.value)}
             size="medium"
             placeholder="은행을 선택하세요"
-            className="!w-full sm:!w-48"
+            className="!w-full sm:!w-64 md:!w-48"
           />
         </div>
         {/* 입금자명 입력 */}
         <div className="mb-4">
           <h4 className="text-base sm:text-lg font-semibold mb-4">입금자명</h4>
-          <label className="block text-sm font-medium mb-2"></label>
-          <input
+          <label className="block text-sm font-medium mb-2" htmlFor="buyerName"></label>
+          <Input
+            id="buyerName"
             type="text"
             placeholder="입금자명을 입력하세요"
             value={bankInfo.depositorName}
             onChange={e => handleBankInfoChange('depositorName', e.target.value)}
-            className="w-full p-2 sm:p-3 border border-[var(--color-lightgray)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--color-background)] text-sm sm:text-base"
           />
         </div>
         {/* 선택된 은행 계좌 정보 표시 */}
@@ -408,8 +417,8 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onPaymentComplet
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">결제</h1>
 
       {/* 배송지 정보 섹션 */}
-      <div className="bg-gray-50 p-4 sm:p-6 rounded-lg mb-6 sm:mb-8">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0">
+      <div className="p-3 sm:p-6 rounded-lg mb-6 sm:mb-8">
+        <div className="flex justify-between items-start gap-4">
           <div className="flex-1">
             <h2 className="text-lg sm:text-xl font-semibold mb-4">배송지</h2>
             <div className="space-y-2 text-gray-700">
@@ -417,43 +426,51 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onPaymentComplet
               {isEditingDelivery ? (
                 <>
                   <div>
-                    <label className="block text-sm font-medium mb-1">수령인 이름</label>
-                    <input
+                    <label className="block text-sm font-medium mb-1" htmlFor="recipientName">
+                      수령인 이름
+                    </label>
+                    <Input
+                      id="recipientName"
                       type="text"
                       value={editDeliveryInfo.name}
                       onChange={e => handleDeliveryInputChange('name', e.target.value)}
-                      className="w-full p-2 border rounded text-sm sm:text-base"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">연락처</label>
-                    <input
+                    <label className="block text-sm font-medium mb-1" htmlFor="recipientPhoneNumber">
+                      연락처
+                    </label>
+                    <Input
+                      id="recipientPhoneNumber"
                       type="text"
                       value={editDeliveryInfo.phone}
                       onChange={e => handleDeliveryInputChange('phone', e.target.value)}
-                      className="w-full p-2 border rounded text-sm sm:text-base"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">주소</label>
-                    <input
+                    <label className="block text-sm font-medium mb-1" htmlFor="recipientAddress">
+                      주소
+                    </label>
+                    <Input
+                      id="recipientAddress"
                       type="text"
                       value={editDeliveryInfo.address}
                       onChange={e => handleDeliveryInputChange('address', e.target.value)}
-                      className="w-full p-2 border rounded text-sm sm:text-base"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">우편번호</label>
-                    <input
+                    <label className="block text-sm font-medium mb-1" htmlFor="recipientPostCode">
+                      우편번호
+                    </label>
+                    <Input
+                      id="recipientPostCode"
                       type="text"
                       value={editDeliveryInfo.postalCode}
                       onChange={e => handleDeliveryInputChange('postalCode', e.target.value)}
-                      className="w-full p-2 border rounded text-sm sm:text-base"
                     />
                   </div>
                   {/* 저장/취소 버튼 */}
-                  <div className="flex gap-2 mt-2">
+                  <div className="flex justify-end gap-4 mt-2">
                     <Button size="small" outlined onClick={handleCancelEdit}>
                       취소
                     </Button>
@@ -475,7 +492,7 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onPaymentComplet
           </div>
           {/* 변경하기 버튼: 수정 모드가 아닐 때만 표시 */}
           {!isEditingDelivery && (
-            <div className="sm:ml-4 self-start">
+            <div className="flex-shrink-0">
               <Button size="small" outlined onClick={handleDeliveryChange}>
                 변경하기
               </Button>
@@ -485,25 +502,25 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onPaymentComplet
       </div>
 
       {/* 주문 상품 정보 섹션 */}
-      <div className="bg-gray-50 p-4 sm:p-6 rounded-lg mb-6 sm:mb-8">
+      <div className="p-3 sm:p-6 rounded-lg mb-6 sm:mb-8">
         <h2 className="text-lg sm:text-xl font-semibold mb-4">주문 상품</h2>
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {currentOrderInfo.products.map(product => (
-            <div key={product.id} className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+            <div key={product.id} className="flex items-center gap-3 sm:gap-4">
               <Image
                 src={product.image}
                 alt={product.name}
                 width={80}
                 height={80}
-                className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg mx-auto sm:mx-0"
+                className="sm:w-24 sm:h-24  object-cover rounded-lg flex-shrink-0"
               />
-              <div className="flex-1 text-center sm:text-left">
-                <h3 className="font-medium text-sm sm:text-base">{product.name}</h3>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-medium text-xs sm:text-sm md:text-base">{product.name}</h3>
                 <p className="text-xs sm:text-sm text-gray-500">옵션: {product.options}</p>
                 <p className="text-xs sm:text-sm text-gray-500">{product.quantity}개</p>
               </div>
-              <div className="text-center sm:text-right">
-                <p className="font-semibold text-sm sm:text-base">{formatPrice(product.price)}</p>
+              <div className="flex-shrink-0 text-right">
+                <p className="font-semibold text-xs sm:text-sm md:text-base">{formatPrice(product.price)}</p>
               </div>
             </div>
           ))}
@@ -526,34 +543,34 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onPaymentComplet
       </div>
 
       {/* 결제 수단 선택 섹션 */}
-      <div className="bg-gray-50 p-4 sm:p-6 rounded-lg mb-6 sm:mb-8">
+      <div className="p-3 sm:p-6 rounded-lg mb-6 sm:mb-8">
         <h2 className="text-lg sm:text-xl font-semibold mb-4">결제 수단</h2>
         {/* 결제 방법 탭 버튼 */}
-        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mb-6">
+        <div className="flex flex-col gap-4 sm:flex-row mb-6">
           <Button
-            size="large"
+            size="full"
             outlined={activePaymentMethod === 'simple'}
             select={activePaymentMethod === 'simple' ? false : true}
             onClick={() => handlePaymentMethodChange('simple')}
-            className="w-full sm:w-auto"
+            // className="flex-1 text-xs sm:text-sm md:text-base px-1 sm:px-3"
           >
             간편결제
           </Button>
           <Button
-            size="large"
+            size="full"
             outlined={activePaymentMethod === 'card'}
             select={activePaymentMethod === 'card' ? false : true}
             onClick={() => handlePaymentMethodChange('card')}
-            className="w-full sm:w-auto"
+            // className="flex-1 text-xs sm:text-sm md:text-base px-1 sm:px-3"
           >
             체크/신용카드 결제
           </Button>
           <Button
-            size="large"
+            size="full"
             outlined={activePaymentMethod === 'bank'}
             select={activePaymentMethod === 'bank' ? false : true}
             onClick={() => handlePaymentMethodChange('bank')}
-            className="w-full sm:w-auto"
+            // className="flex-1 text-xs sm:text-sm md:text-base px-1 sm:px-3"
           >
             무통장 입금
           </Button>
@@ -563,7 +580,7 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onPaymentComplet
       </div>
 
       {/* 최종 결제 버튼 */}
-      <div className="mt-6 sm:mt-8 flex justify-center sm:justify-end">
+      <div className="mt-6 sm:mt-8 flex justify-end">
         <Button
           size="medium"
           submit
@@ -573,7 +590,7 @@ export default function CheckoutPage({ deliveryInfo, orderInfo, onPaymentComplet
             (activePaymentMethod === 'card' && (!cardInfo.cardNumber || !cardInfo.expiryDate || !cardInfo.cvc)) ||
             (activePaymentMethod === 'bank' && (!bankInfo.selectedBank || !bankInfo.depositorName))
           }
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto min-w-[120px]"
         >
           {isLoading ? '결제 처리 중...' : '결제하기'}
         </Button>
