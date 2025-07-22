@@ -17,7 +17,7 @@ export default function Header() {
           <h1 className="text-2xl">HOLA TAJA!</h1>
         </Link>
         <div className="flex gap-2">
-          <Link href="/mypage" title="마이페이지">
+          <Link href="/my" title="마이페이지">
             <User color={path === '/my' ? 'var(--color-primary)' : 'currentColor'} />
           </Link>
           <Link href="/cart" title="장바구니">
