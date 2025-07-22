@@ -4,14 +4,20 @@ import Button from '@/components/Button';
 import CheckboxButton from '@/components/CheckboxButton';
 import Input from '@/components/Input';
 import useAxiosInstance from '@/hooks/useAxiosInstance';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+
+type FormField = 'email' | 'name' | 'password' | 'passwordCheck' | 'phone' | 'address';
 
 export default function SignUp() {
   const initInputState = { email: '', name: '', password: '', passwordCheck: '', phone: '', address: '' };
+  const initTouchedState = Object.fromEntries(Object.keys(initInputState).map(key => [key, false]));
   const [formData, setFormData] = useState(initInputState);
   const [error, setError] = useState(initInputState);
+  const [touched, setTouched] = useState(initTouchedState);
   const [isChecked, setIsChecked] = useState(false);
   const axiosInstance = useAxiosInstance();
+  const router = useRouter();
 
   // 유효성 검사 함수들
   const validateField = (field: string, value: string) => {
@@ -24,16 +30,16 @@ export default function SignUp() {
 
       case 'name':
         if (!value) return '이름을 입력해주세요';
-        // if (value.length < 2) return '이름은 2자 이상이어야 합니다';
-        // if (value.length > 20) return '이름은 20자 이하여야 합니다';
+        if (value.length < 2) return '이름은 2자 이상이어야 합니다';
+        if (value.length > 20) return '이름은 20자 이하여야 합니다';
         return '';
 
       case 'password':
         if (!value) return '비밀번호를 입력해주세요';
-        // if (value.length < 8) return '비밀번호는 8자 이상이어야 합니다';
-        // if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
-        //   return '비밀번호는 대문자, 소문자, 숫자를 포함해야 합니다';
-        // }
+        if (value.length < 8) return '비밀번호는 8자 이상이어야 합니다';
+        if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
+          return '비밀번호는 대문자, 소문자, 숫자를 포함해야 합니다';
+        }
         return '';
 
       case 'passwordCheck':
@@ -49,7 +55,7 @@ export default function SignUp() {
 
       case 'address':
         if (!value) return '주소를 입력해주세요';
-        // if (value.length < 5) return '주소는 5자 이상이어야 합니다';
+        if (value.length < 5) return '주소는 5자 이상이어야 합니다';
         return '';
 
       default:
@@ -57,27 +63,38 @@ export default function SignUp() {
     }
   };
 
+  const updateFieldError = (field: FormField, value?: string) => {
+    const fieldValue = value ?? formData[field];
+    const errorMessage = validateField(field, fieldValue);
+    setError(prev => ({ ...prev, [field]: errorMessage }));
+
+    // 비밀번호 관련 특별 처리
+    if (field === 'password' && formData.passwordCheck && touched.passwordCheck) {
+      const passwordCheckError = validateField('passwordCheck', formData.passwordCheck);
+      setError(prev => ({ ...prev, passwordCheck: passwordCheckError }));
+    }
+  };
+
   //입력값 받기
-  const handleInputChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (field: FormField) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setFormData(prev => ({
       ...prev,
       [field]: value, // field가 여기서 객체의 키로 사용됨
     }));
 
-    //유효성 검사
-    const errorMessage = validateField(field, value);
-    setError(prev => ({
-      ...prev,
-      [field]: errorMessage,
-    }));
-    if (field === 'password' && formData.passwordCheck) {
-      const passwordCheckError = validateField('passwordCheck', formData.passwordCheck);
-      setError(prev => ({
-        ...prev,
-        passwordCheck: passwordCheckError,
-      }));
+    if (touched[field]) {
+      updateFieldError(field, value);
     }
+  };
+
+  const handleInputBlur = (field: FormField) => () => {
+    // 필드를 터치된 것으로 표시
+    setTouched(prev => ({
+      ...prev,
+      [field]: true,
+    }));
+    updateFieldError(field);
   };
 
   //폼 제출
@@ -115,82 +132,96 @@ export default function SignUp() {
       };
 
       const res = await axiosInstance.post('/users/', signupData);
-      console.log(res);
+      console.log('회원가입 성공', res.data);
+      alert('로그인 페이지로 넘어갑니다.');
+      router.push('/auth/login');
     } catch (error) {
-      console.error(error);
+      console.error('회원가입 실패', error);
     }
   };
 
   return (
-    <div className="w-full flex flex-col justify-center items-center px-52">
+    <div className="w-full my-6 flex flex-col justify-center items-center sm:px-20 sm:max-w-2xl sm:mx-auto">
       <h2 className="title mb-6">회원 가입</h2>
       <form className="w-full flex flex-col gap-6" onSubmit={handleSubmit} noValidate>
-        <Input
-          id="email"
-          label="이메일"
-          type="email"
-          gap="gap-4"
-          placeholder="이메일"
-          value={formData.email}
-          onChange={handleInputChange('email')}
-          error={!!error.email}
-          errorMessage={error.email}
-        />
-        <Input
-          id="name"
-          label="이름"
-          type="text"
-          gap="gap-4"
-          placeholder="이름"
-          value={formData.name}
-          onChange={handleInputChange('name')}
-          error={!!error.name}
-          errorMessage={error.name}
-        />
-        <Input
-          id="pw"
-          label="비밀번호"
-          type="password"
-          gap="gap-4"
-          placeholder="비밀번호"
-          value={formData.password}
-          onChange={handleInputChange('password')}
-          error={!!error.password}
-          errorMessage={error.password}
-        />
-        <Input
-          id="pwCheck"
-          label="비밀번호 확인"
-          type="password"
-          gap="gap-4"
-          placeholder="비밀번호 확인"
-          value={formData.passwordCheck}
-          onChange={handleInputChange('passwordCheck')}
-          error={!!error.passwordCheck}
-          errorMessage={error.passwordCheck}
-        />
-        <Input
-          id="phoneNum"
-          label="휴대폰 번호"
-          type="tel"
-          gap="gap-4"
-          placeholder="휴대폰 번호"
-          value={formData.phone}
-          onChange={handleInputChange('phone')}
-          error={!!error.phone}
-          errorMessage={error.phone}
-        />
-        <Input
-          id="address"
-          label="주소"
-          type="text"
-          gap="gap-4"
-          placeholder="주소"
-          value={formData.address}
-          onChange={handleInputChange('address')}
-          error={!!error.address}
-          errorMessage={error.address}
-        />
+        <div>
+          <Input
+            id="email"
+            label="이메일"
+            type="email"
+            gap="gap-4"
+            placeholder="이메일"
+            value={formData.email}
+            onChange={handleInputChange('email')}
+            onBlur={handleInputBlur('email')}
+          />
+          {!!error.email && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.email}</p>}
+        </div>
+        <div>
+          <Input
+            id="name"
+            label="이름"
+            type="text"
+            gap="gap-4"
+            placeholder="이름"
+            value={formData.name}
+            onChange={handleInputChange('name')}
+            onBlur={handleInputBlur('name')}
+          />
+          {!!error.name && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.name}</p>}
+        </div>
+        <div>
+          <Input
+            id="pw"
+            label="비밀번호"
+            type="password"
+            gap="gap-4"
+            placeholder="비밀번호"
+            value={formData.password}
+            onChange={handleInputChange('password')}
+            onBlur={handleInputBlur('password')}
+          />
+          {!!error.password && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.password}</p>}
+        </div>
+        <div>
+          <Input
+            id="pwCheck"
+            label="비밀번호 확인"
+            type="password"
+            gap="gap-4"
+            placeholder="비밀번호 확인"
+            value={formData.passwordCheck}
+            onChange={handleInputChange('passwordCheck')}
+            onBlur={handleInputBlur('passwordCheck')}
+          />
+          {!!error.passwordCheck && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.passwordCheck}</p>}
+        </div>
+        <div>
+          <Input
+            id="phoneNum"
+            label="휴대폰 번호"
+            type="tel"
+            gap="gap-4"
+            placeholder="휴대폰 번호"
+            value={formData.phone}
+            onChange={handleInputChange('phone')}
+            onBlur={handleInputBlur('phone')}
+          />
+          {!!error.phone && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.phone}</p>}
+        </div>
+        <div>
+          <Input
+            id="address"
+            label="주소"
+            type="text"
+            gap="gap-4"
+            placeholder="주소"
+            value={formData.address}
+            onChange={handleInputChange('address')}
+            onBlur={handleInputBlur('address')}
+          />
+          {!!error.address && <p className="label-s w-full text-negative mx-[23%] mt-2 ">{error.address}</p>}
+        </div>
         <div className="mx-auto">
           <CheckboxButton checked={isChecked} onCheck={() => setIsChecked(!isChecked)} />
         </div>
