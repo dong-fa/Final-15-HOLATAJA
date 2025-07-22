@@ -8,7 +8,6 @@ import CheckboxButton from '@/components/CheckboxButton';
 import SoundToggle from '@/components/SoundToggle';
 import Select from '@/components/Select';
 import Tab, { TabItem } from '@/components/Tab';
-import Icons from '@/components/Icons';
 import { Contents, ContentsTitle, SubTitle, Title } from '@/components/Typography';
 
 // Button Component Options
@@ -192,78 +191,77 @@ function InputElementsTab() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <section className="p-6 space-y-6">
+      <h3 className="text-lg font-semibold mb-3">셀렉트 버튼</h3>
       {/* 컴포넌트 입력: Input */}
       {/* 컴포넌트 입력: Radio */}
       {/* 컴포넌트 입력: Textarea */}
-      <section>
-        <div>
-          <h3 className="text-xl font-semibold mb-4">셀렉트 버튼</h3>
-          <div>
-            <h2 className="font-semibold mb-2">Size: Medium</h2>
-            <Select
-              id="default"
-              name="default"
-              label="기본 선택"
-              size="medium"
-              selectedValue={selectedValues.default}
-              onChange={handleChange('default')}
-              options={selectOptions}
-            />
-          </div>
-          <div>
-            <h2 className="font-semibold mb-2">Size: Small</h2>
-            <Select
-              id="small"
-              name="small"
-              label="스몰 셀렉트"
-              size="small"
-              selectedValue={selectedValues.small}
-              onChange={handleChange('small')}
-              options={selectOptions}
-            />
-          </div>
+      <div>
+        <div className="w-full bg-white rounded-lg border border-gray-200 shadow-sm p-4 flex flex-col justify-evenly">
+          <div className="max-w-5xl p-4">
+            <div className="mb-4">
+              <h2 className="font-semibold mb-2">Size: Medium</h2>
+              <Select
+                id="default"
+                name="default"
+                label="기본 선택"
+                size="medium"
+                selectedValue={selectedValues.default}
+                onChange={handleChange('default')}
+                options={selectOptions}
+              />
+            </div>
+            <div className="mb-4">
+              <h2 className="font-semibold mb-2">Size: Small</h2>
+              <Select
+                id="small"
+                name="small"
+                label="스몰 셀렉트"
+                size="small"
+                selectedValue={selectedValues.small}
+                onChange={handleChange('small')}
+                options={selectOptions}
+              />
+            </div>
 
-          {/* Disabled */}
-          <div>
-            <h2 className="font-semibold mb-2">Disabled</h2>
-            <Select
-              id="disabled"
-              name="disabled"
-              label="비활성화 셀렉트"
-              disabled
-              selectedValue={selectedValues.disabled}
-              onChange={handleChange('disabled')}
-              options={selectOptions}
-            />
-          </div>
+            <div className="mb-4">
+              <h2 className="font-semibold mb-2">Disabled</h2>
+              <Select
+                id="disabled"
+                name="disabled"
+                label="비활성화 셀렉트"
+                disabled
+                selectedValue={selectedValues.disabled}
+                onChange={handleChange('disabled')}
+                options={selectOptions}
+              />
+            </div>
 
-          {/* showLabel = false (hidden label) */}
-          <div>
-            <h2 className="font-semibold mb-2">Label 숨김 (showLabel=false)</h2>
-            <Select
-              id="hiddenLabel"
-              name="hiddenLabel"
-              label="숨김 라벨"
-              showLabel={false}
-              selectedValue={selectedValues.hiddenLabel}
-              onChange={handleChange('hiddenLabel')}
-              options={selectOptions}
-            />
-          </div>
+            <div className="mb-4">
+              <h2 className="font-semibold mb-2">Label 숨김 (showLabel=false)</h2>
+              <Select
+                id="hiddenLabel"
+                name="hiddenLabel"
+                label="숨김 라벨"
+                showLabel={false}
+                selectedValue={selectedValues.hiddenLabel}
+                onChange={handleChange('hiddenLabel')}
+                options={selectOptions}
+              />
+            </div>
 
-          {/* With Placeholder */}
-          <div>
-            <h2 className="font-semibold mb-2">Placeholder 포함</h2>
-            <Select
-              id="withPlaceholder"
-              name="withPlaceholder"
-              label="플레이스홀더"
-              placeholder="선택하세요"
-              selectedValue={selectedValues.withPlaceholder}
-              onChange={handleChange('withPlaceholder')}
-              options={selectOptions}
-            />
+            <div className="mb-4">
+              <h2 className="font-semibold mb-2">Placeholder 포함</h2>
+              <Select
+                id="withPlaceholder"
+                name="withPlaceholder"
+                label="플레이스홀더"
+                placeholder="선택하세요"
+                selectedValue={selectedValues.withPlaceholder}
+                onChange={handleChange('withPlaceholder')}
+                options={selectOptions}
+              />
+            </div>
           </div>
         </div>
         <div>
@@ -271,8 +269,8 @@ function InputElementsTab() {
           <CheckboxButton className="mb-2"></CheckboxButton>
           <CheckboxButton checked></CheckboxButton>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }
 
@@ -306,12 +304,10 @@ export default function ComponentPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10">
-      <div className="border-b bg-white">
-        <div className="container mx-auto px-4 py-6">
-          <h1 className="text-4xl font-bold text-center mb-2 text-gray-900">컴포넌트 프리뷰</h1>
-          <p className="text-gray-600 text-center">Hola!TAJA의 다양한 UI 컴포넌트들을 한눈에 확인해보세요!</p>
-        </div>
+    <div className="min-h-screen border-b bg-white py-10">
+      <div className="container mx-auto px-4 py-6">
+        <h1 className="text-4xl font-bold text-center mb-2 text-gray-900">컴포넌트 프리뷰</h1>
+        <p className="text-gray-600 text-center">Hola!TAJA의 다양한 UI 컴포넌트들을 한눈에 확인해보세요!</p>
       </div>
       <div className="container mx-auto px-4 py-8 space-y-12">
         <Tab tabItems={tabItems} />
