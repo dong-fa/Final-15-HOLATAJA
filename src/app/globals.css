@@ -18,22 +18,22 @@
 
 @layer components {
   .title {
-    @apply text-[2rem] text-text font-bold leading-[140%];
+    @apply text-2xl sm:text-[2rem] text-text font-bold leading-[140%];
   }
   .sub-title {
-    @apply text-2xl  text-text font-bold leading-[140%];
+    @apply text-xl sm:text-2xl text-text font-bold leading-[140%];
   }
   .contents-title {
-    @apply text-[1.125rem]  text-text font-semibold leading-[140%];
+    @apply text-[1.125rem] text-text font-semibold leading-[140%];
   }
   .label-l {
-    @apply text-[1.125rem]  text-text font-semibold leading-[150%];
+    @apply text-[1.125rem] text-text font-semibold leading-[150%];
   }
   .label-m {
-    @apply text-[1rem]  text-text font-normal leading-[150%];
+    @apply text-base text-text font-normal leading-[150%];
   }
   .label-s {
-    @apply text-[0.875rem]  text-text font-normal leading-[150%];
+    @apply text-[0.875rem] text-text font-normal leading-[150%];
   }
 }
 
