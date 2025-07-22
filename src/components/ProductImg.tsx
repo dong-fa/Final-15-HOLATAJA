@@ -56,7 +56,7 @@ function ProductImg({ title, srcList, swipe }: ProductImgProps) {
       ) : (
         // 제품 목록에 들어갈 고정형 이미지
         <div className="rounded-lg relative overflow-hidden w-full h-full">
-          <Image src={srcList[0]} alt={title + '이미지'} fill className="object-cover" sizes="(min-width: 768px) 100vw, 100vw" />
+          <Image src={srcList[0]} alt={title + '이미지'} fill className="object-scale-down" sizes="(min-width: 768px) 100vw, 100vw" />
           <button
             className={`${buttonBg} rounded-full w-6 h-6 text-white flex justify-center items-center absolute bottom-2.5 right-2.5 cursor-pointer`}
             onClick={() => setLiked(!liked)}
