@@ -118,29 +118,29 @@ function ProductInfo() {
       id: '1',
       title: '제품 상세 정보',
       content: (
-        <div className="flex flex-col gap-12 px-4">
+        <div className="flex flex-col gap-6 px-4 sm:gap-12">
           <div>
             <ContentsTitle className="mb-4">제품 소개</ContentsTitle>
             <p>제품 소개글</p>
           </div>
           <div>
             <ContentsTitle className="mb-4">기능</ContentsTitle>
-            <ul className="grid grid-cols-3 gap-4">
-              <li className="flex items-center justify-center h-16 gap-2 font-semibold border rounded-lg border-lightgray">
+            <ul className="grid gap-2 sm:gap-4 sm:grid-cols-3">
+              <li className="flex items-center justify-center h-16 gap-2 p-4 font-semibold bg-white border rounded-lg border-lightgray">
                 <KeyRound />
                 <div>Hot-Swappable Switches</div>
               </li>
-              <li className="flex items-center justify-center h-16 gap-2 font-semibold border rounded-lg border-lightgray">
+              <li className="flex items-center justify-center h-16 gap-2 p-4 font-semibold bg-white border rounded-lg border-lightgray">
                 <KeyRound />
                 Customizable RGB Lighting
               </li>
-              <li className="flex items-center justify-center h-16 gap-2 font-semibold border rounded-lg border-lightgray">
+              <li className="flex items-center justify-center h-16 gap-2 p-4 font-semibold bg-white border rounded-lg border-lightgray">
                 <KeyRound />
                 Compact 75% Layout
               </li>
             </ul>
           </div>
-          <div>
+          <div className="rounded-lg bg-lightgray">
             <SoundToggle />
             <div>{/* 키보드 */}</div>
           </div>
@@ -153,7 +153,7 @@ function ProductInfo() {
       title: '구매 후기',
       content: (
         <>
-          <div className="flex flex-col gap-4 mb-12">
+          <div className="flex flex-col gap-4 mb-6 sm:mb-12">
             {' '}
             <ReviewCard
               name="박동건"
@@ -218,9 +218,9 @@ function ProductInfo() {
   ];
 
   return (
-    <div className="flex flex-col gap-12">
+    <div className="flex flex-col gap-6 sm:gap-12">
       <Title>상품 상세</Title>
-      <div className="grid grid-cols-2 gap-9">
+      <div className="grid sm:grid-cols-2 gap-9">
         <ProductImg
           title={data?.name ?? ''}
           srcList={['/product_images/nuphy_halo75/nuphy_halo75_detail_01.webp', '/product_images/nuphy_halo75/nuphy_halo75_detail_02.webp']}
@@ -249,10 +249,14 @@ function ProductInfo() {
               </Button>
             </div>
           </div>
-          <div className="flex gap-4">
+          <div className="flex flex-col gap-4">
             <QuantityCount handleCountQuantity={num => setQuantity(num)} quantity={0} />
-            <Button outlined>장바구니</Button>
-            <Button>구매하기</Button>
+            <div className="flex flex-row gap-2 sm:gap-4">
+              <Button outlined size="full">
+                장바구니
+              </Button>
+              <Button size="full">구매하기</Button>
+            </div>
           </div>
         </div>
       </div>
