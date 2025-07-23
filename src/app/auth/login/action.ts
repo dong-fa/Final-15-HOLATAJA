@@ -3,27 +3,21 @@
 import { User } from '@/types/userType';
 import { ApiResPromise, ApiRes } from '@/types/apiType';
 
-export async function signupAction(prevState: ApiRes<User> | null, formData: FormData): ApiResPromise<User> {
+export async function loginAction(prevState: ApiRes<User> | null, formData: FormData): ApiResPromise<User> {
   let response: Response;
   let data: ApiRes<User>;
-
   try {
-    const signupData = {
-      type: 'user',
+    const loginData = {
       email: formData.get('email'),
-      name: formData.get('name'),
       password: formData.get('password'),
-      phone: formData.get('phone'),
-      address: formData.get('address'),
     };
-    // 서버에서 API 호출
-    response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/`, {
+    response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'client-id': process.env.NEXT_PUBLIC_API_CLIENT_ID!,
       },
-      body: JSON.stringify(signupData),
+      body: JSON.stringify(loginData),
     });
 
     data = await response.json();
