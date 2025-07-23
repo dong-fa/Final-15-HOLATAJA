@@ -16,10 +16,10 @@ export default function ProductCard({ _id, imageSrc, title, price }: ProductCard
 
   return (
     <div className="w-full h-60 md:h-64 rounded">
-      <div className="w-full h-40 md:h-44 rounded relative">
+      <div className="w-full h-40 md:h-44 rounded-lg relative bg-white">
         <ProductImg title={title} srcList={imageSrc} />
       </div>
-      <h3 className="text-xs md:text-sm text-gray-700 leading-5 line-clamp-2 webkit-line-clamp-2">{title}</h3>
+      <h3 className="text-sm sm:text-md text-gray-700 leading-5 line-clamp-2 webkit-line-clamp-2">{title}</h3>
       <p className="font-bold pb-3">{formatPrice}원</p>
     </div>
   );
