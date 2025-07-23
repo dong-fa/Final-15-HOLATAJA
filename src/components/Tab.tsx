@@ -27,8 +27,8 @@ export default function Tab({ tabItems, defaultActiveTabId }: TabProps) {
             onClick={() => setActiveTab(tab.id)}
             className={
               activeTab === tab.id
-                ? 'inline-block w-auto p-4 cursor-pointer text-primary font-bold border-b-2 border-b-primary'
-                : 'inline-block w-auto p-4 cursor-pointer text-secondary hover:border-b-2 hover:border-b-primary'
+                ? 'inline-block w-auto text-sm sm:text-base px-1 py-4 sm:p-4 cursor-pointer text-primary font-bold border-b-2 border-b-primary'
+                : 'inline-block w-auto text-sm sm:text-base px-1 py-4 sm:p-4 cursor-pointer text-secondary hover:border-b-2 hover:border-b-primary'
             }
           >
             {tab.title}
