@@ -1,4 +1,5 @@
 import Button from '@/components/Button';
+import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -45,7 +46,7 @@ export default function HistoryCard({ id, status, src, name, price, quantity, da
           </div>
           <p className="text-text font-semibold text-lg mb-1">총 {formatPrice}원</p>
           <Link href={`/my/${id}`} className="text-secondary label-s text-underline font-bold">
-            상세보기 &gt;
+            상세보기<ChevronRight className='w-5 inline'/>
           </Link>
         </section>
       </div>
