@@ -1,0 +1,17 @@
+meta {
+  name: 회원 정보 수정
+  type: http
+  seq: 1
+}
+
+patch {
+  url: {{url}}/users/9
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "address":"QWER은 천상에서 온게 분명합니다."
+  }
+}

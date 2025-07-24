@@ -1,0 +1,35 @@
+meta {
+  name: 판매 상품 수정
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{url}}/seller/products/6
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "price": 2299000,
+    "quantity": 100,
+    "name": "NUPHY AIR60 HE 자석축 기계식키보드 제이드 프로축 래피드 트리거 게이밍 키보드5",
+    "mainImages": [
+      {
+        "path ": "files/febc13-final15-emjf/nuphy_air60he_spacesilver_detail_01.webp",
+        "name ": "nuphy_air60he_spacesilver_detail_01.webp",
+        "originalname": "NUPHY AIR60 HEㄸ"
+      }
+    ],
+    "content": "NUPHY AIR60 HE 자석축 기계식키보드 제이드 프로축 래피드 트리거 게이밍 키보드",
+    "extra": {
+      "isNew": false,
+      "category": [
+        "OTHER"
+      ],
+      "sort": 4,
+      "depth": 1
+    }
+  }
+}

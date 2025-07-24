@@ -1,0 +1,15 @@
+meta {
+  name: 이메일 중복체크
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}/users/email?email=qwer@qwer.com
+  body: none
+  auth: inherit
+}
+
+params:query {
+  email: qwer@qwer.com
+}
