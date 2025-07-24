@@ -1,0 +1,20 @@
+meta {
+  name: 판매 상품 이미지 등록
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{url}}/files
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  attach: @file(C:\Users\dlawl\Downloads\nuphy_halo75\nuphy_halo75_detail_red.jpg|C:\Users\dlawl\Downloads\nuphy_halo75\nuphy_halo75_detail_01.jpg|C:\Users\dlawl\Downloads\nuphy_halo75\nuphy_halo75_detail_02.jpg|C:\Users\dlawl\Downloads\nuphy_halo75\nuphy_halo75_detail_03.jpg|C:\Users\dlawl\Downloads\nuphy_halo75\nuphy_halo75_detail_04.jpg|C:\Users\dlawl\Downloads\nuphy_halo75\nuphy_halo75_detail_05.jpg|C:\Users\dlawl\Downloads\nuphy_halo75\nuphy_halo75_detail_06.jpg|C:\Users\dlawl\Downloads\nuphy_halo75\nuphy_halo75_detail_lemon.jpg|C:\Users\dlawl\Downloads\nuphy_halo75\nuphy_halo75_detail_mint.jpg|C:\Users\dlawl\Downloads\nuphy_halo75\nuphy_halo75_detail_raspberry.jpg)
+}
+
+body:file {
+  file: @file(C:\Users\dlawl\Downloads\image 7.png) @contentType(image/png)
+  ~file: @file(C:\Users\dlawl\Downloads\nuphy_air60he_spacesilver_detail_01.jpg) @contentType(image/jpeg)
+}
