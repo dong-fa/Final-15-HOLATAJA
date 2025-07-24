@@ -5,7 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
 
 // 상품 목록 조회
-export async function getProductList(): ApiResPromise<ProductInfo> {
+export async function getProductList(): ApiResPromise<ProductInfo[]> {
   try {
     const response = await fetch(`${API_URL}/products/`, {
       headers: {

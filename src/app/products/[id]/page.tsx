@@ -1,7 +1,7 @@
 import Button from '@/components/Button';
 import ProductImg from '@/components/ProductImg';
 import QnA from '@/components/QnA';
-import QuantityCount from '@/components/QuantityCount';
+// import QuantityCount from '@/components/QuantityCount';
 import ReviewCard from '@/components/ReviewCard';
 import SoundToggle from '@/components/SoundToggle';
 import Tab, { TabItem } from '@/components/Tab';
@@ -9,9 +9,10 @@ import Textarea from '@/components/Textarea';
 import { Contents, ContentsTitle, SubTitle, Title } from '@/components/Typography';
 import getProduct from '@/data/functions/product';
 import { getAnswer, getQuestion } from '@/data/functions/qna';
+import getReview from '@/data/functions/review';
 import { QnaItem, QuestionItem } from '@/types/qna';
 
-import { KeyRound, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 
@@ -22,7 +23,7 @@ interface PageProps {
 }
 
 // 상품 구매 시 전달할 정보
-const purchaseData = [];
+// const purchaseData = [];
 
 export default async function ProductInfo({ params }: PageProps) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -52,6 +53,10 @@ export default async function ProductInfo({ params }: PageProps) {
     );
   }
 
+  // 상품 구매 후기 목록 조회
+  const reviewData = await getReview(Number(id));
+  console.log(id, reviewData);
+
   const tabItems: TabItem[] = [
     {
       id: '1',
@@ -80,7 +85,7 @@ export default async function ProductInfo({ params }: PageProps) {
           {productData.ok === 1 &&
             (productData.item?.mainImages.filter(img => img.type === 'info').map(img => API_URL + '/' + img.path) ?? []).map((img, idx) => (
               <div key={idx} className="relative w-full">
-                <Image src={img} alt="" width={0} height={0} priority sizes="100%" className="w-full h-auto object-scale-down" />
+                <Image src={img} alt="" width={0} height={0} priority sizes="100%" className="object-scale-down w-full h-auto" />
               </div>
             ))}
         </div>
@@ -92,16 +97,14 @@ export default async function ProductInfo({ params }: PageProps) {
       content: (
         <>
           <div className="flex flex-col gap-4 mb-6 sm:mb-12">
-            {productData.ok === 1 &&
-              productData.item?.replies?.map((reply, idx) => (
+            {reviewData.ok === 1 &&
+              reviewData.item?.map(review => (
                 <ReviewCard
-                  key={idx}
-                  name="박동건"
-                  createdAt="2025.03.14 20:07:54"
-                  rating={4}
-                  content="처음으로 num 키 없는 키보드를 사봤는데요, num키가 문제가 아니라 이 키보드 방향키가 왜 이모양이죠???? 
-크아하다가 역주행 8번 했네요.
-아 잘 보고 살걸... 제가 마음이 여린 편이라 별점은 4점 드립니다..."
+                  key={review._id}
+                  name={review.user.name}
+                  createdAt={review.createdAt.split(' ')[0]}
+                  rating={review.rating}
+                  content={review.content}
                 ></ReviewCard>
               ))}
           </div>
@@ -142,8 +145,6 @@ export default async function ProductInfo({ params }: PageProps) {
     },
   ];
 
-  // 상품 구매 후기 목록 조회
-
   return (
     <div className="flex flex-col gap-6 sm:gap-12">
       <Title>상품 상세</Title>
@@ -163,7 +164,7 @@ export default async function ProductInfo({ params }: PageProps) {
           </div>
           <div>
             <span className="inline-block mb-2 font-semibold">옵션</span>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {productData.ok === 1 &&
                 productData.item?.extra?.option?.map((option, idx) => (
                   <Button key={idx} size="medium" select>
@@ -173,6 +174,7 @@ export default async function ProductInfo({ params }: PageProps) {
             </div>
           </div>
           <div className="flex flex-col gap-4">
+            {/*  useState를 쓰는 방식으로 변경해야 함 */}
             {/* <QuantityCount handleCountQuantity={num => setQuantity(num)} quantity={quantity} /> */}
             <div className="flex flex-row gap-2 sm:gap-4">
               <Button outlined size="full">

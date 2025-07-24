@@ -4,7 +4,7 @@ import Button from '@/components/Button';
 import Link from 'next/link';
 import Input from '@/components/Input';
 import { useActionState, useEffect, useState } from 'react';
-import { loginAction } from './action';
+import { loginAction } from '@/data/actions/auth';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import useAuthStore from '@/store/authStore';

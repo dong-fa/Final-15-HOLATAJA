@@ -4,7 +4,7 @@ import Button from '@/components/Button';
 import CheckboxButton from '@/components/CheckboxButton';
 import Input from '@/components/Input';
 import { useState, useActionState, useEffect } from 'react';
-import { signupAction } from './action';
+import { signupAction } from '@/data/actions/auth';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 
