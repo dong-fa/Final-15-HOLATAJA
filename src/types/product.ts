@@ -1,7 +1,7 @@
 // 상품 목록 표시 정보
 export interface Product {
   _id: number;
-  imgSrc: string | undefined;
+  imgSrc: string;
   name: string;
   price: number;
   category: 'ALL' | 'BLUE' | 'BROWN' | 'RED' | 'OTHER';
