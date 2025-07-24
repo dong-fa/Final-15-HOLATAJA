@@ -2,6 +2,7 @@
 
 import { User } from '@/types/userType';
 import { ApiResPromise, ApiRes } from '@/types/apiType';
+import { cookies } from 'next/headers';
 
 export async function loginAction(prevState: ApiRes<User> | null, formData: FormData): ApiResPromise<User> {
   let response: Response;
@@ -21,7 +22,20 @@ export async function loginAction(prevState: ApiRes<User> | null, formData: Form
     });
 
     data = await response.json();
-    console.log(data);
+    console.log('위치 액션', data);
+    if (data.ok === 1) {
+      (await cookies()).set('accessToken', data.item.token?.accessToken as string, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+      (await cookies()).set('refreshToken', data.item.token?.refreshToken as string, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+      delete data.item.token;
+    }
   } catch (error) {
     console.error(error);
     return {

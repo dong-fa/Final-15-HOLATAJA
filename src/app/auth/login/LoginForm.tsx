@@ -7,6 +7,7 @@ import { useActionState, useEffect, useState } from 'react';
 import { loginAction } from './action';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
+import useAuthStore from '@/store/authStore';
 
 const loginSchema = z.object({
   email: z.string().min(1, '아이디를 입력해주세요').email('올바른 이메일 형식이 아닙니다'),
@@ -25,6 +26,7 @@ export default function LoginForm() {
   const [formData, setFormData] = useState(initInputState);
   const [error, setError] = useState(initInputState);
   const [touched, setTouched] = useState(initTouchedState);
+  const { setUser } = useAuthStore();
   const router = useRouter();
 
   const [actionState, formAction, isPending] = useActionState(loginAction, null);
@@ -95,12 +97,14 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (actionState?.ok) {
+      console.log('액션 스테이트', actionState);
+      setUser(actionState.item);
       alert('로그인 성공!');
       router.push('/product');
     }
-  }, [actionState, router]);
+  }, [actionState, router, setUser]);
   return (
-    <form className="w-full flex flex-col gap-6 mb-6" action={handleSubmit} noValidate>
+    <form className="w-full flex flex-col gap-6" action={handleSubmit} noValidate>
       <div>
         <Input
           id="id"
