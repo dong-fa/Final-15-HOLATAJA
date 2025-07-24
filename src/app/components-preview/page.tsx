@@ -546,7 +546,7 @@ function CardElementsTab() {
       <div className="w-full bg-white rounded-lg border border-gray-200 shadow-sm p-4 flex flex-col justify-evenly">
         <div className="max-w-5xl p-4">
           <div className="w-44">
-            <ProductCard _id={productProps._id} imageSrc={[productProps.src]} title={productProps.name} price={productProps.price} />
+            <ProductCard _id={productProps._id} imageSrc={productProps.src} title={productProps.name} price={productProps.price} />
           </div>
         </div>
       </div>
