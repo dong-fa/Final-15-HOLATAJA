@@ -1,3 +1,16 @@
+// 상품 목록 표시 정보
+export interface Product {
+  _id: number;
+  imgSrc: string | undefined;
+  name: string;
+  price: number;
+  category: 'ALL' | 'BLUE' | 'BROWN' | 'RED' | 'OTHER';
+
+  // 화면에 표시 안 되는 부분
+  quantity: number;
+  createdAt: string;
+}
+
 // 상품 상세
 export interface ProductInfo {
   _id: number;
