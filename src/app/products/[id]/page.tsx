@@ -8,6 +8,9 @@ import Tab, { TabItem } from '@/components/Tab';
 import Textarea from '@/components/Textarea';
 import { Contents, ContentsTitle, SubTitle, Title } from '@/components/Typography';
 import getProduct from '@/data/functions/product';
+import { getAnswer, getQuestion } from '@/data/functions/qna';
+import { QnaItem, QuestionItem } from '@/types/qna';
+
 import { KeyRound, Star } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
@@ -26,7 +29,28 @@ export default async function ProductInfo({ params }: PageProps) {
   const { id } = await params;
   // const [quantity, setQuantity] = useState(0);
 
+  // 상품 상세 조회
   const productData = await getProduct(Number(id));
+
+  // 상품 문의 목록 조회
+  const questionData = await getQuestion();
+  // 상품 id와 일치하는 문의 목록
+  const questionList = questionData.ok === 1 ? questionData.item.filter((question: QuestionItem) => question.product_id === Number(id)) : [];
+
+  // 상품 문의와 답변을 묶어서 저장
+  const qnaList: QnaItem[] = [];
+
+  if (questionData.ok === 1) {
+    // 모든 비동기 작업이 끝나면 결과를 배열로 반환
+    await Promise.all(
+      questionList.map(async (question: QuestionItem) => {
+        // 문의글 id와 일치하는 답변 조회
+        const res = await getAnswer(question._id);
+        // 답변 조회 성공 시 question 정보와 answer 정보 함께 저장, 실패 시 question 정보만 저장
+        qnaList.push({ question: question, answer: res.ok === 1 ? res.item[0] : null });
+      }),
+    );
+  }
 
   const tabItems: TabItem[] = [
     {
@@ -103,14 +127,14 @@ export default async function ProductInfo({ params }: PageProps) {
       title: 'Q&A',
       content: (
         <>
-          <QnA />
+          <QnA qnaList={qnaList} />
           <div className="flex flex-col gap-4">
             <label htmlFor="">
-              <Contents size="large">구매 후기 등록하기</Contents>
+              <Contents size="large">Q&A 등록하기</Contents>
             </label>
             <Textarea id="" name="" />
             <div className="flex justify-end">
-              <Button size="small">문의하기</Button>
+              <Button size="small">등록</Button>
             </div>
           </div>
         </>
@@ -141,7 +165,7 @@ export default async function ProductInfo({ params }: PageProps) {
             <span className="inline-block mb-2 font-semibold">옵션</span>
             <div className="flex gap-2">
               {productData.ok === 1 &&
-                productData.item?.extra?.option.map((option, idx) => (
+                productData.item?.extra?.option?.map((option, idx) => (
                   <Button key={idx} size="medium" select>
                     {option}
                   </Button>
