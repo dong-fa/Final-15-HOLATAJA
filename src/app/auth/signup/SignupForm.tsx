@@ -260,7 +260,7 @@ export default function SignupForm() {
           disabled={isPending}
         />
       </div>
-      <Button type="submit" disabled={isPending}>
+      <Button submit disabled={isPending}>
         가입하기
       </Button>
     </form>

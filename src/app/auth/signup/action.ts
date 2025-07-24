@@ -1,6 +1,7 @@
 'use server';
 
-import { ApiResPromise, ApiRes, User } from '@/types/userType';
+import { User } from '@/types/userType';
+import { ApiResPromise, ApiRes } from '@/types/apiType';
 
 export async function signupAction(prevState: ApiRes<User> | null, formData: FormData): ApiResPromise<User> {
   let response: Response;
