@@ -13,7 +13,7 @@ function QnA({ qnaList }: { qnaList: QnaItem[] }) {
   const [isMyQnA, setIsMyQnA] = useState(false);
   const [selectedValue, setSelectedValue] = useState('답변 상태');
   const [isOpen, setIsOpen] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage /*setCurrentPage*/] = useState(1);
 
   // 내 Q&A 조회
   // qnaList = isMyQnA ? qnaList.filter(qna => myId === qna.question.user._id) : qnaList;
@@ -92,7 +92,7 @@ function QnA({ qnaList }: { qnaList: QnaItem[] }) {
                     )}
                   </tr>
                   {isOpen === qna.question._id && (
-                    <tr className="p-4 bg-lightgray">
+                    <tr className="p-4 border-b bg-lightgray border-b-lightgray">
                       <td colSpan={4} className="p-4 bg-lightgray">
                         <div className={`flex gap-2 ${qna.question.repliesCount > 0 && 'mb-4'}`}>
                           <span className="content-center inline-block w-6 h-6 text-xs font-semibold text-center bg-white rounded-full text-primary">
