@@ -43,7 +43,7 @@ function Select({
         className={`w-full px-4 ${size === 'medium' ? 'py-2.5' : 'py-1.5'} bg-white border-lightgray border rounded-md focus:outline focus:border-primary ${disabledStyle} ${className}`}
         {...props}
       >
-        <option value="">{placeholder}</option>
+        <option value={placeholder}>{placeholder}</option>
         {options.map((option, idx) => (
           <option key={idx} value={option}>
             {option}
