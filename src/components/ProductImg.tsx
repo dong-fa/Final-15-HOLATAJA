@@ -27,6 +27,8 @@ function ProductImg({ title, srcList, swipe }: ProductImgProps) {
       <button
         className={`${buttonBg} z-10 rounded-full w-6 h-6 text-white flex justify-center items-center absolute bottom-4 right-4 cursor-pointer`}
         onClick={() => setLiked(!liked)}
+        type="button"
+        aria-label="찜하기"
       >
         <Star fill="#fff" size={16} />
       </button>
@@ -46,12 +48,12 @@ function ProductImg({ title, srcList, swipe }: ProductImgProps) {
               </div>
             </SwiperSlide>
           ))}
-          <div className="rounded-full swiper-button-prev bg-white/80">
+          <button className="rounded-full swiper-button-prev bg-white/80" type="button" aria-label="이전 슬라이드">
             <ChevronLeft size={32} color="var(--color-darkgray)" />
-          </div>
-          <div className="rounded-full swiper-button-next bg-white/80">
+          </button>
+          <button className="rounded-full swiper-button-next bg-white/80" type="button" aria-label="다음 슬라이드">
             <ChevronRight size={32} color="var(--color-darkgray)" />
-          </div>
+          </button>
         </Swiper>
       ) : (
         // 제품 목록에 들어갈 고정형 이미지
