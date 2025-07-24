@@ -14,13 +14,15 @@ interface CartItemData {
   image: string;
 }
 
+// 받는 Props
 interface CartContainerProps {
-  initialItems: CartItemData[];
+  initialItems: CartItemData[]; // 서버에서 받은 초기 데이터
 }
 
 const SHIPPING_FEE = 3000;
 
 export default function CartContainer({ initialItems }: CartContainerProps) {
+  // 관리하는 state
   const [cartItems, setCartItems] = useState<CartItemData[]>(initialItems);
 
   // 수량 변경 핸들러
@@ -40,7 +42,6 @@ export default function CartContainer({ initialItems }: CartContainerProps) {
     // 서버 액션 호출하거나 API 요청
   };
 
-  // 금액 계산
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal + SHIPPING_FEE;
 
@@ -53,6 +54,7 @@ export default function CartContainer({ initialItems }: CartContainerProps) {
             <p className="text-gray-500 text-base sm:text-lg">장바구니가 비어있습니다.</p>
           </div>
         ) : (
+          // CartItem 컴포넌트에 전달하는 데이터
           cartItems.map(item => (
             <CartItem
               key={item.id}
@@ -72,7 +74,7 @@ export default function CartContainer({ initialItems }: CartContainerProps) {
       {/* 주문 요약 */}
       <div className="w-full">
         <div className="top-6 sm:top-8">
-          <CartSummary subtotal={subtotal} shipping={SHIPPING_FEE} total={total} />
+          <CartSummary subtotal={subtotal} shipping={SHIPPING_FEE} total={total} /> {/* CartSummary 컴포넌트에 전달하는 데이터 */}
         </div>
         <div className="flex justify-end w-full">
           <Button className="mt-4" size="medium" onClick={handleCheckout}>
