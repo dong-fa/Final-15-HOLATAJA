@@ -1,6 +1,5 @@
 import { ApiResPromise } from '@/types/api';
 import { ReviewItem } from '@/types/review';
-import { ApiRes } from '@/types/api';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
