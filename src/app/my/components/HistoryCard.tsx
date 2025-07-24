@@ -1,4 +1,5 @@
 import Button from '@/components/Button';
+import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -16,7 +17,7 @@ export default function HistoryCard({ id, status, src, name, price, quantity, da
   const formatPrice = price.toLocaleString();
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 min-w-80 border-b border-lightgray px-4 py-4">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between sm:gap-6 min-w-80 border-b border-lightgray px-4 py-4">
       <div className="flex flex-row gap-4">
         {/* Image */}
         <section className="grid shrink-0 rounded-xl w-[7rem] h-[7rem] min-w-28 min-h-28 overflow-hidden">
@@ -35,7 +36,7 @@ export default function HistoryCard({ id, status, src, name, price, quantity, da
         {/* Order info */}
         <section className="flex flex-col justify-between flex-grow">
           <p className="text-secondary label-s">Order #{id}</p>
-          <p className="text-xs">주문일: {date}</p>
+          <p className="text-xs">주문일시: {date}</p>
 
           <div className="grid grid-cols-[1fr_auto] items-end gap-x-2">
             <h4 className="label-sm sm:label-md font-bold leading-snug line-clamp-2">{name}</h4>
@@ -44,19 +45,24 @@ export default function HistoryCard({ id, status, src, name, price, quantity, da
             </p>
           </div>
           <p className="text-text font-semibold text-lg mb-1">총 {formatPrice}원</p>
-          <Link href={`/my/${id}`} className="text-secondary label-s text-underline font-bold">
-            상세보기 &gt;
+          <Link href={`/my/${id}`} className="text-secondary label-s text-underline font-bold flex flex-row items-center">
+            <p>상세보기</p>
+            <ChevronRight className="w-4.5" />
           </Link>
         </section>
       </div>
 
       {/* Status & Review button(모바일에선 하단 / sm부터는 우측 위치) */}
       <section className="flex flex-col items-center text-center gap-2 shrink-0 sm:mr-2.5 mt-4 sm:mt-0 min-w-28">
-        {status !== '배송 완료' && <h5 className="contents-title text-center block sm:hidden">{status}</h5>}
-        <h5 className="contents-title text-center hidden sm:block px-3">{status}</h5>
-        {status === '배송 완료' && (
+        {status === '배송 완료' ? <h5 className="label-md font-bold text-center hidden sm:block ">{status}</h5> : ''}
+
+        {status === '배송 완료' ? (
           <Button size="full" outlined>
             후기 작성
+          </Button>
+        ) : (
+          <Button size="full" outlined disabled>
+            {status}
           </Button>
         )}
       </section>
