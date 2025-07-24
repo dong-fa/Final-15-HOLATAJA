@@ -36,7 +36,7 @@ function ProductImg({ title, srcList, swipe }: ProductImgProps) {
             <SwiperSlide key={idx}>
               <div className="rounded-lg relative overflow-hidden w-full aspect-square">
                 {/* alt값 추가 필요 */}
-                <Image src={src} alt={title + '이미지'} fill className="object-cover" />
+                <Image src={src} alt={title + '이미지'} fill className="object-cover" sizes="100%" />
                 <button
                   className={`${buttonBg} rounded-full w-6 h-6 text-white flex justify-center items-center absolute bottom-4 right-4 cursor-pointer`}
                   onClick={() => setLiked(!liked)}
