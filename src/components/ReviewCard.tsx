@@ -1,6 +1,7 @@
 import React from 'react';
-import { Star } from 'lucide-react';
+import { Pencil, Star, Trash } from 'lucide-react';
 import '../app/globals.css';
+import Button from '@/components/Button';
 
 interface ReviewCardProps {
   name: string;
@@ -26,14 +27,27 @@ function ReviewCard({ name, createdAt, rating, content }: ReviewCardProps) {
   };
 
   return (
-    <div className="flex flex-col gap-2 py-4 border-b-1 border-b-disabled">
-      <div className="flex flex-col">
-        <span>{name}</span>
-        <span className="label-s text-secondary">{createdAt.split(' ')[0]}</span>
+    <div className="flex items-center w-full py-4 border-b-1 border-b-disabled">
+      <div className="flex flex-col w-full gap-2">
+        <div className="flex flex-col">
+          <span>{name}</span>
+          <span className="label-s text-secondary">{createdAt.split(' ')[0]}</span>
+        </div>
+        <div className="flex gap-0.5">
+          <span className="sr-only">{`별점 ${rating}/5점`}</span>
+          {stars()}
+        </div>
+        <div>
+          <p>{content}</p>
+        </div>
       </div>
-      <div className="flex gap-0.5">{stars()}</div>
-      <div>
-        <p>{content}</p>
+      <div className="flex">
+        <Button icon size="small" aria-label="수정">
+          <Pencil color="var(--color-darkgray)" size={20} />
+        </Button>
+        <Button icon size="small" aria-label="삭제">
+          <Trash color="var(--color-darkgray)" size={20} />
+        </Button>
       </div>
     </div>
   );
