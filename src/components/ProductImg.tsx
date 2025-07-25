@@ -9,15 +9,17 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 
 interface ProductImgProps {
   title: string;
   // 하나의 이미지라도 배열 형태로 전달받음
   srcList: string[];
   swipe?: boolean;
+  productIid?: number;
 }
 
-function ProductImg({ title, srcList, swipe }: ProductImgProps) {
+function ProductImg({ title, srcList, swipe, productIid }: ProductImgProps) {
   const [liked, setLiked] = useState(false);
 
   const buttonBg = liked ? 'bg-[#FFCC00]' : 'bg-darkgray';
@@ -59,8 +61,16 @@ function ProductImg({ title, srcList, swipe }: ProductImgProps) {
         </div>
       ) : (
         // 제품 목록에 들어갈 고정형 이미지
-        <div className="relative w-full h-full overflow-hidden rounded-lg">
-          <Image src={srcList[0]} alt={title + '이미지'} fill className="object-scale-down" sizes="(min-width: 768px) 100vw, 100vw" />
+        <div className="relative w-full h-full overflow-hidden rounded-lg aspect-square">
+          <Link href={`./products/${productIid}`} className="relative w-full h-full block">
+            <Image
+              src={srcList[0]}
+              alt={title + '이미지'}
+              fill
+              className="object-cover transition-transform duration-300 ease-in-out hover:scale-110 hover:rotate-2"
+              sizes="(min-width: 768px) 100vw, 100vw"
+            />
+          </Link>
           <button
             className={`${buttonBg} rounded-full w-6 h-6 text-white flex justify-center items-center absolute bottom-2.5 right-2.5 cursor-pointer`}
             onClick={() => setLiked(!liked)}
