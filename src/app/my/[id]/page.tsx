@@ -12,7 +12,6 @@ export default async function OrderInfoPage({ params }: Props) {
   const id = Number(params.id);
 
   const orderData = await getOrderInfo(id);
-  console.log('orderData', orderData);
 
   const orderInfo: OrderItem | null = orderData.ok === 1 ? orderData.item : null;
   if (!orderInfo) {
