@@ -6,33 +6,46 @@ import CartSummary from './CartSummary';
 import Button from '@/components/Button';
 
 interface CartItemData {
-  id: string;
-  name: string;
-  options: string;
-  price: number;
-  quantity: number;
-  image: string;
+  product: {
+    _id: string;
+    name: string;
+    options: string;
+    price: number;
+    quantity: number;
+    image: string;
+  };
+}
+
+interface CartItemCost {
+  products: number;
+  shippingFees: number;
+  discount?: {
+    products: number;
+    shippingFees: number;
+  };
+  total: number;
 }
 
 // 받는 Props
 interface CartContainerProps {
   initialItems: CartItemData[]; // 서버에서 받은 초기 데이터
+  initialCost: CartItemCost;
 }
 
 const SHIPPING_FEE = 3000;
 
-export default function CartContainer({ initialItems }: CartContainerProps) {
+export default function CartContainer({ initialItems, initialCost }: CartContainerProps) {
   // 관리하는 state
   const [cartItems, setCartItems] = useState<CartItemData[]>(initialItems);
 
   // 수량 변경 핸들러
   const handleQuantityChange = (id: string, newQuantity: number) => {
-    setCartItems(prevItems => prevItems.map(item => (item.id === id ? { ...item, quantity: newQuantity } : item)));
+    setCartItems(prevItems => prevItems.map(item => (item.product._id === id ? { ...item, quantity: newQuantity } : item)));
   };
 
   // 상품 삭제 핸들러
   const handleRemoveItem = (id: string) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== id));
+    setCartItems(prevItems => prevItems.filter(item => item.product._id !== id));
   };
 
   // 주문하기 핸들러
@@ -42,7 +55,7 @@ export default function CartContainer({ initialItems }: CartContainerProps) {
     // 서버 액션 호출하거나 API 요청
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.product.quantity, 0);
   const total = subtotal + SHIPPING_FEE;
 
   return (
@@ -57,13 +70,13 @@ export default function CartContainer({ initialItems }: CartContainerProps) {
           // CartItem 컴포넌트에 전달하는 데이터
           cartItems.map(item => (
             <CartItem
-              key={item.id}
-              id={item.id}
-              name={item.name}
-              options={item.options}
-              price={item.price}
-              quantity={item.quantity}
-              image={item.image}
+              key={item.product._id}
+              id={item.product._id}
+              name={item.product.name}
+              options={item.product.options}
+              price={item.product.price}
+              quantity={item.product.quantity}
+              image={item.product.image}
               onQuantityChange={handleQuantityChange}
               onRemove={handleRemoveItem}
             />
