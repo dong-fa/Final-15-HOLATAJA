@@ -4,10 +4,11 @@ import CheckboxButton from '@/components/CheckboxButton';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
 import { QnaItem } from '@/types/qna';
+import Link from 'next/link';
 
 import React, { useState } from 'react';
 
-function QnA({ qnaList }: { qnaList: QnaItem[] }) {
+function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
   const selectOptions = ['답변 대기', '답변 완료'];
 
   const [isMyQnA, setIsMyQnA] = useState(false);
@@ -30,18 +31,22 @@ function QnA({ qnaList }: { qnaList: QnaItem[] }) {
   return (
     <div className="mb-6 text-[14px] sm:mb-12">
       <div className="flex flex-col gap-2 mb-4 sm:gap-4 sm:items-center sm:flex-row">
-        <p className="hidden me-auto sm:block">상품에 대한 문의사항을 남겨주세요.</p>
+        <p className="hidden me-auto sm:block">{my ? 'Q&A 답변 현황을 확인해보세요.' : '상품에 대한 문의사항을 남겨주세요.'}</p>
         <div className="flex items-center justify-between gap-2 sm:gap-4">
           <div>
-            <CheckboxButton
-              id="myQna"
-              name="myQna"
-              checked={isMyQnA}
-              onChange={() => {
-                setIsMyQnA(!isMyQnA);
-              }}
-              label="내 Q&A 보기"
-            />
+            {my ? (
+              ''
+            ) : (
+              <CheckboxButton
+                id="myQna"
+                name="myQna"
+                checked={isMyQnA}
+                onChange={() => {
+                  setIsMyQnA(!isMyQnA);
+                }}
+                label="내 Q&A 보기"
+              />
+            )}
           </div>
           <Select
             label="답변 여부"
@@ -65,9 +70,10 @@ function QnA({ qnaList }: { qnaList: QnaItem[] }) {
             <thead className="border-t-2 border-y">
               <tr>
                 <th className="p-4">제목</th>
-                <th className="p-4">작성자</th>
+                {my ? '' : <th className="p-4">작성자</th>}
                 <th className="p-4">작성일</th>
                 <th className="p-4">답변상태</th>
+                {my ? <th className="py-4 px-2">문의 제품</th> : ''}
               </tr>
             </thead>
             <tbody>
@@ -83,12 +89,24 @@ function QnA({ qnaList }: { qnaList: QnaItem[] }) {
                     <td className="p-4">
                       <span className="cursor-pointer">{qna.question.title}</span>
                     </td>
-                    <td className="p-4 text-center">{qna.question.user.name}</td>
+                    {my ? '' : <td className="p-4 text-center">{qna.question.user.name}</td>}
                     <td className="p-4 text-center">{qna.question.createdAt.split(' ')[0]}</td>
                     {qna.question.repliesCount > 0 ? (
                       <td className="p-4 text-center text-primary">답변 완료</td>
                     ) : (
                       <td className="p-4 text-center">답변 대기</td>
+                    )}
+                    {my ? (
+                      <td className="text-center">
+                        <Link
+                          href={`/products/${qna.question.product_id}`}
+                          className=" py-1 px-2 w-[2rem] border-1 border-primary rounded-lg transition duration-200 ease-in-out bg-white text-primary hover:bg-accent"
+                        >
+                          보러 가기
+                        </Link>
+                      </td>
+                    ) : (
+                      ''
                     )}
                   </tr>
                   {isOpen === qna.question._id && (
