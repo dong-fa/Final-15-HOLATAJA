@@ -26,7 +26,7 @@ function ReviewCard({ name, createdAt, rating, content }: ReviewCardProps) {
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 py-4 border-b-1 border-b-disabled">
       <div className="flex flex-col">
         <span>{name}</span>
         <span className="label-s text-secondary">{createdAt.split(' ')[0]}</span>
