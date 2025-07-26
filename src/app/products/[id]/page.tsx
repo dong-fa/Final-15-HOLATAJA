@@ -9,9 +9,11 @@ import SoundToggle from '@/components/SoundToggle';
 import Tab, { TabItem } from '@/components/Tab';
 import Textarea from '@/components/Textarea';
 import { Contents, ContentsTitle, SubTitle, Title } from '@/components/Typography';
+import { deleteReview } from '@/data/actions/review';
 import getProduct from '@/data/functions/product';
 import { getAnswer, getQuestion } from '@/data/functions/qna';
 import getReview from '@/data/functions/review';
+import { ApiResPromise } from '@/types/apiType';
 import { QnaItem, QuestionItem } from '@/types/qna';
 
 import { Star } from 'lucide-react';
