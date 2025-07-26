@@ -1,5 +1,5 @@
 // 주문 아이템 인터페이스
-export interface CartItem {
+export interface CartItemData {
   _id: number;
   product_id: number;
   quantity: number;
@@ -41,6 +41,6 @@ export interface CartTotalCost {
 
 export interface CartResponse {
   ok: number;
-  item: CartItem[];
+  item: CartItemData[];
   cost: CartTotalCost;
 }

@@ -1,34 +1,66 @@
-// 주문 요약 컴포넌트의 Props 타입 정의
+import React from 'react';
+import { CartTotalCost } from '@/types/cart';
+import Button from '@/components/Button';
+import { Contents, ContentsTitle } from '@/components/Typography';
+
 interface CartSummaryProps {
-  subtotal: number; // 상품 금액 합계
-  shipping: number; // 배송비
-  total: number; // 최종 총 주문금액
+  cost: CartTotalCost;
+  onOrderClick: () => void;
+  onContinueShoppingClick: () => void;
+  itemCount: number;
+  isLoading?: boolean;
+  isOrderDisabled?: boolean;
 }
 
-export default function CartSummary({ subtotal, shipping, total }: CartSummaryProps) {
+export default function CartSummary({
+  cost,
+  onOrderClick,
+  onContinueShoppingClick,
+  itemCount,
+  isLoading = false,
+  isOrderDisabled = false,
+}: CartSummaryProps) {
+  const formatPrice = (price: number): string => {
+    return `${price.toLocaleString('ko-KR')}원`;
+  };
+
+  const getProductsCost = (): number => {
+    if (typeof cost.products === 'string') {
+      return parseInt(cost.products.replace(/[^0-9]/g, '')) || 0;
+    }
+    return cost.products || 0;
+  };
+
+  const productsCost = getProductsCost();
+
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4 w-full">
-      {/* 금액 정보 섹션 */}
-      <div className="space-y-3 sm:space-y-3 mb-3 sm:mb-4">
+    <div>
+      <div className="bg-white p-6 space-y-4">
         {/* 상품 금액 */}
         <div className="flex justify-between items-center">
-          <span className="text-sm sm:text-base text-gray-700">상품 금액</span>
-          <span className="text-sm sm:text-base font-medium">{subtotal.toLocaleString()}원</span>
+          <Contents className="text-secondary">상품 금액</Contents>
+          <Contents className="text-secondary">{formatPrice(productsCost)}</Contents>
         </div>
 
         {/* 배송비 */}
         <div className="flex justify-between items-center">
-          <span className="text-sm sm:text-base text-gray-700">배송비</span>
-          <span className="text-sm sm:text-base font-medium">{shipping.toLocaleString()}원</span>
+          <Contents className="text-secondary">배송비</Contents>
+          <Contents className="text-secondary">{formatPrice(cost.shippingfees)}</Contents>
         </div>
 
-        <hr className="border-gray-200" />
-
-        {/* 총 주문금액 - 강조 */}
+        {/* 총 주문금액 */}
         <div className="flex justify-between items-center">
-          <span className="text-base sm:text-lg font-bold text-gray-900">총 주문금액</span>
-          <span className="text-lg sm:text-xl font-bold text-gray-900">{total.toLocaleString()}원</span>
+          <ContentsTitle className="text-primary font-bold">총 주문금액</ContentsTitle>
+          <ContentsTitle className="text-primary font-bold">{formatPrice(cost.total)}</ContentsTitle>
         </div>
+      </div>
+      <div className="flex justify-between mt-4 gap-2">
+        <Button outlined size="medium" onClick={onContinueShoppingClick}>
+          쇼핑 계속하기
+        </Button>
+        <Button size="medium" onClick={onOrderClick} disabled={isLoading || isOrderDisabled || itemCount === 0}>
+          주문하기
+        </Button>
       </div>
     </div>
   );

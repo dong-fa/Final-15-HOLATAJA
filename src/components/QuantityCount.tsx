@@ -26,7 +26,7 @@ export default function QuantityCount({ quantity, handleCountQuantity }: Quantit
       {' '}
       {/* 버튼과 수량을 가로로 정렬, 간격 4 */}
       <button
-        className="w-10 h-10 rounded-full bg-[var(--color-accent)] flex items-center justify-center hover:bg-[var(--color-hover)] transition disabled:bg-[var(--color-disabled)]"
+        className="w-10 h-10 rounded-full bg-[var(--color-lightgray)] flex items-center justify-center hover:bg-[var(--color-hover)] transition disabled:bg-[var(--color-disabled)]"
         disabled={quantity === 1} // 수량이 1이면 비활성화
         onClick={handleMinus} // 클릭 시 handleMinus 실행
       >
@@ -34,7 +34,7 @@ export default function QuantityCount({ quantity, handleCountQuantity }: Quantit
       </button>
       <span className="contents-title w-6 text-center">{quantity}</span> {/* 현재 수량 표시 */}
       <button
-        className="w-10 h-10 rounded-full bg-[var(--color-accent)] flex items-center justify-center hover:bg-[var(--color-hover)] transition"
+        className="w-10 h-10 rounded-full bg-[var(--color-lightgray)] flex items-center justify-center hover:bg-[var(--color-hover)] transition"
         onClick={handlePlus} // 클릭 시 handlePlus 실행
       >
         <Plus className="w-5 text-[var(--color-text)]" /> {/* 플러스 아이콘 */}

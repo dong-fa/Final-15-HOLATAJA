@@ -1,27 +1,71 @@
-import { Title } from '@/components/Typography';
-import getCartList from '@/data/functions/carts';
 import { cookies } from 'next/headers';
+import getCartList from '@/data/functions/carts';
+import CartContainer from './components/CartContainer';
 
 /**
  * 장바구니 페이지 서버 컴포넌트
+ *
+ * 주요 역할:
+ * - 서버에서 초기 장바구니 데이터 페칭
+ * - 쿠키에서 인증 토큰 추출
+ * - 클라이언트 컴포넌트(CartContainer)에 데이터 전달
+ * - 렌더링만 담당 (비즈니스 로직 없음)
+ *
+ * 데이터 흐름:
+ * 1. 서버에서 쿠키로부터 토큰 추출
+ * 2. 토큰이 있으면 장바구니 API 호출
+ * 3. 초기 데이터와 토큰을 CartContainer로 전달
+ * 4. CartContainer에서 모든 클라이언트 로직 처리
  */
 export default async function CartPage() {
-  // 서버에서 쿠키로부터 토큰 가져오기
+  // ==================== 서버 사이드 데이터 페칭 ====================
+
+  /**
+   * 쿠키에서 인증 토큰 추출
+   * Next.js 서버 컴포넌트에서 쿠키 접근
+   */
   const cookieStore = cookies();
-  const token = (await cookieStore).get('accessToken')?.value;
+  const token = (await cookieStore).get('accessToken')?.value || null;
 
-  let cartData = null;
+  /**
+   * 초기 장바구니 데이터 가져오기
+   * 토큰이 있는 경우에만 API 호출
+   */
+  let initialCartData = null;
+  let serverError = null;
+
   if (token) {
-    cartData = await getCartList(token);
-  }
-  console.log(cartData);
+    try {
+      const result = await getCartList(token);
 
-  return (
-    <div className="bg-gray-50 py-3 sm:py-6">
-      <div className="max-w-6xl mx-auto px-3 sm:px-4">
-        <Title className="title">장바구니</Title>
-        {cartData && cartData.ok ? <div>장바구니 조회 성공</div> : <div>로그인이 필요합니다.</div>}
-      </div>
-    </div>
-  );
+      if (result.ok === 1) {
+        initialCartData = result;
+      } else {
+        // API 호출은 성공했지만 비즈니스 로직 에러
+        serverError = result.message || '장바구니 데이터를 불러올 수 없습니다.';
+      }
+
+      // 개발 환경에서만 로그 출력
+      if (process.env.NODE_ENV === 'development') {
+        console.log('서버 장바구니 데이터:', result);
+      }
+    } catch (error) {
+      // 네트워크 에러, 서버 에러 등
+      serverError = '장바구니 데이터 로딩 중 오류가 발생했습니다.';
+
+      if (process.env.NODE_ENV === 'development') {
+        console.error('서버 장바구니 데이터 페칭 오류:', error);
+      }
+    }
+  }
+
+  // ==================== 클라이언트 컴포넌트에 전달 ====================
+
+  /**
+   * CartContainer 클라이언트 컴포넌트에 필요한 props 전달
+   * - initialData: 서버에서 가져온 초기 장바구니 데이터
+   * - token: 인증 토큰 (클라이언트에서 API 호출용)
+   * - serverError: 서버에서 발생한 에러 (있는 경우)
+   */
+  return <CartContainer initialData={initialCartData} token={token} serverError={serverError} />;
 }
