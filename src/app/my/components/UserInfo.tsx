@@ -76,7 +76,7 @@ export default function UserInfo() {
   return (
     <div>
       <form className="flex flex-col gap-4 w-[80%] px-20" action={handlesubmit}>
-        <Input id="id" type="text" name="_id" value={userData._id} readOnly hidden />
+        <Input id="id" type="number" name="_id" defaultValue={userData._id} readOnly hidden />
         <Input id="name" label="이름" name="name" type="text" value={userData.name} onChange={handleInputChange('name')} disabled={isdisabled} />
         <Input
           id="email"
