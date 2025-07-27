@@ -1,7 +1,7 @@
 'use server';
 
-import { User } from '@/types/userType';
-import { ApiResPromise, ApiRes } from '@/types/apiType';
+import { User } from '@/types/user';
+import { ApiResPromise, ApiRes } from '@/types/api';
 import { cookies } from 'next/headers';
 
 //로그인 액션
@@ -71,6 +71,41 @@ export async function signupAction(prevState: ApiRes<User> | null, formData: For
       body: JSON.stringify(signupData),
     });
 
+    data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+    return {
+      ok: 0,
+      message: '일시적인 네트워크 문제가 발생했습니다.',
+    };
+  }
+  return data;
+}
+
+//회원정보 수정 액션
+export async function userPatchAction(prevState: ApiRes<User> | null, formData: FormData): ApiResPromise<User> {
+  const accessToken = (await cookies()).get('accessToken')?.value;
+  let response: Response;
+  let data: ApiRes<User>;
+  console.log('유저 정보 수정 액션', formData);
+  try {
+    const userId = formData.get('_id');
+    const userData = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      address: formData.get('address'),
+    };
+    response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'client-id': process.env.NEXT_PUBLIC_API_CLIENT_ID!,
+        ...(accessToken && { authorization: `Bearer ${accessToken}` }),
+      },
+      body: JSON.stringify(userData),
+    });
     data = await response.json();
     console.log(data);
   } catch (error) {
