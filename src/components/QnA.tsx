@@ -8,7 +8,7 @@ import Select from '@/components/Select';
 import { deleteQnA } from '@/data/actions/qna';
 import useAuthStore from '@/store/authStore';
 import { QnaItem } from '@/types/qna';
-import { Pencil, Trash } from 'lucide-react';
+import { CircleAlert, Pencil, Trash } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -104,85 +104,94 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
               </tr>
             </thead>
             <tbody>
-              {newQnaList.slice(startIdx, startIdx + 5).map(qna => (
-                <>
-                  <tr
-                    key={qna.question._id}
-                    className="border-b border-b-lightgray"
-                    onClick={() => {
-                      setIsOpen(isOpen === qna.question._id ? 0 : qna.question._id);
-                    }}
-                  >
-                    <td className="p-4">
-                      <span className="cursor-pointer">{qna.question.title}</span>
-                    </td>
-                    {my ? '' : <td className="p-4 text-center">{qna.question.user.name}</td>}
-                    <td className="p-4 text-center">{qna.question.createdAt.split(' ')[0]}</td>
-                    {qna.question.repliesCount > 0 ? (
-                      <td className="p-4 text-center text-primary">답변 완료</td>
-                    ) : (
-                      <td className="p-4 text-center">답변 대기</td>
-                    )}
-                    {my ? (
-                      <td className="text-center">
-                        <Link
-                          href={`/products/${qna.question.product_id}`}
-                          className=" py-1 px-2 w-[2rem] border-1 border-primary rounded-lg transition duration-200 ease-in-out bg-white text-primary hover:bg-accent"
-                        >
-                          보러 가기
-                        </Link>
+              {!newQnaList.length ? (
+                <tr>
+                  <td colSpan={4} align="center" className="py-8">
+                    <CircleAlert className="mb-4" size={32} />
+                    <p>작성된 Q&A가 없습니다.</p>
+                  </td>
+                </tr>
+              ) : (
+                newQnaList.slice(startIdx, startIdx + 5).map(qna => (
+                  <>
+                    <tr
+                      key={qna.question._id}
+                      className="border-b border-b-lightgray"
+                      onClick={() => {
+                        setIsOpen(isOpen === qna.question._id ? 0 : qna.question._id);
+                      }}
+                    >
+                      <td className="p-4">
+                        <span className="cursor-pointer">{qna.question.title}</span>
                       </td>
-                    ) : (
-                      ''
-                    )}
-                  </tr>
-                  {isOpen === qna.question._id && (
-                    <tr className="p-4 border-b bg-lightgray border-b-lightgray">
-                      <td colSpan={4} className="p-4 bg-lightgray">
-                        <div className={`flex gap-2 ${qna.question.repliesCount > 0 && 'mb-4'}`}>
-                          <span className="content-center inline-block w-6 h-6 text-xs font-semibold text-center bg-white rounded-full text-primary">
-                            Q
-                          </span>
-                          <p>{qna.question.content}</p>
-                          {user?._id === qna.question.user._id && (
-                            <div className="flex ms-auto">
-                              <Button icon size="small" aria-label="수정">
-                                <Pencil color="var(--color-darkgray)" size={20} />
-                              </Button>
-                              <Button
-                                icon
-                                size="small"
-                                aria-label="삭제"
-                                onClick={() => {
-                                  setSelectedId(qna.question._id);
-                                  setIsConfirmModalOpen(true);
-                                }}
-                              >
-                                <Trash color="var(--color-darkgray)" size={20} />
-                              </Button>
+                      {my ? '' : <td className="p-4 text-center">{qna.question.user.name}</td>}
+                      <td className="p-4 text-center">{qna.question.createdAt.split(' ')[0]}</td>
+                      {qna.question.repliesCount > 0 ? (
+                        <td className="p-4 text-center text-primary">답변 완료</td>
+                      ) : (
+                        <td className="p-4 text-center">답변 대기</td>
+                      )}
+                      {my ? (
+                        <td className="text-center">
+                          <Link
+                            href={`/products/${qna.question.product_id}`}
+                            className=" py-1 px-2 w-[2rem] border-1 border-primary rounded-lg transition duration-200 ease-in-out bg-white text-primary hover:bg-accent"
+                          >
+                            보러 가기
+                          </Link>
+                        </td>
+                      ) : (
+                        ''
+                      )}
+                    </tr>
+                    {isOpen === qna.question._id && (
+                      <tr className="p-4 border-b bg-lightgray border-b-lightgray">
+                        <td colSpan={4} className="p-4 bg-lightgray">
+                          <div className={`flex gap-2 ${qna.question.repliesCount > 0 && 'mb-4'}`}>
+                            <span className="content-center inline-block w-6 h-6 text-xs font-semibold text-center bg-white rounded-full text-primary">
+                              Q
+                            </span>
+                            <p>{qna.question.content}</p>
+                            {user?._id === qna.question.user._id && (
+                              <div className="flex ms-auto">
+                                <Button icon size="small" aria-label="수정">
+                                  <Pencil color="var(--color-darkgray)" size={20} />
+                                </Button>
+                                <Button
+                                  icon
+                                  size="small"
+                                  aria-label="삭제"
+                                  onClick={() => {
+                                    setSelectedId(qna.question._id);
+                                    setIsConfirmModalOpen(true);
+                                  }}
+                                >
+                                  <Trash color="var(--color-darkgray)" size={20} />
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                          {qna.question.repliesCount > 0 && (
+                            <div className="flex gap-2">
+                              <span className="content-center inline-block w-6 h-6 text-xs font-semibold text-center text-white rounded-full bg-primary">
+                                A
+                              </span>
+                              <div>
+                                <p className="mb-2">{qna.answer?.content}</p>
+                                <span className="text-xs text-darkgray">{qna.answer?.createdAt.split(' ')[0]}</span>
+                              </div>
                             </div>
                           )}
-                        </div>
-                        {qna.question.repliesCount > 0 && (
-                          <div className="flex gap-2">
-                            <span className="content-center inline-block w-6 h-6 text-xs font-semibold text-center text-white rounded-full bg-primary">
-                              A
-                            </span>
-                            <div>
-                              <p className="mb-2">{qna.answer?.content}</p>
-                              <span className="text-xs text-darkgray">{qna.answer?.createdAt.split(' ')[0]}</span>
-                            </div>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  )}
-                </>
-              ))}
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                ))
+              )}
             </tbody>
           </table>
         </div>
-        <Pagination totalPages={Math.ceil(newQnaList.length / 5)} currentPage={currentPage} />
+        {newQnaList.length ? <Pagination totalPages={Math.ceil(newQnaList.length / 5)} currentPage={currentPage} /> : null}
       </div>
       <Modal
         isOpen={isConfirmModalOpen}
