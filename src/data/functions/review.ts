@@ -18,6 +18,7 @@ export default async function getReview(productId: number): ApiResPromise<Review
         'Content-Type': 'application/json',
       },
       cache: 'force-cache',
+      next: { tags: [`review-list`] },
     });
     return response.json();
   } catch (error) {
@@ -32,6 +33,7 @@ export default async function getReview(productId: number): ApiResPromise<Review
  */
 export async function getMyReview(): ApiResPromise<ReviewItem[]> {
   const accessToken = (await cookies()).get('accessToken')?.value;
+
   try {
     const response = await fetch(`${API_URL}/replies/`, {
       headers: {
@@ -39,6 +41,7 @@ export async function getMyReview(): ApiResPromise<ReviewItem[]> {
         Authorization: `Bearer ${accessToken}`, // 인증 토큰
       },
       cache: 'force-cache',
+      next: { tags: ['my-review-list'] },
     });
     return response.json();
   } catch (error) {
