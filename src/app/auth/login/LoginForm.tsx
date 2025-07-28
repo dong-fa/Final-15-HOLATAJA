@@ -100,9 +100,10 @@ export default function LoginForm() {
       console.log('액션 스테이트', actionState);
       setUser(actionState.item);
       alert('로그인 성공!');
-      router.push('/product');
+      router.push('/products');
     }
   }, [actionState, router, setUser]);
+
   return (
     <form className="w-full flex flex-col gap-6" action={handleSubmit} noValidate>
       <div>
