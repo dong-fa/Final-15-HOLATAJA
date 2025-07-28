@@ -10,6 +10,7 @@ export async function getProductList(): ApiResPromise<ProductInfo[]> {
     const response = await fetch(`${API_URL}/products/`, {
       headers: {
         'Client-Id': CLIENT_ID,
+        'Content-Type': 'application/json',
       },
       cache: 'force-cache',
     });
@@ -26,6 +27,7 @@ export default async function getProduct(_id: number): ApiResPromise<ProductInfo
     const response = await fetch(`${API_URL}/products/${_id}`, {
       headers: {
         'Client-Id': CLIENT_ID,
+        'Content-Type': 'application/json',
       },
       cache: 'force-cache',
     });

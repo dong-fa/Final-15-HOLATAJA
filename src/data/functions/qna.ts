@@ -15,6 +15,7 @@ export async function getQuestion(): ApiResPromise<QuestionItem[]> {
     const response = await fetch(`${API_URL}/posts?type=qna`, {
       headers: {
         'Client-Id': CLIENT_ID,
+        'Content-Type': 'application/json',
       },
       cache: 'force-cache',
     });
@@ -35,6 +36,7 @@ export async function getAnswer(_id: number): ApiResPromise<AnswerItem[]> {
     const response = await fetch(`${API_URL}/posts/${_id}/replies`, {
       headers: {
         'Client-Id': CLIENT_ID,
+        'Content-Type': 'application/json',
       },
       cache: 'force-cache',
     });

@@ -1,6 +1,6 @@
 'use server';
 
-import { ApiResPromise } from '@/types/apiType';
+import { ApiResPromise } from '@/types/api';
 import { ReviewItem } from '@/types/review';
 import { cookies } from 'next/headers';
 
@@ -9,7 +9,7 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
 
 /**
  * 구매 후기 id에 해당하는 구매 후기를 가져옴
- * @param
+ * @param {number} _id - 구매 후기 id
  * @returns {Promise<ApiRes>} - 구매 후기 id에 해당하는 구매 후기 응답 객체
  */
 export async function deleteReview(_id: number): ApiResPromise<ReviewItem> {

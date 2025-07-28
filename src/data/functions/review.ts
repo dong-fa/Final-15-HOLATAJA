@@ -14,6 +14,7 @@ export default async function getReview(productId: number): ApiResPromise<Review
     const response = await fetch(`${API_URL}/replies/products/${productId}`, {
       headers: {
         'Client-Id': CLIENT_ID,
+        'Content-Type': 'application/json',
       },
       cache: 'force-cache',
     });

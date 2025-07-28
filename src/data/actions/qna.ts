@@ -20,6 +20,7 @@ export async function deleteQnA(_id: number): ApiResPromise<QuestionItem> {
       method: 'DELETE',
       headers: {
         'Client-Id': CLIENT_ID,
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
       },
       cache: 'force-cache',
