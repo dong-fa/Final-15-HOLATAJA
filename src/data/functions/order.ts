@@ -1,4 +1,4 @@
-import { ApiResPromise } from '@/types/apiType';
+import { ApiResPromise } from '@/types/api';
 import { OrderItem } from '@/types/order';
 import { cookies } from 'next/headers';
 
@@ -7,14 +7,17 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
 
 /**
  * 유저가 주문했던 구매 목록을 모두 가져옴
+ * @param page - 표시될 페이지
+ * @param limit - 한 페이지에 들어갈 데이터 수
  * @returns {Promise<ApiResPromise<OrderItem[]>>} - 구매 목록 응답 객체
  */
-export async function getOrderList(): ApiResPromise<OrderItem[]> {
+export async function getOrderList({ page, limit }: { page?: number; limit?: number }): ApiResPromise<OrderItem[]> {
   const accessToken = (await cookies()).get('accessToken')?.value;
   try {
-    const response = await fetch(`${API_URL}/orders/`, {
+    const response = await fetch(`${API_URL}/orders/?page=${page}&limit=${limit}&sort={"createdAt": -1}`, {
       headers: {
         'Client-Id': CLIENT_ID,
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`, // 인증 토큰
       },
       cache: 'force-cache',
@@ -25,6 +28,7 @@ export async function getOrderList(): ApiResPromise<OrderItem[]> {
     return { ok: 0, message: '내 구매 목록 조회에 실패했습니다.' };
   }
 }
+
 /**
  * 유저가 구매한 주문 1건의 정보를 가져옴
  * @param {number} _id - 구매 id
@@ -36,6 +40,7 @@ export async function getOrderInfo(_id: number): ApiResPromise<OrderItem> {
     const response = await fetch(`${API_URL}/orders/${_id}`, {
       headers: {
         'Client-Id': CLIENT_ID,
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`, // 인증 토큰
       },
       cache: 'force-cache',
