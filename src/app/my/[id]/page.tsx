@@ -5,13 +5,16 @@ import { getAccountByBank, getOrderStatusLabel } from '@/data/tables/mappingTabl
 import { OrderItem } from '@/types/order';
 import Link from 'next/link';
 
-type Props = {
-  params: { id: string };
+type PageProps  = {
+  params: Promise<{
+    id: string;
+  }>;
 };
-export default async function OrderInfoPage({ params }: Props) {
-  const id = Number(params.id);
 
-  const orderData = await getOrderInfo(id);
+export default async function OrderInfoPage({ params }: PageProps) {
+
+  const { id } = await params;
+  const orderData = await getOrderInfo(Number(id));
 
   const orderInfo: OrderItem | null = orderData.ok === 1 ? orderData.item : null;
   if (!orderInfo) {
