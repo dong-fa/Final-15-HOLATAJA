@@ -6,6 +6,7 @@ import ReviewCard from '@/components/ReviewCard';
 import { deleteReview } from '@/data/actions/review';
 import useAuthStore from '@/store/authStore';
 import { ReviewItem } from '@/types/review';
+import { MessageCircleMore } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { startTransition, useState } from 'react';
 
@@ -31,26 +32,34 @@ export default function Review({ reviewList }: { reviewList: ReviewItem[] }) {
         router.refresh();
       } catch (error) {
         setIsConfirmModalOpen(false);
+        setIsFailModalOpen(true);
       }
     });
   };
   return (
     <div>
-      {reviewList.slice(startIdx, startIdx + 5).map(review => (
-        <ReviewCard
-          key={review._id}
-          name={review.user.name}
-          createdAt={review.createdAt.split(' ')[0]}
-          rating={review.rating}
-          content={review.content}
-          isMyReview={review.user._id === user?._id}
-          handleDelete={() => {
-            setIsConfirmModalOpen(true);
-            setSelectedId(review._id);
-          }}
-        ></ReviewCard>
-      ))}
-      <Pagination totalPages={Math.ceil(reviewList.length / 5) || 1} currentPage={currentPage} />
+      {!reviewList.length ? (
+        <div className="flex flex-col items-center py-8 border-b-1 border-b-lightgray">
+          <MessageCircleMore className="mb-4" size={32} />
+          <p>작성된 구매 후기가 없습니다.</p>
+        </div>
+      ) : (
+        reviewList.slice(startIdx, startIdx + 5).map(review => (
+          <ReviewCard
+            key={review._id}
+            name={review.user.name}
+            createdAt={review.createdAt.split(' ')[0]}
+            rating={review.rating}
+            content={review.content}
+            isMyReview={review.user._id === user?._id}
+            handleDelete={() => {
+              setIsConfirmModalOpen(true);
+              setSelectedId(review._id);
+            }}
+          ></ReviewCard>
+        ))
+      )}
+      {reviewList.length ? <Pagination totalPages={Math.ceil(reviewList.length / 5) || 1} currentPage={currentPage} /> : null}
       {/* 삭제 확인 모달 */}
       <Modal
         isOpen={isConfirmModalOpen}
