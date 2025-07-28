@@ -1,19 +1,17 @@
+import PostForm from '@/app/products/[id]/PostForm';
 import Review from '@/app/products/[id]/Review';
 import Button from '@/components/Button';
-import Pagination from '@/components/Pagination';
 import ProductImg from '@/components/ProductImg';
 import QnA from '@/components/QnA';
 // import QuantityCount from '@/components/QuantityCount';
-import ReviewCard from '@/components/ReviewCard';
 import SoundToggle from '@/components/SoundToggle';
 import Tab, { TabItem } from '@/components/Tab';
 import Textarea from '@/components/Textarea';
 import { Contents, ContentsTitle, SubTitle, Title } from '@/components/Typography';
-import { deleteReview } from '@/data/actions/review';
+import { postQuestion } from '@/data/actions/qna';
 import getProduct from '@/data/functions/product';
 import { getAnswer, getQuestion } from '@/data/functions/qna';
 import getReview from '@/data/functions/review';
-import { ApiResPromise } from '@/types/apiType';
 import { QnaItem, QuestionItem } from '@/types/qna';
 
 import { Star } from 'lucide-react';
@@ -39,6 +37,7 @@ export default async function ProductInfo({ params }: PageProps) {
 
   // 상품 문의 목록 조회
   const questionData = await getQuestion();
+
   // 상품 id와 일치하는 문의 목록
   const questionList = questionData.ok === 1 ? questionData.item.filter((question: QuestionItem) => question.product_id === Number(id)) : [];
 
@@ -123,15 +122,7 @@ export default async function ProductInfo({ params }: PageProps) {
       content: (
         <div className="flex flex-col gap-6 sm:gap-12 p-4 mt-[-1rem]">
           <QnA qnaList={qnaList} />
-          <div className="flex flex-col gap-4">
-            <label htmlFor="">
-              <Contents size="large">Q&A 등록하기</Contents>
-            </label>
-            <Textarea id="" name="" />
-            <div className="flex justify-end">
-              <Button size="small">등록</Button>
-            </div>
-          </div>
+          <PostForm productId={Number(id)} action={postQuestion} title="Q&A" />
         </div>
       ),
     },
@@ -167,7 +158,7 @@ export default async function ProductInfo({ params }: PageProps) {
           </div>
           <div className="flex flex-col gap-4">
             {/*  useState를 쓰는 방식으로 변경해야 함 */}
-            {/* <QuantityCount handleCountQuantity={num => setQuantity(num)} quantity={quantity} /> */}
+            {/* <QuantityCount quantity={quantity} /> */}
             <div className="flex flex-row gap-2 sm:gap-4">
               <Button outlined size="full">
                 장바구니
