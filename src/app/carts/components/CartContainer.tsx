@@ -8,6 +8,7 @@ import CartProductCard from '@/app/carts/components/CartProductCard';
 import CartSummary from '@/app/carts/components/CartSummary';
 import Button from '@/components/Button';
 import { removeCartItem } from '@/data/functions/carts';
+// import { ApiRes } from '@/types/api';
 
 interface CartContainerProps {
   initialData: CartResponse | null; // 서버에서 전달받은 초기 장바구니 데이터
@@ -38,7 +39,9 @@ export default function CartContainer({ initialData, token, serverError }: CartC
   // ==================== 상태 관리 ====================
 
   /** 장바구니 전체 데이터 (아이템 목록 + 비용 정보) */
+  // const [cartData, setCartData] = useState<ApiRes<CartItemData[]> | null>(initialData);
   const [cartData, setCartData] = useState<CartResponse | null>(initialData);
+  console.log('카트데이터4:', cartData);
 
   /** 개별 액션 로딩 상태 (아이템 삭제 등) */
   const [isActionLoading, setIsActionLoading] = useState(false);
@@ -71,17 +74,18 @@ export default function CartContainer({ initialData, token, serverError }: CartC
     const totalProductCost = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
     // 기존 배송비와 할인 정보는 유지하면서 총액만 재계산
+    // const currentCost = cartData?.item || {
     const currentCost = cartData?.cost || {
       products: '0',
-      shippingfees: 0,
-      discount: { products: 0, shippingfees: 0 },
+      shippingFees: 0,
+      discount: { products: 0, shippingFees: 0 },
       total: 0,
     };
 
     return {
       ...currentCost,
-      products: totalProductCost.toString(),
-      total: totalProductCost + currentCost.shippingfees - currentCost.discount.products - currentCost.discount.shippingfees,
+      products: totalProductCost,
+      total: totalProductCost + currentCost.shippingFees - currentCost.discount.products - currentCost.discount.shippingFees,
     };
   };
 
@@ -305,7 +309,7 @@ export default function CartContainer({ initialData, token, serverError }: CartC
 
           {/* 주문 요약 */}
           <CartSummary
-            cost={cartData.cost}
+            cost={cartData?.cost}
             itemCount={cartData.item.length}
             onOrderClick={handleOrderClick}
             onContinueShoppingClick={handleContinueShopping}

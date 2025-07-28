@@ -1,5 +1,5 @@
 import { ApiResPromise } from '@/types/api';
-import { CartResponse, CartItemData } from '@/types/cart';
+import { CartItemData } from '@/types/cart';
 
 // API 응답 기본 타입 정의
 interface ApiBaseResponse {
@@ -30,7 +30,7 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
  * - 헤더: Client-Id, Authorization
  * - 응답: { ok: number, item: CartItemData[], cost: CartTotalCost }
  */
-export default async function getCartList(token: string): ApiResPromise<CartResponse> {
+export default async function getCartList(token: string): ApiResPromise<CartItemData[]> {
   try {
     // 토큰 유효성 검사
     if (!token) {
@@ -47,30 +47,18 @@ export default async function getCartList(token: string): ApiResPromise<CartResp
     });
 
     const result = await response.json();
+    console.log('리절트 확인', result);
 
     // API 응답이 실패인 경우 그대로 반환
     if (result.ok !== 1) {
-      return result;
+      return { ok: 0, message: result.message || '장바구니 조회 실패' };
     }
 
-    // API 응답을 기존 타입 정의에 맞게 변환
-    // 실제 API: shippingFees(카멜케이스), products(숫자)
-    // 타입 정의: shippingfees(스네이크케이스), products(문자열)
-    const transformedResult: CartResponse = {
-      ok: result.ok,
-      item: result.item, // 아이템 배열은 그대로
-      cost: {
-        products: result.cost.products.toString(), // 숫자를 문자열로 변환
-        shippingfees: result.cost.shippingFees, // 카멜케이스를 스네이크케이스로 변환
-        discount: {
-          products: result.cost.discount.products,
-          shippingfees: result.cost.discount.shippingFees, // 카멜케이스를 스네이크케이스로 변환
-        },
-        total: result.cost.total,
-      },
+    return {
+      ok: 1,
+      item: result.item,
+      cost: result.cost,
     };
-
-    return transformedResult;
   } catch (error) {
     // 네트워크 오류, 서버 오류 등의 예외 처리
     console.error('장바구니 목록 조회 오류:', error);
@@ -254,26 +242,24 @@ export async function addToCart(token: string, productId: number, quantity: numb
  * 참고: API 명세서에서 해당 엔드포인트 확인 필요
  * 보통 DELETE /carts 또는 POST /carts/clear 등의 형태
  */
-export async function clearCart(token: string): ApiResPromise<ApiBaseResponse> {
+export async function clearCart(token: string): Promise<{ ok: 0 | 1; message?: string }> {
   try {
     if (!token) {
       return { ok: 0, message: '인증 토큰이 필요합니다' };
     }
-
-    // TODO: API 명세서에서 장바구니 전체 삭제 엔드포인트 확인 후 구현
-    // 예상 엔드포인트: DELETE /carts 또는 POST /carts/clear
-
-    // 임시 구현: 각 아이템을 개별적으로 삭제하는 방법
     const cartData = await getCartList(token);
-    if (cartData.ok === 1 && cartData.item) {
-      const deletePromises = cartData.item.map(item => removeCartItem(token, item._id));
+
+    if (cartData.ok === 1 && Array.isArray(cartData.item)) {
+      const deletePromises = cartData.item.map((item: CartItemData) => removeCartItem(token, item._id));
       await Promise.all(deletePromises);
+      // API 호출은 성공했지만 데이터 또는 API 실패 응답
       return { ok: 1, message: '장바구니가 비워졌습니다.' };
     }
 
     return { ok: 0, message: '장바구니 비우기에 실패했습니다.' };
   } catch (error) {
+    // 네트워크 오류, 서버 오류 등의 예외
     console.error('장바구니 비우기 오류:', error);
-    return { ok: 0, message: '장바구니 비우기에 실패했습니다.' };
+    return { ok: 0, message: '네트워크 오류로 장바구니 비우기에 실패하였습니다..' };
   }
 }

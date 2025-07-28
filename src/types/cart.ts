@@ -30,17 +30,17 @@ export interface CartItemData {
 }
 
 export interface CartTotalCost {
-  products: string;
-  shippingfees: number;
+  products: number;
+  shippingFees: number;
   discount: {
     products: number;
-    shippingfees: number;
+    shippingFees: number;
   };
   total: number;
 }
 
 export interface CartResponse {
-  ok: number;
   item: CartItemData[];
-  cost: CartTotalCost;
+  ok: 0 | 1;
+  cost?: CartTotalCost;
 }

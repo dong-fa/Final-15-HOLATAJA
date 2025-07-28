@@ -129,7 +129,7 @@ export default function CartProductCard({ item, onQuantityChange, onRemoveItem, 
           <QuantityCount quantity={item.quantity} handleCountQuantity={handleQuantityChange} />
 
           {/* 가격 */}
-          <ContentsTitle className="text-gray-900 font-bold">{formatPrice(totalPrice)}원</ContentsTitle>
+          <ContentsTitle className="text-gray-900 font-bold">{`${formatPrice(totalPrice)}원`}</ContentsTitle>
         </div>
 
         {/* 로딩 상태 표시 (아이템 삭제 처리 중일 때만) */}
