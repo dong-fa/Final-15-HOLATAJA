@@ -71,22 +71,21 @@ export default function UserInfo() {
       alert('회원 정보가 수정되었습니다.');
       setIsdisabled(true);
     }
-  }, [actionState]);
+  }, [actionState, setUser]);
 
   return (
     <div>
       <form className="flex flex-col gap-4 w-[80%] px-20" action={handlesubmit}>
         <Input id="id" type="number" name="_id" defaultValue={userData._id} readOnly hidden />
+        <Input id="email" name="email" type="email" defaultValue={userData.email} readOnly hidden />
         <Input id="name" label="이름" name="name" type="text" value={userData.name} onChange={handleInputChange('name')} disabled={isdisabled} />
-        <Input
-          id="email"
-          label="이메일"
-          name="email"
-          type="email"
-          value={userData.email}
-          onChange={handleInputChange('email')}
-          disabled={isdisabled}
-        />
+        <div className="flex justify-between items-center">
+          <span className="min-w-[93px] shrink-0 label-m">이메일</span>
+          <span className="w-full px-4 py-2.5 border-lightgray border rounded-md focus:outline focus:border-primary bg-disabled">
+            {userData.email}
+          </span>
+        </div>
+
         <Input id="phone" label="연락처" name="phone" type="tel" value={userData.phone} onChange={handleInputChange('phone')} disabled={isdisabled} />
         <Input
           id="address"
