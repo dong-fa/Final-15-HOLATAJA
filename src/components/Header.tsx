@@ -24,7 +24,7 @@ export default function Header() {
             <Link href="/my" title="마이페이지">
               <User color={path === '/my' ? 'var(--color-primary)' : 'currentColor'} />
             </Link>
-            <Link href="/cart" title="장바구니">
+            <Link href="/carts" title="장바구니">
               <ShoppingCart color={path === '/cart' ? 'var(--color-primary)' : 'currentColor'} />
             </Link>
             <Button
