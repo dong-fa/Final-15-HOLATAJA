@@ -3,6 +3,7 @@
 import { User } from '@/types/user';
 import { ApiResPromise, ApiRes } from '@/types/api';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 //로그인 액션
 export async function loginAction(prevState: ApiRes<User> | null, formData: FormData): ApiResPromise<User> {
@@ -116,4 +117,15 @@ export async function userPatchAction(prevState: ApiRes<User> | null, formData: 
     };
   }
   return data;
+}
+
+export async function logout() {
+  const cookieStore = await cookies();
+
+  // 서버에서 쿠키 삭제
+  cookieStore.set('accessToken', '', { expires: new Date(0), path: '/' });
+  cookieStore.set('refreshToken', '', { expires: new Date(0), path: '/' });
+
+  // 로그인 페이지로 리다이렉트
+  redirect('/auth/login');
 }
