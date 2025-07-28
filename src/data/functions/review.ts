@@ -5,6 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
 
 /**
+ * 상품 id에 해당하는 구매 후기 목록을 가져옴
  * @param {number} productId - 상품 id를 가져옴
  * @returns {Promise<ApiRes<ReviewItem[]>>} - 상품 id에 해당하는 구매 후기 목록 응답 객체
  */
