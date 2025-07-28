@@ -1,9 +1,12 @@
 'use client';
 
+import Button from '@/components/Button';
 import CheckboxButton from '@/components/CheckboxButton';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
+import useAuthStore from '@/store/authStore';
 import { QnaItem } from '@/types/qna';
+import { Pencil, Trash } from 'lucide-react';
 import Link from 'next/link';
 
 import React, { useState } from 'react';
@@ -17,7 +20,7 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
   const [currentPage /*setCurrentPage*/] = useState(1);
 
   // 내 Q&A 조회
-  // qnaList = isMyQnA ? qnaList.filter(qna => myId === qna.question.user._id) : qnaList;
+  qnaList = isMyQnA ? qnaList.filter(qna => user?._id === qna.question.user._id) : qnaList;
 
   // 답변 상태별 Q&A 조회
   const newQnaList =
@@ -28,8 +31,10 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
   // 현재 페이지의 게시글 목록 첫번째 index
   const startIdx = (currentPage - 1) * 5;
 
+  const { user } = useAuthStore();
+
   return (
-    <div className="mb-6 text-[14px] sm:mb-12">
+    <div className="text-[14px]">
       <div className="flex flex-col gap-2 mb-4 sm:gap-4 sm:items-center sm:flex-row">
         <p className="hidden me-auto sm:block">{my ? 'Q&A 답변 현황을 확인해보세요.' : '상품에 대한 문의사항을 남겨주세요.'}</p>
         <div className="flex items-center justify-between gap-2 sm:gap-4">
@@ -117,6 +122,16 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
                             Q
                           </span>
                           <p>{qna.question.content}</p>
+                          {user?._id === qna.question.user._id && (
+                            <div className="flex ms-auto">
+                              <Button icon size="small" aria-label="수정">
+                                <Pencil color="var(--color-darkgray)" size={20} />
+                              </Button>
+                              <Button icon size="small" aria-label="삭제">
+                                <Trash color="var(--color-darkgray)" size={20} />
+                              </Button>
+                            </div>
+                          )}
                         </div>
                         {qna.question.repliesCount > 0 && (
                           <div className="flex gap-2">
