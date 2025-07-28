@@ -1,4 +1,6 @@
+import Review from '@/app/products/[id]/Review';
 import Button from '@/components/Button';
+import Pagination from '@/components/Pagination';
 import ProductImg from '@/components/ProductImg';
 import QnA from '@/components/QnA';
 // import QuantityCount from '@/components/QuantityCount';
@@ -7,9 +9,11 @@ import SoundToggle from '@/components/SoundToggle';
 import Tab, { TabItem } from '@/components/Tab';
 import Textarea from '@/components/Textarea';
 import { Contents, ContentsTitle, SubTitle, Title } from '@/components/Typography';
+import { deleteReview } from '@/data/actions/review';
 import getProduct from '@/data/functions/product';
 import { getAnswer, getQuestion } from '@/data/functions/qna';
 import getReview from '@/data/functions/review';
+import { ApiResPromise } from '@/types/apiType';
 import { QnaItem, QuestionItem } from '@/types/qna';
 
 import { Star } from 'lucide-react';
@@ -55,7 +59,6 @@ export default async function ProductInfo({ params }: PageProps) {
 
   // 상품 구매 후기 목록 조회
   const reviewData = await getReview(Number(id));
-  console.log(id, reviewData);
 
   const tabItems: TabItem[] = [
     {
@@ -95,19 +98,8 @@ export default async function ProductInfo({ params }: PageProps) {
       id: '2',
       title: '구매 후기',
       content: (
-        <>
-          <div className="flex flex-col gap-4 mb-6 sm:mb-12">
-            {reviewData.ok === 1 &&
-              reviewData.item?.map(review => (
-                <ReviewCard
-                  key={review._id}
-                  name={review.user.name}
-                  createdAt={review.createdAt.split(' ')[0]}
-                  rating={review.rating}
-                  content={review.content}
-                ></ReviewCard>
-              ))}
-          </div>
+        <div className="flex flex-col gap-6 sm:gap-12 p-4 mt-[-2rem]">
+          <Review reviewList={reviewData.ok ? reviewData.item : []} />
           <div className="flex flex-col gap-4">
             <Contents size="large">구매 후기 등록하기</Contents>
             <div className="flex">
@@ -122,14 +114,14 @@ export default async function ProductInfo({ params }: PageProps) {
               <Button size="small">문의하기</Button>
             </div>
           </div>
-        </>
+        </div>
       ),
     },
     {
       id: '3',
       title: 'Q&A',
       content: (
-        <>
+        <div className="flex flex-col gap-6 sm:gap-12 p-4 mt-[-1rem]">
           <QnA qnaList={qnaList} />
           <div className="flex flex-col gap-4">
             <label htmlFor="">
@@ -140,7 +132,7 @@ export default async function ProductInfo({ params }: PageProps) {
               <Button size="small">등록</Button>
             </div>
           </div>
-        </>
+        </div>
       ),
     },
   ];
