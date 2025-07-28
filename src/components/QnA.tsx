@@ -2,14 +2,17 @@
 
 import Button from '@/components/Button';
 import CheckboxButton from '@/components/CheckboxButton';
+import Modal from '@/components/Modal';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
+import { deleteQnA } from '@/data/actions/qna';
 import useAuthStore from '@/store/authStore';
 import { QnaItem } from '@/types/qna';
 import { Pencil, Trash } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
-import React, { useState } from 'react';
+import React, { startTransition, useState } from 'react';
 
 function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
   const selectOptions = ['답변 대기', '답변 완료'];
@@ -18,6 +21,12 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
   const [selectedValue, setSelectedValue] = useState('답변 상태');
   const [isOpen, setIsOpen] = useState(0);
   const [currentPage /*setCurrentPage*/] = useState(1);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isFailModalOpen, setIsFailModalOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  const { user } = useAuthStore();
+  const router = useRouter();
 
   // 내 Q&A 조회
   qnaList = isMyQnA ? qnaList.filter(qna => user?._id === qna.question.user._id) : qnaList;
@@ -31,7 +40,20 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
   // 현재 페이지의 게시글 목록 첫번째 index
   const startIdx = (currentPage - 1) * 5;
 
-  const { user } = useAuthStore();
+  // Q&A 삭제
+  const handleDelete = (_id: number) => {
+    startTransition(async () => {
+      try {
+        await deleteQnA(_id);
+        setIsConfirmModalOpen(false);
+        router.refresh();
+      } catch (error) {
+        console.error(error);
+        setIsConfirmModalOpen(false);
+        setIsFailModalOpen(true);
+      }
+    });
+  };
 
   return (
     <div className="text-[14px]">
@@ -127,7 +149,15 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
                               <Button icon size="small" aria-label="수정">
                                 <Pencil color="var(--color-darkgray)" size={20} />
                               </Button>
-                              <Button icon size="small" aria-label="삭제">
+                              <Button
+                                icon
+                                size="small"
+                                aria-label="삭제"
+                                onClick={() => {
+                                  setSelectedId(qna.question._id);
+                                  setIsConfirmModalOpen(true);
+                                }}
+                              >
                                 <Trash color="var(--color-darkgray)" size={20} />
                               </Button>
                             </div>
@@ -154,6 +184,20 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
         </div>
         <Pagination totalPages={Math.ceil(newQnaList.length / 5)} currentPage={currentPage} />
       </div>
+      <Modal
+        isOpen={isConfirmModalOpen}
+        handleClose={() => setIsConfirmModalOpen(false)}
+        handleConfirm={() => selectedId && handleDelete(selectedId)}
+        description="정말 삭제하시겠습니까?"
+      ></Modal>
+      {/* 삭제 실패 모달 */}
+      <Modal
+        isOpen={isFailModalOpen}
+        handleClose={() => setIsFailModalOpen(false)}
+        handleConfirm={() => setIsFailModalOpen(false)}
+        description="삭제가 실패하였습니다."
+        hideCancelButton
+      ></Modal>
     </div>
   );
 }
