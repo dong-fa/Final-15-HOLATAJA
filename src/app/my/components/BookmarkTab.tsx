@@ -3,11 +3,11 @@
 import BookmarkCard from '@/app/my/components/BookmarkCard';
 import Pagination from '@/components/Pagination';
 import { SubTitle } from '@/components/Typography';
-import { BookmarkData } from '@/types/bookmark';
+import { BookmarkItemData } from '@/types/bookmark';
 import { useState } from 'react';
 
 interface BookmarkTabProps {
-  bookmarkList: BookmarkData[];
+  bookmarkList: BookmarkItemData[];
 }
 
 export default function BookmarkTab({ bookmarkList }: BookmarkTabProps) {

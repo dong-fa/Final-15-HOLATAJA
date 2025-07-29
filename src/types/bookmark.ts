@@ -1,4 +1,4 @@
-export interface BookmarkData {
+export interface BookmarkItemData {
   _id: number;
   user_id: number;
   createdAt: string;
