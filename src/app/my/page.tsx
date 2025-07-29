@@ -5,16 +5,22 @@ import BookmarkTab from '@/app/my/components/BookmarkTab';
 import QnATab from '@/app/my/components/QnATab';
 import ReviewTab from '@/app/my/components/ReviewTab';
 import UserInfo from './components/UserInfo';
+import { getOrderList } from '@/data/functions/order';
 
-const tabItems: TabItem[] = [
-  { id: 'info', title: '회원 정보', content: <UserInfo /> },
-  { id: 'orders', title: '구매 내역', content: <OrderTab /> },
-  { id: 'bookmarks', title: '찜 목록', content: <BookmarkTab /> },
-  { id: 'reviews', title: '나의 구매 후기', content: <ReviewTab /> },
-  { id: 'qna', title: '나의 Q&A', content: <QnATab /> },
-];
+export default async function MyPage() {
+  // 구매 내역 목록 불러오기
 
-export default function MyPage() {
+  const orderHistoryData = await getOrderList();
+  const orderHistoryList = orderHistoryData.ok === 1 ? orderHistoryData.item : [];
+
+  const tabItems: TabItem[] = [
+    { id: 'info', title: '회원 정보', content: <UserInfo /> },
+    { id: 'orders', title: '구매 내역', content: <OrderTab orderHistoryList={orderHistoryList} /> },
+    { id: 'bookmarks', title: '찜 목록', content: <BookmarkTab /> },
+    { id: 'reviews', title: '나의 구매 후기', content: <ReviewTab /> },
+    { id: 'qna', title: '나의 Q&A', content: <QnATab /> },
+  ];
+
   return (
     <>
       <Title className="title">마이 페이지</Title>
