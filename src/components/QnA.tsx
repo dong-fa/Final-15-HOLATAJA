@@ -20,7 +20,6 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
   const [isMyQnA, setIsMyQnA] = useState(false);
   const [selectedValue, setSelectedValue] = useState('답변 상태');
   const [isOpen, setIsOpen] = useState(0);
-  const [currentPage /*setCurrentPage*/] = useState(1);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isFailModalOpen, setIsFailModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -29,7 +28,7 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
   const router = useRouter();
 
   // 답변 상태별 Q&A 필터링
-  const filteredQnaList =
+  const qnaFilteredByAnswer =
     selectedValue === '답변 대기'
       ? qnaList.filter(qna => qna.question.repliesCount === 0)
       : selectedValue === '답변 완료'
@@ -37,10 +36,13 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
         : qnaList;
 
   // 내 QnA 보기 필터링 적용
-  const finalQnaList = isMyQnA ? filteredQnaList.filter(qna => user?._id === qna.question.user._id) : filteredQnaList;
+  const qnaFilteredByUser = isMyQnA ? qnaFilteredByAnswer.filter(qna => user?._id === qna.question.user._id) : qnaFilteredByAnswer;
 
-  // 현재 페이지의 게시글 목록 첫번째 index
-  const startIdx = (currentPage - 1) * 5;
+  // Pagination
+  const [page, setPage] = useState(1);
+  const limit = 5;
+  const totalPages = Math.ceil(qnaFilteredByUser.length / limit);
+  const pagedQnaList = qnaFilteredByUser.slice((page - 1) * limit, page * limit);
 
   // Q&A 삭제
   const handleDelete = (_id: number) => {
@@ -56,12 +58,6 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
       }
     });
   };
-
-  // Pagination
-  const [page, setPage] = useState(1);
-  const limit = 5;
-  const totalPages = Math.ceil(finalQnaList.length / limit);
-  const currentItems = finalQnaList.slice((page - 1) * limit, page * limit);
 
   return (
     <div className="text-[14px]">
@@ -111,7 +107,7 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
               </tr>
             </thead>
             <tbody>
-              {!finalQnaList.length ? (
+              {!qnaFilteredByUser.length ? (
                 <tr>
                   <td colSpan={4} align="center" className="py-8">
                     <CircleAlert className="mb-4" size={32} />
@@ -119,7 +115,7 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
                   </td>
                 </tr>
               ) : (
-                currentItems.slice(startIdx, startIdx + 5).map(qna => (
+                pagedQnaList.map(qna => (
                   <React.Fragment key={qna.question._id}>
                     <tr
                       key={qna.question._id}
@@ -205,7 +201,7 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
           </table>
         </div>
 
-        {finalQnaList.length ? <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} /> : null}
+        {qnaFilteredByUser.length ? <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} /> : null}
       </div>
       <Modal
         isOpen={isConfirmModalOpen}
