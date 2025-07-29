@@ -39,6 +39,7 @@ export async function postQuestion(state: ApiRes<QuestionItem> | null, formData:
   if (data.ok) {
     // 캐시 갱신
     revalidateTag('qna-list');
+    revalidateTag('my-qna-list');
   }
   return data;
 }
@@ -68,6 +69,7 @@ export async function deleteQnA(_id: number): ApiResPromise<QuestionItem> {
 
   if (data.ok) {
     revalidateTag('qna-list');
+    revalidateTag('my-qna-list');
   }
   return data;
 }
