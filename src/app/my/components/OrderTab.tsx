@@ -1,20 +1,28 @@
+'use client';
+
 import HistoryCard from '@/app/my/components/HistoryCard';
+import Pagination from '@/components/Pagination';
 import { SubTitle } from '@/components/Typography';
-import { getOrderList } from '@/data/functions/order';
 import { getOrderStatusLabel } from '@/data/tables/mappingTables';
 import { OrderItem } from '@/types/order';
+import { useState } from 'react';
 
-export default async function OrderTab() {
+interface OrderTabProps {
+  orderHistoryList: OrderItem[];
+}
+export default function OrderTab({ orderHistoryList }: OrderTabProps) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  const orderHistoryData = await getOrderList({ page: 1, limit: 3 });
-  const orderHistoryList = orderHistoryData.ok === 1 ? orderHistoryData.item : [];
+  const [page, setPage] = useState(1);
+  const limit = 3;
+  const totalPages = Math.ceil(orderHistoryList.length / limit);
+  const currentItems = orderHistoryList.slice((page - 1) * limit, page * limit);
 
   return (
     <>
       <SubTitle className="label-l">구매 내역</SubTitle>
       <div className="bg-white py-3 mt-3">
-        {orderHistoryList.map((order: OrderItem, index: number) => (
+        {currentItems.map((order: OrderItem, index: number) => (
           <HistoryCard
             key={index}
             id={order._id}
@@ -27,6 +35,7 @@ export default async function OrderTab() {
           />
         ))}
       </div>
+      <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
     </>
   );
 }

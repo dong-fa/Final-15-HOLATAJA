@@ -7,14 +7,12 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
 
 /**
  * 유저가 주문했던 구매 목록을 모두 가져옴
- * @param page - 표시될 페이지
- * @param limit - 한 페이지에 들어갈 데이터 수
  * @returns {Promise<ApiResPromise<OrderItem[]>>} - 구매 목록 응답 객체
  */
-export async function getOrderList({ page, limit }: { page?: number; limit?: number }): ApiResPromise<OrderItem[]> {
+export async function getOrderList(): ApiResPromise<OrderItem[]> {
   const accessToken = (await cookies()).get('accessToken')?.value;
   try {
-    const response = await fetch(`${API_URL}/orders/?page=${page}&limit=${limit}&sort={"createdAt": -1}`, {
+    const response = await fetch(`${API_URL}/orders/?sort={"createdAt": -1}`, {
       headers: {
         'Client-Id': CLIENT_ID,
         'Content-Type': 'application/json',

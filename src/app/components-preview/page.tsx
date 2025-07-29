@@ -13,12 +13,12 @@ import { Contents, ContentsTitle, SubTitle, Title } from '@/components/Typograph
 import Image from 'next/image';
 import Textarea from '@/components/Textarea';
 import Input from '@/components/Input';
-import Pagination from '@/components/Pagination';
 import QuantityCount from '@/components/QuantityCount';
 import Modal from '@/components/Modal';
 import OrderedCard from '@/components/OrderdCard';
 import ProductCard from '@/components/ProductCard';
 import ReviewCard from '@/components/ReviewCard';
+import Pagination from '@/components/Pagination';
 
 // Button Component Options
 const sizes = ['full', 'large', 'medium', 'small'] as const;
@@ -492,7 +492,7 @@ function InteractionElementsTab() {
               </li>
             ))}
           </ul>
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={page => setCurrentPage(page)} />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
         </div>
       </div>
       <h3 className="text-lg font-semibold mb-3">QuantityCounter</h3>

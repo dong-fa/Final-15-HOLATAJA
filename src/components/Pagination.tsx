@@ -12,7 +12,7 @@ interface PaginationProps {
 export default function Pagination({ totalPages, currentPage, onPageChange }: PaginationProps) {
   if (totalPages < 1) return null;
 
-  // 사용자가 입력한 페이지 값 정수화/입력한 함수 실행
+  // 클릭 시 실행되는 함수 : 입력값 정수화 + 함수 실행(페이지 전환)
   const handlePageClick = (p: number) => {
     const page = Math.floor(p);
     if (page < 1 || page > totalPages || page === currentPage) return;
@@ -26,9 +26,13 @@ export default function Pagination({ totalPages, currentPage, onPageChange }: Pa
   }
 
   return (
-    <div className="flex items-center justify-center py-4">
+    <div className="flex items-center justify-center gap-1 py-4">
       {/* prev button */}
-      <button onClick={() => handlePageClick(currentPage - 1)} disabled={currentPage === 1} className="px-2 py-1 disabled:opacity-30">
+      <button
+        onClick={() => handlePageClick(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="px-2 py-1 cursor-pointer disabled:opacity-30 disabled:cursor-default"
+      >
         <ChevronLeft size={18} />
       </button>
 
@@ -36,14 +40,18 @@ export default function Pagination({ totalPages, currentPage, onPageChange }: Pa
         <button
           key={p}
           onClick={() => handlePageClick(p)}
-          className={`w-6 h-6 p-0 rounded-xl text-text label-s cursor-pointer ${p === currentPage ? 'bg-primary text-white font-semibold' : 'hover:bg-gray-100'}`}
+          className={`w-6 h-6 p-0 rounded-full text-text label-s cursor-pointer ${p === currentPage ? 'bg-primary text-white font-semibold pointer-events-none' : 'hover:bg-gray-200 transition'}`}
         >
           {p}
         </button>
       ))}
 
       {/* next button */}
-      <button onClick={() => handlePageClick(currentPage + 1)} disabled={currentPage === totalPages} className="px-2 py-1 disabled:opacity-30">
+      <button
+        onClick={() => handlePageClick(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="px-2 py-1 cursor-pointer disabled:opacity-30 disabled:cursor-default"
+      >
         <ChevronRight size={18} />
       </button>
     </div>
