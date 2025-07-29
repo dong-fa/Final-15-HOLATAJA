@@ -28,9 +28,9 @@ function ProductImg({ title, srcList, swipe, productIid }: ProductImgProps) {
     <>
       {swipe ? (
         // 제품 상세에 들어갈 슬라이드형 이미지
-        <div className="relative">
+        <div className="relative aspect-square" style={{ maxWidth: 'calc(100vw - 2rem - 15px)' }}>
           <button
-            className={`${buttonBg} z-10 rounded-full w-6 h-6 text-white flex justify-center items-center absolute bottom-4 right-4 cursor-pointer`}
+            className={`${buttonBg} z-10 rounded-full w-[24px] aspect-square text-white flex justify-center items-center absolute bottom-4 right-4 cursor-pointer`}
             onClick={() => setLiked(!liked)}
             type="button"
             aria-label="찜하기"
@@ -41,13 +41,13 @@ function ProductImg({ title, srcList, swipe, productIid }: ProductImgProps) {
             modules={[Navigation, Pagination]}
             navigation={{ nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }}
             pagination={{ clickable: true }}
-            className="relative w-full"
+            className="relative"
           >
             {srcList.map((src, idx) => (
               <SwiperSlide key={idx}>
-                <div className="w-full overflow-hidden rounded-lg aspect-square">
+                <div className="relative w-full overflow-hidden rounded-lg aspect-square max-w-screen">
                   {/* alt값 추가 필요 */}
-                  <Image src={src} alt={title + '이미지'} fill className="object-cover" sizes="100%" />
+                  <Image src={src} alt={title + '이미지'} fill className="object-cover" sizes="(max-width: 640px) 100vw - 2rem - 15px, 100vw" />
                 </div>
               </SwiperSlide>
             ))}
@@ -62,7 +62,7 @@ function ProductImg({ title, srcList, swipe, productIid }: ProductImgProps) {
       ) : (
         // 제품 목록에 들어갈 고정형 이미지
         <div className="relative w-full h-full overflow-hidden rounded-lg aspect-square">
-          <Link href={`./products/${productIid}`} className="relative w-full h-full block">
+          <Link href={`./products/${productIid}`} className="relative block w-full h-full">
             <Image
               src={srcList[0]}
               alt={title + '이미지'}
@@ -72,7 +72,7 @@ function ProductImg({ title, srcList, swipe, productIid }: ProductImgProps) {
             />
           </Link>
           <button
-            className={`${buttonBg} rounded-full w-6 h-6 text-white flex justify-center items-center absolute bottom-2.5 right-2.5 cursor-pointer`}
+            className={`${buttonBg} rounded-full w-[24px] aspect-square text-white flex justify-center items-center absolute bottom-2.5 right-2.5 cursor-pointer`}
             onClick={() => setLiked(!liked)}
             type="button"
             aria-label="찜하기"
