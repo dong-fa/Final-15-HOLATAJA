@@ -12,7 +12,7 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
  */
 export async function getQuestion(): ApiResPromise<QuestionItem[]> {
   try {
-    const response = await fetch(`${API_URL}/posts?type=qna`, {
+    const response = await fetch(`${API_URL}/posts?type=qna&?sort={"createdAt": -1}`, {
       headers: {
         'Client-Id': CLIENT_ID,
         'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export async function getAnswer(_id: number): ApiResPromise<AnswerItem[]> {
 export async function getMyQnA(): ApiResPromise<QuestionItem[]> {
   const accessToken = (await cookies()).get('accessToken')?.value;
   try {
-    const response = await fetch(`${API_URL}/posts/users?type=qna`, {
+    const response = await fetch(`${API_URL}/posts/users?type=qna&?sort={"createdAt": -1}`, {
       headers: {
         'Client-Id': CLIENT_ID,
         Authorization: `Bearer ${accessToken}`, // 인증 토큰

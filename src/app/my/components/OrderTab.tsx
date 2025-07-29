@@ -13,16 +13,17 @@ interface OrderTabProps {
 export default function OrderTab({ orderHistoryList }: OrderTabProps) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+  //Pagination
   const [page, setPage] = useState(1);
   const limit = 3;
   const totalPages = Math.ceil(orderHistoryList.length / limit);
-  const currentItems = orderHistoryList.slice((page - 1) * limit, page * limit);
+  const pagedOrderList = orderHistoryList.slice((page - 1) * limit, page * limit);
 
   return (
     <>
       <SubTitle className="label-l">구매 내역</SubTitle>
       <div className="bg-white py-3 mt-3">
-        {currentItems.map((order: OrderItem, index: number) => (
+        {pagedOrderList.map((order: OrderItem, index: number) => (
           <HistoryCard
             key={index}
             id={order._id}

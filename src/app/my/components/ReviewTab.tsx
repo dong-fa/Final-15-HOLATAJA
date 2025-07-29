@@ -9,20 +9,16 @@ export default async function ReviewTab() {
 
   let reviewList: ReviewItem[] = [];
   // 구매후기 데이터 reviewList에 저장
-  if(reviewData.ok === 1){
-    reviewList = reviewData.item ;
-  }  
-  
-// { name, createdAt, rating, content, isMyReview, handleDelete }
+  if (reviewData.ok === 1) {
+    reviewList = reviewData.item;
+  }
+
   return (
     <>
       <SubTitle className="label-l">나의 구매 후기</SubTitle>
       <div className="bg-white py-3 px-3 mt-3">
-
-      <Review reviewList={reviewList}/>
-
+        <Review reviewList={reviewList} />
       </div>
-      {/* <Pagination totalPages={3} currentPage={1} /> */}
     </>
   );
 }
