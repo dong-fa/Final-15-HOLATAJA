@@ -18,6 +18,7 @@ export async function getQuestion(): ApiResPromise<QuestionItem[]> {
         'Content-Type': 'application/json',
       },
       cache: 'force-cache',
+      next: { tags: ['qna-list'] },
     });
     return response.json();
   } catch (error) {
@@ -39,6 +40,7 @@ export async function getAnswer(_id: number): ApiResPromise<AnswerItem[]> {
         'Content-Type': 'application/json',
       },
       cache: 'force-cache',
+      next: { tags: [`answer-list-${_id}`] },
     });
     return response.json();
   } catch (error) {
@@ -59,6 +61,7 @@ export async function getMyQnA(): ApiResPromise<QuestionItem[]> {
         Authorization: `Bearer ${accessToken}`, // 인증 토큰
       },
       cache: 'force-cache',
+      next: { tags: ['my-qna-list'] },
     });
     return response.json();
   } catch (error) {
