@@ -16,10 +16,10 @@ interface ProductImgProps {
   // 하나의 이미지라도 배열 형태로 전달받음
   srcList: string[];
   swipe?: boolean;
-  productIid?: number;
+  productId?: number;
 }
 
-function ProductImg({ title, srcList, swipe, productIid }: ProductImgProps) {
+function ProductImg({ title, srcList, swipe, productId }: ProductImgProps) {
   const [liked, setLiked] = useState(false);
 
   const buttonBg = liked ? 'bg-[#FFCC00]' : 'bg-darkgray';
@@ -62,7 +62,7 @@ function ProductImg({ title, srcList, swipe, productIid }: ProductImgProps) {
       ) : (
         // 제품 목록에 들어갈 고정형 이미지
         <div className="relative w-full h-full overflow-hidden rounded-lg aspect-square">
-          <Link href={`./products/${productIid}`} className="relative block w-full h-full">
+          <Link href={`./products/${productId}`} className="relative block w-full h-full">
             <Image
               src={srcList[0]}
               alt={title + '이미지'}
