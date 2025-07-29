@@ -6,7 +6,7 @@ import QnATab from '@/app/my/components/QnATab';
 import ReviewTab from '@/app/my/components/ReviewTab';
 import UserInfo from './components/UserInfo';
 import { getOrderList } from '@/data/functions/order';
-import { getBookmarkItems } from '@/data/functions/bookmark';
+import { getBookmarkList } from '@/data/functions/bookmark';
 
 export default async function MyPage() {
   // 구매 내역 목록 데이터 불러오기
@@ -14,7 +14,7 @@ export default async function MyPage() {
   const orderHistoryList = orderHistoryData.ok === 1 ? orderHistoryData.item : [];
 
   // 찜 목록 데이터 불러오기
-  const bookmarkData = await getBookmarkItems();
+  const bookmarkData = await getBookmarkList();
   const bookmarkList = bookmarkData.ok === 1 ? bookmarkData.item : [];
 
   const tabItems: TabItem[] = [

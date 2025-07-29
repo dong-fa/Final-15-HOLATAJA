@@ -19,6 +19,7 @@ export default function BookmarkTab({ bookmarkList }: BookmarkTabProps) {
   const totalPages = Math.ceil(bookmarkList.length / limit);
   const pagedBookmarkList = bookmarkList.slice((page - 1) * limit, page * limit);
 
+  // console.log(pagedBookmarkList);
   return (
     <>
       <SubTitle className="label-l">찜 목록</SubTitle>
@@ -27,7 +28,7 @@ export default function BookmarkTab({ bookmarkList }: BookmarkTabProps) {
           <BookmarkCard
             key={index}
             id={item.product._id}
-            src={`${API_URL}/${item.product.mainImages[0].path}`}
+            src={item.product.mainImages?.[0]?.path ? `${API_URL}/${item.product.mainImages[0].path}` : '/product_images/holataja_circle.webp'}
             name={item.product.name}
             price={item.product.price}
           />

@@ -6,7 +6,7 @@ import ProductCard from '@/components/ProductCard';
 import { Title } from '@/components/Typography';
 import { Product } from '@/types/product';
 import { getProductList } from '@/data/functions/product';
-import { getBookmarkItems } from '@/data/functions/bookmark';
+import { getBookmarkList } from '@/data/functions/bookmark';
 
 export default async function ProductPage() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -27,7 +27,7 @@ export default async function ProductPage() {
       : [];
 
   // 찜한 상품 목록 불러오기
-  const bookmarkItemData = await getBookmarkItems();
+  const bookmarkItemData = await getBookmarkList();
   const bookmarkItemList = bookmarkItemData.ok === 1 ? bookmarkItemData.item : [];
 
   console.log(bookmarkItemList);
