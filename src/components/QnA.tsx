@@ -28,14 +28,16 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
   const { user } = useAuthStore();
   const router = useRouter();
 
-  // 내 Q&A 조회
-  qnaList = isMyQnA ? qnaList.filter(qna => user?._id === qna.question.user._id) : qnaList;
+  // 답변 상태별 Q&A 필터링
+  const filteredQnaList =
+    selectedValue === '답변 대기'
+      ? qnaList.filter(qna => qna.question.repliesCount === 0)
+      : selectedValue === '답변 완료'
+        ? qnaList.filter(qna => qna.question.repliesCount > 0)
+        : qnaList;
 
-  // 답변 상태별 Q&A 조회
-  const newQnaList =
-    selectedValue !== '답변 상태'
-      ? qnaList.filter(qna => (selectedValue === '답변 대기' ? qna.question.repliesCount === 0 : qna.question.repliesCount > 0))
-      : qnaList;
+  // 내 QnA 보기 필터링 적용
+  const finalQnaList = isMyQnA ? filteredQnaList.filter(qna => user?._id === qna.question.user._id) : filteredQnaList;
 
   // 현재 페이지의 게시글 목록 첫번째 index
   const startIdx = (currentPage - 1) * 5;
@@ -54,6 +56,12 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
       }
     });
   };
+
+  // Pagination
+  const [page, setPage] = useState(1);
+  const limit = 5;
+  const totalPages = Math.ceil(finalQnaList.length / limit);
+  const currentItems = finalQnaList.slice((page - 1) * limit, page * limit);
 
   return (
     <div className="text-[14px]">
@@ -92,19 +100,18 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
       </div>
       <div>
         <div className="w-full overflow-auto whitespace-nowrap">
-          {' '}
           <table className="w-full border-b-1 border-text">
             <thead className="border-t-2 border-y">
               <tr>
                 <th className="p-4">제목</th>
-                {my ? '' : <th className="p-4">작성자</th>}
-                <th className="p-4">작성일</th>
-                <th className="p-4">답변상태</th>
-                {my ? <th className="py-4 px-2">문의 제품</th> : ''}
+                {my ? '' : <th className="p-4 ">작성자</th>}
+                <th className=" p-4">작성일</th>
+                <th className=" p-4">답변상태</th>
+                {my ? <th className=" py-4 px-2">문의 제품</th> : ''}
               </tr>
             </thead>
             <tbody>
-              {!newQnaList.length ? (
+              {!finalQnaList.length ? (
                 <tr>
                   <td colSpan={4} align="center" className="py-8">
                     <CircleAlert className="mb-4" size={32} />
@@ -112,8 +119,8 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
                   </td>
                 </tr>
               ) : (
-                newQnaList.slice(startIdx, startIdx + 5).map(qna => (
-                  <>
+                currentItems.slice(startIdx, startIdx + 5).map(qna => (
+                  <React.Fragment key={qna.question._id}>
                     <tr
                       key={qna.question._id}
                       className="border-b border-b-lightgray"
@@ -122,7 +129,7 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
                       }}
                     >
                       <td className="p-4">
-                        <span className="cursor-pointer">{qna.question.title}</span>
+                        <span className="cursor-pointer block truncate whitespace-nowrap overflow-hidden">{qna.question.title}</span>
                       </td>
                       {my ? '' : <td className="p-4 text-center">{qna.question.user.name}</td>}
                       <td className="p-4 text-center">{qna.question.createdAt.split(' ')[0]}</td>
@@ -148,10 +155,10 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
                       <tr className="p-4 border-b bg-lightgray border-b-lightgray">
                         <td colSpan={4} className="p-4 bg-lightgray">
                           <div className={`flex gap-2 ${qna.question.repliesCount > 0 && 'mb-4'}`}>
-                            <span className="content-center inline-block w-6 h-6 text-xs font-semibold text-center bg-white rounded-full text-primary">
+                            <span className="w-6 h-6 inline-block shrink-0 text-center content-center text-xs font-semibold bg-white rounded-full text-primary">
                               Q
                             </span>
-                            <p>{qna.question.content}</p>
+                            <p className="break-words whitespace-pre-wrap block ">{qna.question.content}</p>
                             {user?._id === qna.question.user._id && (
                               <div className="flex ms-auto">
                                 <Button icon size="small" aria-label="수정">
@@ -173,11 +180,17 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
                           </div>
                           {qna.question.repliesCount > 0 && (
                             <div className="flex gap-2">
-                              <span className="content-center inline-block w-6 h-6 text-xs font-semibold text-center text-white rounded-full bg-primary">
+                              <span className="w-6 h-6 inline-block shrink-0 text-center content-center text-xs font-semibold text-white rounded-full bg-primary">
                                 A
                               </span>
                               <div>
-                                <p className="mb-2">{qna.answer?.content}</p>
+                                <p className="break-words whitespace-pre-wrap block mb-2">
+                                  안녕하세요. <br />
+                                  {qna.answer?.content}
+                                  <br />
+                                  <br />
+                                  올라타자 담당자 드림.
+                                </p>
                                 <span className="text-xs text-darkgray">{qna.answer?.createdAt.split(' ')[0]}</span>
                               </div>
                             </div>
@@ -185,13 +198,14 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </React.Fragment>
                 ))
               )}
             </tbody>
           </table>
         </div>
-        {newQnaList.length ? <Pagination totalPages={Math.ceil(newQnaList.length / 5)} currentPage={currentPage} /> : null}
+
+        {finalQnaList.length ? <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} /> : null}
       </div>
       <Modal
         isOpen={isConfirmModalOpen}
