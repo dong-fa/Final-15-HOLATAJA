@@ -16,7 +16,7 @@ export default function ProductCard({ _id, imageSrc, title, price }: ProductCard
   return (
     <div className="w-full rounded">
       <div className="w-full aspect-squre rounded-lg relative">
-        <ProductImg title={title} srcList={[imageSrc]} productIid={_id} />
+        <ProductImg title={title} srcList={[imageSrc]} productId={_id} />
       </div>
 
       <Link href={`./products/${_id}`}>
