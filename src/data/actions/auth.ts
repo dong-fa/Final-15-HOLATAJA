@@ -1,9 +1,10 @@
 'use server';
 
-import { User } from '@/types/user';
+import { User, OAuthUser } from '@/types/user';
 import { ApiResPromise, ApiRes } from '@/types/api';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { signIn } from '@/app/auth/login/socialAuth';
 
 //로그인 액션
 export async function loginAction(prevState: ApiRes<User> | null, formData: FormData): ApiResPromise<User> {
@@ -118,7 +119,7 @@ export async function userPatchAction(prevState: ApiRes<User> | null, formData: 
   }
   return data;
 }
-
+//로그아웃 액션
 export async function logout() {
   const cookieStore = await cookies();
 
@@ -128,4 +129,38 @@ export async function logout() {
 
   // 로그인 페이지로 리다이렉트
   redirect('/auth/login');
+}
+
+// OAuth 사용자 회원가입 액션
+export async function createOAuthUserAction(user: OAuthUser): ApiResPromise<User> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/signup/oauth`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Client-Id': process.env.NEXT_PUBLIC_API_CLIENT_ID!,
+    },
+    body: JSON.stringify(user),
+  });
+
+  return res.json();
+}
+
+// OAuth 로그인 액션
+export async function loginWithOAuth(providerAccountId: string): ApiResPromise<User> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/login/with`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Client-Id': process.env.NEXT_PUBLIC_API_CLIENT_ID!,
+    },
+    body: JSON.stringify({ providerAccountId }),
+  });
+  return res.json();
+}
+
+export async function loginWithAuthjs(provider: string, formData: FormData) {
+  // 로그인 후에 이동해야 할 페이지(redirect 파라미터) 추출
+  const redirectTo = (formData.get('redirect') as string) || '/';
+
+  await signIn(provider, { redirectTo });
 }

@@ -1,6 +1,7 @@
 // 주문 아이템 인터페이스
 export interface CartItemData {
   _id: number;
+  color: string;
   product_id: number;
   quantity: number;
   createdAt: string;
@@ -30,17 +31,17 @@ export interface CartItemData {
 }
 
 export interface CartTotalCost {
-  products: string;
-  shippingfees: number;
+  products: number;
+  shippingFees: number;
   discount: {
     products: number;
-    shippingfees: number;
+    shippingFees: number;
   };
   total: number;
 }
 
 export interface CartResponse {
-  ok: number;
   item: CartItemData[];
-  cost: CartTotalCost;
+  ok: 0 | 1;
+  cost?: CartTotalCost;
 }

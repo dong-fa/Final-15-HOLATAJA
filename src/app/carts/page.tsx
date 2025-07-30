@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import getCartList from '@/data/functions/carts';
 import CartContainer from './components/CartContainer';
+import { CartResponse } from '@/types/cart';
 
 /**
  * 장바구니 페이지 서버 컴포넌트
@@ -35,27 +36,15 @@ export default async function CartPage() {
   let serverError = null;
 
   if (token) {
-    try {
-      const result = await getCartList(token);
+    const result = await getCartList(token);
+    console.log('서버 장바구니 데이터:', result);
 
-      if (result.ok === 1) {
-        initialCartData = result;
-      } else {
-        // API 호출은 성공했지만 비즈니스 로직 에러
-        serverError = result.message || '장바구니 데이터를 불러올 수 없습니다.';
-      }
-
-      // 개발 환경에서만 로그 출력
-      if (process.env.NODE_ENV === 'development') {
-        console.log('서버 장바구니 데이터:', result);
-      }
-    } catch (error) {
-      // 네트워크 에러, 서버 에러 등
-      serverError = '장바구니 데이터 로딩 중 오류가 발생했습니다.';
-
-      if (process.env.NODE_ENV === 'development') {
-        console.error('서버 장바구니 데이터 페칭 오류:', error);
-      }
+    if (result.ok !== 1) {
+      // API 호출은 성공했지만 비즈니스 로직 에러
+      serverError = result.message || '장바구니 데이터를 불러올 수 없습니다.';
+    }
+    if (result.ok === 1) {
+      initialCartData = result as CartResponse;
     }
   }
 
@@ -67,5 +56,6 @@ export default async function CartPage() {
    * - token: 인증 토큰 (클라이언트에서 API 호출용)
    * - serverError: 서버에서 발생한 에러 (있는 경우)
    */
+
   return <CartContainer initialData={initialCartData} token={token} serverError={serverError} />;
 }
