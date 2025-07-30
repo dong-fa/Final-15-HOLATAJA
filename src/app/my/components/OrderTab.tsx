@@ -28,7 +28,7 @@ export default function OrderTab({ orderHistoryList }: OrderTabProps) {
             key={index}
             id={order._id}
             status={getOrderStatusLabel(order.state)}
-            src={`${API_URL}/${order.products[0].image.path}`}
+            src={order.products?.[0]?.image?.path ? `${API_URL}/${order.products[0].image.path}` : '/product_images/holataja_circle.webp'}
             name={order.products[0].name}
             price={order.cost.total}
             quantity={order.products.length}

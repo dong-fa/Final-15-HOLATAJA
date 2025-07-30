@@ -122,6 +122,7 @@ export default async function ProductInfo({ params }: PageProps) {
         <ProductImg
           title={productData.ok === 1 ? productData.item?.name : ''}
           srcList={productData.ok === 1 ? productData.item?.mainImages.filter(img => img.type === 'detail').map(img => API_URL + '/' + img.path) : []}
+          bookmarkId={productData.ok === 1 ? productData.item.myBookmarkId : 0}
           swipe
         ></ProductImg>
         <div className="flex flex-col self-center gap-4">

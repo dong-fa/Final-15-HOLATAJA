@@ -5,13 +5,14 @@ import { getAccountByBank, getOrderStatusLabel } from '@/data/tables/mappingTabl
 import { OrderItem } from '@/types/order';
 import Link from 'next/link';
 
-type PageProps  = {
+type PageProps = {
   params: Promise<{
     id: string;
   }>;
 };
 
 export default async function OrderInfoPage({ params }: PageProps) {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const { id } = await params;
   const orderData = await getOrderInfo(Number(id));
@@ -22,6 +23,8 @@ export default async function OrderInfoPage({ params }: PageProps) {
   }
 
   const bankInfo = orderInfo.payment.info.split('&')[0].trim();
+
+  console.log('orderData', orderData);
 
   return (
     <>
@@ -46,11 +49,11 @@ export default async function OrderInfoPage({ params }: PageProps) {
         {orderInfo.products.map((product, index) => (
           <OrderedCard
             key={index}
-            src={`https://fesp-api.koyeb.app/market/${product.image.path}`}
+            src={product.image?.path ? `${API_URL}/${product.image.path}` : '/product_images/holataja_circle.webp'}
             name={product.name}
             price={product.price}
             quantity={product.quantity}
-            option={orderInfo.options[index].option}
+            option={orderInfo.options?.[index]?.option}
           />
         ))}
       </section>
