@@ -4,7 +4,7 @@ import Button from '@/components/Button';
 import { Contents, ContentsTitle } from '@/components/Typography';
 
 interface CartSummaryProps {
-  cost: CartTotalCost;
+  cost?: CartTotalCost;
   onOrderClick: () => void;
   onContinueShoppingClick: () => void;
   itemCount: number;
@@ -24,14 +24,7 @@ export default function CartSummary({
     return `${price.toLocaleString('ko-KR')}원`;
   };
 
-  const getProductsCost = (): number => {
-    if (typeof cost.products === 'string') {
-      return parseInt(cost.products.replace(/[^0-9]/g, '')) || 0;
-    }
-    return cost.products || 0;
-  };
-
-  const productsCost = getProductsCost();
+  const productsCost = cost?.products || 0;
 
   return (
     <div>
@@ -45,13 +38,13 @@ export default function CartSummary({
         {/* 배송비 */}
         <div className="flex justify-between items-center">
           <Contents className="text-secondary">배송비</Contents>
-          <Contents className="text-secondary">{formatPrice(cost.shippingfees)}</Contents>
+          <Contents className="text-secondary">{formatPrice(cost?.shippingFees || 0)}</Contents>
         </div>
 
         {/* 총 주문금액 */}
         <div className="flex justify-between items-center">
           <ContentsTitle className="text-primary font-bold">총 주문금액</ContentsTitle>
-          <ContentsTitle className="text-primary font-bold">{formatPrice(cost.total)}</ContentsTitle>
+          <ContentsTitle className="text-primary font-bold">{formatPrice(cost?.total || 0)}</ContentsTitle>
         </div>
       </div>
       <div className="flex justify-between mt-4 gap-2">
