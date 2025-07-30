@@ -1,5 +1,5 @@
 import { ApiResPromise } from '@/types/api';
-import { CartItemData } from '@/types/cart';
+import { CartItemData, CartResponse } from '@/types/cart';
 
 // API 응답 기본 타입 정의
 interface ApiBaseResponse {
@@ -16,6 +16,7 @@ interface CartItemDeleteResponse extends ApiBaseResponse {
 interface CartItemAddResponse extends ApiBaseResponse {
   item?: CartItemData; // 추가된 아이템 정보 (성공시)
 }
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
 
@@ -31,6 +32,7 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
  * - 응답: { ok: number, item: CartItemData[], cost: CartTotalCost }
  */
 export default async function getCartList(token: string): ApiResPromise<CartItemData[]> {
+  console.log(' 장바구니 조회 api 시작:', { token: token?.slice(0, 20) + '...' });
   try {
     // 토큰 유효성 검사
     if (!token) {
@@ -43,11 +45,11 @@ export default async function getCartList(token: string): ApiResPromise<CartItem
         'Client-Id': CLIENT_ID, // API 클라이언트 식별자
         Authorization: `Bearer ${token}`, // JWT 토큰 인증
       },
-      cache: 'force-cache', // 캐시 정책 설정
+      cache: 'no-cache', // 캐시 정책 설정
     });
 
     const result = await response.json();
-    console.log('리절트 확인', result);
+    console.log('장바구니 조회 api 결과: ', result);
 
     // API 응답이 실패인 경우 그대로 반환
     if (result.ok !== 1) {
@@ -67,66 +69,6 @@ export default async function getCartList(token: string): ApiResPromise<CartItem
 }
 
 /**
- * 장바구니 아이템 수량 변경 API 함수
- * TODO: 디바운싱 로직 확정 후 구현 예정
- *
- * @param token - JWT 인증 토큰
- * @param cartItemId - 수정할 장바구니 아이템의 고유 ID (_id 필드값)
- * @param quantity - 변경할 수량 (1 이상의 정수)
- * @returns API 응답 결과
- *
- * API 명세서 참고: PATCH /carts/{_id}
- * - 경로 매개변수: _id (장바구니 아이템 ID)
- * - 요청 본문: { quantity: number }
- * - 응답: 업데이트된 장바구니 아이템 정보
- */
-// export async function updateCartItemQuantity(
-//   token: string,
-//   cartItemId: number,
-//   quantity: number
-// ): ApiResPromise<CartItemUpdateResponse> {
-//   try {
-//     // 입력값 유효성 검사
-//     if (!token) {
-//       return { ok: 0, message: '인증 토큰이 필요합니다' };
-//     }
-
-//     if (quantity < 1) {
-//       return { ok: 0, message: '수량은 1개 이상이어야 합니다' };
-//     }
-
-//     // PATCH 요청으로 수량 업데이트
-//     const response = await fetch(`${API_URL}/carts/${cartItemId}`, {
-//       method: 'PATCH',
-//       headers: {
-//         'Content-Type': 'application/json', // JSON 데이터 전송
-//         'Client-Id': CLIENT_ID,
-//         'Authorization': `Bearer ${token}`,
-//       },
-//       body: JSON.stringify({
-//         quantity: quantity // 새로운 수량값
-//       }),
-//     });
-
-//     const result = await response.json();
-
-//     // HTTP 상태 코드 확인
-//     if (!response.ok) {
-//       return {
-//         ok: 0,
-//         message: result.message || `수량 변경에 실패했습니다. (${response.status})`
-//       };
-//     }
-
-//     return result;
-//   } catch (error) {
-//     // 네트워크 오류 또는 JSON 파싱 오류 등 예외 처리
-//     console.error('장바구니 수량 변경 오류:', error);
-//     return { ok: 0, message: '수량 변경에 실패했습니다.' };
-//   }
-// }
-
-/**
  * 장바구니 아이템 삭제 API 함수
  * 장바구니에서 특정 상품을 완전히 제거합니다.
  *
@@ -139,6 +81,7 @@ export default async function getCartList(token: string): ApiResPromise<CartItem
  * - 응답: 삭제 성공/실패 정보
  */
 export async function removeCartItem(token: string, cartItemId: number): ApiResPromise<CartItemDeleteResponse> {
+  console.log('상품 삭제 api 시작:', { cartItemId });
   try {
     // 토큰 유효성 검사
     if (!token) {
@@ -155,6 +98,7 @@ export async function removeCartItem(token: string, cartItemId: number): ApiResP
     });
 
     const result = await response.json();
+    console.log('상품 삭제 api 결과: ', result);
 
     // HTTP 상태 코드 확인
     if (!response.ok) {
@@ -215,6 +159,7 @@ export async function addToCart(token: string, productId: number, quantity: numb
     });
 
     const result = await response.json();
+    console.log('장바구니에 상품이 추가 되었습니다.', result);
 
     // HTTP 상태 코드 확인
     if (!response.ok) {
@@ -261,5 +206,57 @@ export async function clearCart(token: string): Promise<{ ok: 0 | 1; message?: s
     // 네트워크 오류, 서버 오류 등의 예외
     console.error('장바구니 비우기 오류:', error);
     return { ok: 0, message: '네트워크 오류로 장바구니 비우기에 실패하였습니다..' };
+  }
+}
+
+/**
+ * 장바구니 아이템 수량 변경
+ * @param token
+ * @param cartItemId - 수정할 장바구니 고유 ID
+ * @param quantity - 변경할 수량
+ * @returns - API 응답 결과
+ * API 명세: PATCH /carts/{id}
+ * - 경로 매개변수: _id(장바구니 아이템 ID)
+ * 요청: 브루노 확인 결과 {quantity: number}
+ * 응답: 업데이트 된 장바구니 전체 정보
+ */
+
+export async function updateCartItemQuantity(token: string, cartItemId: number, quantity: number): ApiResPromise<CartResponse> {
+  console.log('수량 변경 api 시작:', { cartItemId, quantity });
+  try {
+    if (!token) {
+      return { ok: 0, message: '인증 토큰이 필요합니다.' };
+    }
+
+    if (quantity < 1) {
+      return { ok: 0, message: '수량은 1개 이상이어야 합니다.' };
+    }
+
+    // PATCH 요청으로 수량 업데이트 =
+    const response = await fetch(`${API_URL}/carts/${cartItemId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': `application/json`,
+        'Client-Id': CLIENT_ID,
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        quantity: quantity,
+      }),
+    });
+    const result = await response.json();
+    console.log('수량 변경 api 결과: ', result);
+
+    // HTTP 상태 코드 확인
+    if (!response.ok) {
+      return {
+        ok: 0,
+        message: result.message || `수량 변경에 실패했습니다. (${response.status})`,
+      };
+    }
+    return result;
+  } catch (error) {
+    console.error('장바구니 수량 변경 오류: ', error);
+    return { ok: 0, message: '수량 변경에 실패했습니다.' };
   }
 }

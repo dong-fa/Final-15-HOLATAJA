@@ -1,6 +1,7 @@
 // 주문 아이템 인터페이스
 export interface CartItemData {
   _id: number;
+  color: string;
   product_id: number;
   quantity: number;
   createdAt: string;

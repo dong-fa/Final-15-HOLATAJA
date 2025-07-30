@@ -37,6 +37,7 @@ export default async function CartPage() {
 
   if (token) {
     const result = await getCartList(token);
+    console.log('서버 장바구니 데이터:', result);
 
     if (result.ok !== 1) {
       // API 호출은 성공했지만 비즈니스 로직 에러
@@ -44,10 +45,6 @@ export default async function CartPage() {
     }
     if (result.ok === 1) {
       initialCartData = result as CartResponse;
-    }
-    // 개발 환경에서만 로그 출력
-    if (process.env.NODE_ENV === 'development') {
-      console.log('서버 장바구니 데이터:', result);
     }
   }
 
