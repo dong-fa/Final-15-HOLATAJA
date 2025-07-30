@@ -26,6 +26,7 @@ export default function BookmarkTab({ bookmarkList }: BookmarkTabProps) {
       <div className="bg-white py-3 mt-3">
         {pagedBookmarkList.map((item, index) => (
           <BookmarkCard
+            bookmarkId={item._id}
             key={index}
             id={item.product._id}
             src={item.product.mainImages?.[0]?.path ? `${API_URL}/${item.product.mainImages[0].path}` : '/product_images/holataja_circle.webp'}

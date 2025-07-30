@@ -24,3 +24,16 @@ export interface BookmarkItemData {
     };
   };
 }
+
+export interface BookmarkResData {
+  type: string;
+  user_id: number;
+  target_id: number;
+  user: {
+    _id: number;
+    name: string;
+    email: string;
+  };
+  _id: number;
+  createdAt: string;
+}

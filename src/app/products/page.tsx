@@ -6,7 +6,6 @@ import ProductCard from '@/components/ProductCard';
 import { Title } from '@/components/Typography';
 import { Product } from '@/types/product';
 import { getProductList } from '@/data/functions/product';
-import { getBookmarkList } from '@/data/functions/bookmark';
 
 export default async function ProductPage() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -23,14 +22,9 @@ export default async function ProductPage() {
           category: item.extra.category,
           quantity: item.quantity,
           createdAt: item.createdAt,
+          bookmarkId: item.myBookmarkId ? Number(item.myBookmarkId) : 0,
         }))
       : [];
-
-  // 찜한 상품 목록 불러오기
-  const bookmarkItemData = await getBookmarkList();
-  const bookmarkItemList = bookmarkItemData.ok === 1 ? bookmarkItemData.item : [];
-
-  console.log(bookmarkItemList);
 
   // Tab category에 맞게 content 생성해주는 함수
   function getTabContent(category: Product['category'] | 'ALL') {
@@ -42,7 +36,14 @@ export default async function ProductPage() {
         <CategoryToggle />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {filtered.map((product, index) => (
-            <ProductCard key={index} _id={product._id} imageSrc={product.imgSrc} title={product.name} price={product.price} />
+            <ProductCard
+              key={index}
+              _id={product._id}
+              imageSrc={product.imgSrc}
+              title={product.name}
+              price={product.price}
+              bookmarkId={product.bookmarkId}
+            />
           ))}
         </div>
       </>

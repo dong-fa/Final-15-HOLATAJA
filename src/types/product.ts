@@ -63,5 +63,6 @@ export interface ProductInfo {
     createdAt: '2025.07.17 11:16:18';
   }[];
   bookmarks: number;
+  myBookmarkId: number;
   options: [];
 }

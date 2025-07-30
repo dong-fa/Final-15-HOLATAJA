@@ -1,15 +1,14 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState } from 'react';
-import { Star } from 'lucide-react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
+import { Navigation, Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ProductImgProps {
   title: string;
@@ -17,12 +16,16 @@ interface ProductImgProps {
   srcList: string[];
   swipe?: boolean;
   productId?: number;
+  bookmarkId?: number;
 }
 
-function ProductImg({ title, srcList, swipe, productId }: ProductImgProps) {
-  const [liked, setLiked] = useState(false);
-
+function ProductImg({ title, srcList, swipe, productId, bookmarkId }: ProductImgProps) {
+  const [liked, setLiked] = useState(!!bookmarkId);
   const buttonBg = liked ? 'bg-[#FFCC00]' : 'bg-darkgray';
+
+  useEffect(() => {
+    setLiked(!!bookmarkId);
+  }, [bookmarkId]);
 
   return (
     <>
