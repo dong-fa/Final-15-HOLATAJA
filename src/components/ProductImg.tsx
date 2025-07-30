@@ -9,6 +9,7 @@ import 'swiper/css/pagination';
 import { Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { deleteBookmark, postBookmark } from '@/data/actions/bookmark';
 
 interface ProductImgProps {
   title: string;
@@ -16,16 +17,55 @@ interface ProductImgProps {
   srcList: string[];
   swipe?: boolean;
   productId?: number;
-  bookmarkId?: number;
+  bookmarkId: number; // 찜하지 않은 데이터는 0으로 들어옴
 }
 
-function ProductImg({ title, srcList, swipe, productId, bookmarkId }: ProductImgProps) {
-  const [liked, setLiked] = useState(!!bookmarkId);
+function ProductImg({ title, srcList, swipe, productId, bookmarkId: initialBookmarkId }: ProductImgProps) {
+  // 처음 들어온 bookmarkId props를 initialBookmarkId로 지정, 버튼 눌리면 전환
+  const [liked, setLiked] = useState(!!initialBookmarkId); // boolean값
   const buttonBg = liked ? 'bg-[#FFCC00]' : 'bg-darkgray';
 
+  const [bookmarkId, setBookmarkId] = useState<number>(initialBookmarkId);
+  const [isLoading, setLoading] = useState(false); // 중복 클릭 방지
+
+  // 북마크 상태 변경 시에 rerender
   useEffect(() => {
-    setLiked(!!bookmarkId);
-  }, [bookmarkId]);
+    setLiked(!!initialBookmarkId);
+    setBookmarkId(initialBookmarkId);
+  }, [initialBookmarkId]);
+
+  const handleBookmarkClick = async () => {
+    if (isLoading || !productId) return;
+    setLoading(true);
+    try {
+      if (liked) {
+        // 북마크 삭제
+        if (!bookmarkId) {
+          console.error('bookmarkId가 없습니다.');
+          setLoading(false);
+          return;
+        }
+        const res = await deleteBookmark(bookmarkId);
+        if (res.ok) {
+          setLiked(false);
+          setBookmarkId(0);
+        } else {
+          console.error(res.message);
+        }
+      } else {
+        // 북마크 추가
+        const res = await postBookmark(productId);
+        if (res.ok && res.item) {
+          setLiked(true);
+          setBookmarkId(res.item._id);
+        } else {
+          if (!res.ok) console.error(res.message);
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -34,7 +74,7 @@ function ProductImg({ title, srcList, swipe, productId, bookmarkId }: ProductImg
         <div className="relative aspect-square" style={{ maxWidth: 'calc(100vw - 2rem - 15px)' }}>
           <button
             className={`${buttonBg} z-10 rounded-full w-[24px] aspect-square text-white flex justify-center items-center absolute bottom-4 right-4 cursor-pointer`}
-            onClick={() => setLiked(!liked)}
+            onClick={handleBookmarkClick}
             type="button"
             aria-label="찜하기"
           >
@@ -49,7 +89,6 @@ function ProductImg({ title, srcList, swipe, productId, bookmarkId }: ProductImg
             {srcList.map((src, idx) => (
               <SwiperSlide key={idx}>
                 <div className="relative w-full overflow-hidden rounded-lg aspect-square max-w-screen">
-                  {/* alt값 추가 필요 */}
                   <Image src={src} alt={title + '이미지'} fill className="object-cover" sizes="(max-width: 640px) 100vw - 2rem - 15px, 100vw" />
                 </div>
               </SwiperSlide>
@@ -76,7 +115,7 @@ function ProductImg({ title, srcList, swipe, productId, bookmarkId }: ProductImg
           </Link>
           <button
             className={`${buttonBg} rounded-full w-[24px] aspect-square text-white flex justify-center items-center absolute bottom-2.5 right-2.5 cursor-pointer`}
-            onClick={() => setLiked(!liked)}
+            onClick={handleBookmarkClick}
             type="button"
             aria-label="찜하기"
           >
