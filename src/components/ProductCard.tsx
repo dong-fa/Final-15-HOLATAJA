@@ -6,17 +6,18 @@ interface ProductCardProps {
   imageSrc: string;
   title: string;
   price: number;
+  bookmarkId?: number;
 }
 
 // 상품의 id/이미지경로/상품명/가격을 props로 받아서 동작
 // id는 Link 연결할 때 사용 예정
-export default function ProductCard({ _id, imageSrc, title, price }: ProductCardProps) {
+export default function ProductCard({ _id, imageSrc, title, price, bookmarkId }: ProductCardProps) {
   const formatPrice = price.toLocaleString();
 
   return (
     <div className="w-full rounded">
       <div className="w-full aspect-squre rounded-lg relative">
-        <ProductImg title={title} srcList={[imageSrc]} productId={_id} />
+        <ProductImg title={title} srcList={[imageSrc]} productId={_id} bookmarkId={bookmarkId} />
       </div>
 
       <Link href={`./products/${_id}`}>

@@ -1,5 +1,6 @@
 import { ApiResPromise } from '@/types/api';
 import { ProductInfo } from '@/types/product';
+import { cookies } from 'next/headers';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
@@ -9,11 +10,14 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
  * @returns {Promise<ApiRes<ProductInfo[]>>} - 상품 목록 응답 객체
  */
 export async function getProductList(): ApiResPromise<ProductInfo[]> {
+  const accessToken = (await cookies()).get('accessToken')?.value;
+
   try {
     const response = await fetch(`${API_URL}/products/`, {
       headers: {
         'Client-Id': CLIENT_ID,
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`, // 인증 토큰
       },
       cache: 'force-cache',
       next: { tags: ['product-list'] },
@@ -31,11 +35,13 @@ export async function getProductList(): ApiResPromise<ProductInfo[]> {
  * @returns {Promise<ApiRes<ProductInfo>>} - 상품 상세 응답 객체
  */
 export default async function getProduct(_id: number): ApiResPromise<ProductInfo> {
+  const accessToken = (await cookies()).get('accessToken')?.value;
   try {
     const response = await fetch(`${API_URL}/products/${_id}`, {
       headers: {
         'Client-Id': CLIENT_ID,
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`, // 인증 토큰
       },
       cache: 'force-cache',
       next: { tags: [`product-${_id}`] },

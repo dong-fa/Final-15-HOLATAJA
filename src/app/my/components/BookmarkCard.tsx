@@ -7,9 +7,10 @@ export interface BookmarkCardProps {
   src: string;
   name: string;
   price: number;
+  bookmarkId: number;
 }
 
-export default function BookmarkCard({ id, src, name, price }: BookmarkCardProps) {
+export default function BookmarkCard({ id, src, name, price, bookmarkId }: BookmarkCardProps) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between sm:gap-6 min-w-80 border-b border-lightgray px-4 py-4">
       <div className="w-full flex flex-row justify-between">
@@ -30,7 +31,7 @@ export default function BookmarkCard({ id, src, name, price }: BookmarkCardProps
 
         {/* Image */}
         <section className="grid shrink-0 rounded-xl w-[7rem] h-[7rem] min-w-28 min-h-28 overflow-hidden">
-          <ProductImg title={name} srcList={[src]} productIid={id} />
+          <ProductImg title={name} srcList={[src]} productId={id} bookmarkId={bookmarkId} />
         </section>
       </div>
     </div>
