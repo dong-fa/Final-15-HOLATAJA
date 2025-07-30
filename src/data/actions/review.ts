@@ -46,8 +46,8 @@ export async function postReview(state: ApiRes<ReviewItem> | null, formData: For
 
 /**
  * 구매 후기 id에 해당하는 구매 후기를 삭제함
- * @param {number} _id - 구매 후기 id
- * @returns {Promise<ApiRes>} - 구매 후기 id에 해당하는 구매 후기 응답 객체
+ * @param {number} _id - 삭제할 구매 후기 id
+ * @returns {Promise<ApiRes<ReviewItem>>} - 구매 후기 id에 해당하는 구매 후기 응답 객체
  */
 export async function deleteReview(_id: number): ApiResPromise<ReviewItem> {
   let data: ApiRes<ReviewItem>;
@@ -66,6 +66,41 @@ export async function deleteReview(_id: number): ApiResPromise<ReviewItem> {
   } catch (error) {
     console.error(error);
     return { ok: 0, message: '구매 후기 삭제에 실패했습니다.' };
+  }
+
+  if (data.ok) {
+    revalidateTag('review-list');
+    revalidateTag(`my-review-list`);
+  }
+  return data;
+}
+
+/**
+ * 구매 후기 id에 해당하는 구매 후기를 입력된 별점과 내용으로 수정함
+ * @param {number} _id - 수정할 구매 후기 id
+ * @param {number} rating - 수정된 구매 후기 별점
+ * @param {string} content - 수정된 구매 후기 내용
+ * @returns {Promise<ApiRes<ReviewItem>} -수정된 구매 후기 생성 결과 응답 객체
+ */
+export async function patchReview(_id: number, rating: number, content: string): ApiResPromise<ReviewItem> {
+  let data: ApiRes<ReviewItem>;
+  const accessToken = (await cookies()).get('accessToken')?.value;
+  const body = { _id, rating, content };
+
+  try {
+    const response = await fetch(`${API_URL}/replies/${_id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Client-Id': CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(body),
+    });
+    data = await response.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: '구매 후기 수정에 실패했습니다.' };
   }
 
   if (data.ok) {

@@ -3,17 +3,29 @@
 import Modal from '@/components/Modal';
 import Pagination from '@/components/Pagination';
 import ReviewCard from '@/components/ReviewCard';
-import { deleteReview } from '@/data/actions/review';
+import { deleteReview, patchReview } from '@/data/actions/review';
 import useAuthStore from '@/store/authStore';
 import { ReviewItem } from '@/types/review';
 import { MessageCircleMore } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { startTransition, useState } from 'react';
 
+const modalMessage = {
+  editSuccess: '구매 후기 수정이 완료되었습니다.',
+  editFail: '구매 후기 수정에 실패했습니다.',
+  deleteSuccess: '구매 후기 삭제가 완료되었습니다.',
+  deleteFail: '구매 후기 삭제에 실패하였습니다.',
+};
+
+type ModalType = 'editSuccess' | 'editFail' | 'deleteSuccess' | 'deleteFail' | null;
+
 export default function Review({ reviewList }: { reviewList: ReviewItem[] }) {
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [isFailModalOpen, setIsFailModalOpen] = useState(false);
+  // 완료/실패 모달
+  const [modal, setModal] = useState<ModalType>(null);
+  // 삭제 확인 모달
+  const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState(0);
 
   const { user } = useAuthStore();
   const router = useRouter();
@@ -29,16 +41,35 @@ export default function Review({ reviewList }: { reviewList: ReviewItem[] }) {
     startTransition(async () => {
       try {
         await deleteReview(_id);
-        setIsConfirmModalOpen(false);
+        setIsDeleteConfirmModalOpen(false);
         // 목록 새로고침
         router.refresh();
+        setTimeout(() => {
+          setModal('deleteSuccess');
+        }, 200);
       } catch (error) {
-        setIsConfirmModalOpen(false);
-        setIsFailModalOpen(true);
+        setIsDeleteConfirmModalOpen(false);
+        setModal('deleteFail');
         console.error(error);
       }
     });
   };
+
+  // 구매 후기 수정
+  const handleEdit = (_id: number, rating: number, content: string) => {
+    startTransition(async () => {
+      try {
+        await patchReview(_id, rating, content);
+        router.refresh();
+        setEditingId(0);
+        setModal('editSuccess');
+      } catch (error) {
+        setModal('editFail');
+        console.error(error);
+      }
+    });
+  };
+
   return (
     <div>
       {!reviewList.length ? (
@@ -56,28 +87,44 @@ export default function Review({ reviewList }: { reviewList: ReviewItem[] }) {
             content={review.content}
             isMyReview={review.user._id === user?._id}
             handleDelete={() => {
-              setIsConfirmModalOpen(true);
+              setIsDeleteConfirmModalOpen(true);
               setSelectedId(review._id);
             }}
+            handleEdit={() => {
+              setEditingId(review._id);
+            }}
+            handleSave={(newRating, newContent) => handleEdit(review._id, newRating, newContent)}
+            handleCancel={() => {
+              setEditingId(0);
+            }}
+            isEditing={review._id === editingId}
           ></ReviewCard>
         ))
       )}
       {reviewList.length ? <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} /> : null}
+
       {/* 삭제 확인 모달 */}
       <Modal
-        isOpen={isConfirmModalOpen}
-        handleClose={() => setIsConfirmModalOpen(false)}
+        isOpen={isDeleteConfirmModalOpen}
+        handleClose={() => setIsDeleteConfirmModalOpen(false)}
         handleConfirm={() => selectedId && handleDelete(selectedId)}
         description="정말 삭제하시겠습니까?"
       ></Modal>
-      {/* 삭제 실패 모달 */}
-      <Modal
-        isOpen={isFailModalOpen}
-        handleClose={() => setIsFailModalOpen(false)}
-        handleConfirm={() => setIsFailModalOpen(false)}
-        description="삭제가 실패하였습니다."
-        hideCancelButton
-      ></Modal>
+
+      {/* 완료/실패 모달 */}
+      {modal && (
+        <Modal
+          isOpen={!!modal}
+          handleClose={() => {
+            setModal(null);
+          }}
+          handleConfirm={() => {
+            setModal(null);
+          }}
+          description={modalMessage[modal]}
+          hideCancelButton
+        ></Modal>
+      )}
     </div>
   );
 }
