@@ -11,16 +11,18 @@ import { useRouter } from 'next/navigation';
 import React, { startTransition, useState } from 'react';
 
 export default function Review({ reviewList }: { reviewList: ReviewItem[] }) {
-  const [currentPage, setCurrentPage] = useState(1);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isFailModalOpen, setIsFailModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  // 현재 페이지의 게시글 목록 첫번째 index
-  const startIdx = (currentPage - 1) * 5;
-
   const { user } = useAuthStore();
   const router = useRouter();
+
+  // Pagination
+  const [page, setPage] = useState(1);
+  const limit = 5;
+  const totalPages = Math.ceil(reviewList.length / limit);
+  const pagedReviewList = reviewList.slice((page - 1) * limit, page * limit);
 
   // 구매 후기 삭제
   const handleDelete = (_id: number) => {
@@ -33,6 +35,7 @@ export default function Review({ reviewList }: { reviewList: ReviewItem[] }) {
       } catch (error) {
         setIsConfirmModalOpen(false);
         setIsFailModalOpen(true);
+        console.error(error);
       }
     });
   };
@@ -44,7 +47,7 @@ export default function Review({ reviewList }: { reviewList: ReviewItem[] }) {
           <p>작성된 구매 후기가 없습니다.</p>
         </div>
       ) : (
-        reviewList.slice(startIdx, startIdx + 5).map(review => (
+        pagedReviewList.map(review => (
           <ReviewCard
             key={review._id}
             name={review.user.name}
@@ -59,7 +62,7 @@ export default function Review({ reviewList }: { reviewList: ReviewItem[] }) {
           ></ReviewCard>
         ))
       )}
-      {reviewList.length ? <Pagination totalPages={Math.ceil(reviewList.length / 5) || 1} currentPage={currentPage} /> : null}
+      {reviewList.length ? <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} /> : null}
       {/* 삭제 확인 모달 */}
       <Modal
         isOpen={isConfirmModalOpen}

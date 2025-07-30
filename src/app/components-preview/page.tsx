@@ -13,12 +13,12 @@ import { Contents, ContentsTitle, SubTitle, Title } from '@/components/Typograph
 import Image from 'next/image';
 import Textarea from '@/components/Textarea';
 import Input from '@/components/Input';
-import Pagination from '@/components/Pagination';
 import QuantityCount from '@/components/QuantityCount';
-import PurchaseModal from '@/components/PurchaseModal';
+import Modal from '@/components/Modal';
 import OrderedCard from '@/components/OrderdCard';
 import ProductCard from '@/components/ProductCard';
 import ReviewCard from '@/components/ReviewCard';
+import Pagination from '@/components/Pagination';
 
 // Button Component Options
 const sizes = ['full', 'large', 'medium', 'small'] as const;
@@ -453,6 +453,17 @@ function InputElementsTab() {
 }
 
 function InteractionElementsTab() {
+  // Pagination용
+  const items = [...Array(20)].map((_, i) => `아이템 ${i + 1}`); // 예시 데이터 총 20개 생성
+  const itemsPerPage = 5;
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = itemsPerPage > 0 ? Math.ceil(items.length / itemsPerPage) : 0; // 총 페이지 수 계산
+
+  const start = (currentPage - 1) * itemsPerPage; // 현재 페이지에 해당하는 아이템 추출
+  const currentItems = items.slice(start, start + itemsPerPage); // 보여줄 아이템 설정
+
   // QuantityCount용
   const [quantity, setQuantity] = useState(1); // 초기 수량 1
   const handleCountQuantity = (newQuantity: number) => {
@@ -473,7 +484,15 @@ function InteractionElementsTab() {
       <h3 className="text-lg font-semibold mb-3">Pagination</h3>
       <div className="w-full bg-white rounded-lg border border-gray-200 shadow-sm p-4 flex flex-col justify-evenly">
         <div className="max-w-5xl p-4">
-          <Pagination totalPages={10} currentPage={1} />
+          {/* 리스트 */}
+          <ul className="grid gap-2">
+            {currentItems.map((item, i) => (
+              <li key={i} className="p-2 border border-primary text-center">
+                {item}
+              </li>
+            ))}
+          </ul>
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
         </div>
       </div>
       <h3 className="text-lg font-semibold mb-3">QuantityCounter</h3>
@@ -500,13 +519,7 @@ function InteractionElementsTab() {
           <p className="label-m text-darkgray mb-3">▼ 버튼을 눌러보세요!</p>
           <Button onClick={handleOpen}>삭제하기</Button>
 
-          <PurchaseModal
-            isOpen={isOpen}
-            handleClose={handleClose}
-            handleConfirm={handleConfirm}
-            title="삭제하기"
-            description="정말 삭제하시겠습니까?"
-          />
+          <Modal isOpen={isOpen} handleClose={handleClose} handleConfirm={handleConfirm} title="삭제하기" description="정말 삭제하시겠습니까?" />
         </div>
       </div>
     </div>
@@ -553,10 +566,22 @@ function CardElementsTab() {
       <h3 className="text-lg font-semibold mb-3">ReviewCard</h3>
       <div className="w-full bg-white rounded-lg border border-gray-200 shadow-sm p-4 flex flex-col justify-evenly">
         <div className="max-w-5xl p-4 rounded-lg  border border-lightgray">
-          <ReviewCard name={reviewProps.name} createdAt={reviewProps.createdAt} rating={reviewProps.rating} content={reviewProps.content} />
+          <ReviewCard
+            name={reviewProps.name}
+            createdAt={reviewProps.createdAt}
+            rating={reviewProps.rating}
+            content={reviewProps.content}
+            handleDelete={() => {}}
+          />
         </div>
         <div className="max-w-5xl p-4 rounded-lg  border border-lightgray">
-          <ReviewCard name={reviewProps.name} createdAt={reviewProps.createdAt} rating={reviewProps.rating} content={reviewProps.content} />
+          <ReviewCard
+            name={reviewProps.name}
+            createdAt={reviewProps.createdAt}
+            rating={reviewProps.rating}
+            content={reviewProps.content}
+            handleDelete={() => {}}
+          />
         </div>
       </div>
     </div>
@@ -579,7 +604,7 @@ export default function ComponentPage() {
         <p className="text-gray-600 text-center">Hola!TAJA의 다양한 UI 컴포넌트들을 한눈에 확인해보세요!</p>
       </div>
       <div className="container mx-auto px-4 py-8 space-y-12">
-        <Tab tabItems={tabItems} defaultActiveTabId="card" />
+        <Tab tabItems={tabItems} defaultActiveTabId="base" />
       </div>
     </div>
   );

@@ -29,7 +29,6 @@ export default async function QnATab() {
       <div className="bg-white py-3 px-3 mt-3">
         <QnA qnaList={qnaList} my={true} />
       </div>
-      {/* <Pagination totalPages={3} currentPage={1} /> */}
     </>
   );
 }

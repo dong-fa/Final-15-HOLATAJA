@@ -1,22 +1,19 @@
+import PostForm from '@/app/products/[id]/PostForm';
 import Review from '@/app/products/[id]/Review';
 import Button from '@/components/Button';
-import Pagination from '@/components/Pagination';
 import ProductImg from '@/components/ProductImg';
 import QnA from '@/components/QnA';
 // import QuantityCount from '@/components/QuantityCount';
-import ReviewCard from '@/components/ReviewCard';
 import SoundToggle from '@/components/SoundToggle';
 import Tab, { TabItem } from '@/components/Tab';
-import Textarea from '@/components/Textarea';
-import { Contents, ContentsTitle, SubTitle, Title } from '@/components/Typography';
-import { deleteReview } from '@/data/actions/review';
+import { ContentsTitle, SubTitle, Title } from '@/components/Typography';
+import { postQuestion } from '@/data/actions/qna';
+import { postReview } from '@/data/actions/review';
 import getProduct from '@/data/functions/product';
 import { getAnswer, getQuestion } from '@/data/functions/qna';
 import getReview from '@/data/functions/review';
-import { ApiResPromise } from '@/types/apiType';
 import { QnaItem, QuestionItem } from '@/types/qna';
 
-import { Star } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 
@@ -39,6 +36,7 @@ export default async function ProductInfo({ params }: PageProps) {
 
   // 상품 문의 목록 조회
   const questionData = await getQuestion();
+
   // 상품 id와 일치하는 문의 목록
   const questionList = questionData.ok === 1 ? questionData.item.filter((question: QuestionItem) => question.product_id === Number(id)) : [];
 
@@ -100,20 +98,8 @@ export default async function ProductInfo({ params }: PageProps) {
       content: (
         <div className="flex flex-col gap-6 sm:gap-12 p-4 mt-[-2rem]">
           <Review reviewList={reviewData.ok ? reviewData.item : []} />
-          <div className="flex flex-col gap-4">
-            <Contents size="large">구매 후기 등록하기</Contents>
-            <div className="flex">
-              <Star color="var(--color-gray)" size={28} />
-              <Star color="var(--color-gray)" size={28} />
-              <Star color="var(--color-gray)" size={28} />
-              <Star color="var(--color-gray)" size={28} />
-              <Star color="var(--color-gray)" size={28} />
-            </div>
-            <Textarea name="" id="" />
-            <div className="flex justify-end">
-              <Button size="small">문의하기</Button>
-            </div>
-          </div>
+          {/* TODO orderId 받아오기: 내 구매 목록 조회 후 productId가 일치하는 목록 filter */}
+          <PostForm productId={Number(id)} orderId={Number(id)} action={postReview} type="구매 후기" />
         </div>
       ),
     },
@@ -123,15 +109,7 @@ export default async function ProductInfo({ params }: PageProps) {
       content: (
         <div className="flex flex-col gap-6 sm:gap-12 p-4 mt-[-1rem]">
           <QnA qnaList={qnaList} />
-          <div className="flex flex-col gap-4">
-            <label htmlFor="">
-              <Contents size="large">Q&A 등록하기</Contents>
-            </label>
-            <Textarea id="" name="" />
-            <div className="flex justify-end">
-              <Button size="small">등록</Button>
-            </div>
-          </div>
+          <PostForm productId={Number(id)} action={postQuestion} type="Q&A" />
         </div>
       ),
     },
@@ -167,7 +145,7 @@ export default async function ProductInfo({ params }: PageProps) {
           </div>
           <div className="flex flex-col gap-4">
             {/*  useState를 쓰는 방식으로 변경해야 함 */}
-            {/* <QuantityCount handleCountQuantity={num => setQuantity(num)} quantity={quantity} /> */}
+            {/* <QuantityCount quantity={quantity} /> */}
             <div className="flex flex-row gap-2 sm:gap-4">
               <Button outlined size="full">
                 장바구니
