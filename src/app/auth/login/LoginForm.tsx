@@ -8,8 +8,8 @@ import { loginAction } from '@/data/actions/auth';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import useAuthStore from '@/store/authStore';
-import { signIn } from 'next-auth/react';
-import { loginWithAuthjs } from '@/data/actions/auth';
+// import { signIn } from 'next-auth/react';
+// import { loginWithAuthjs } from '@/data/actions/auth';
 
 const loginSchema = z.object({
   email: z.string().min(1, '아이디를 입력해주세요').email('올바른 이메일 형식이 아닙니다'),
