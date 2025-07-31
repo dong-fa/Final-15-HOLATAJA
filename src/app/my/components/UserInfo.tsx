@@ -11,7 +11,7 @@ import Button from '@/components/Button';
 type UserDataType = Pick<User, '_id' | 'name' | 'email' | 'phone' | 'address'>;
 
 export default function UserInfo() {
-  const { user, setUser } = useAuthStore(); //유저 값 불러오기
+  const { user, setUser, hasHydrated } = useAuthStore(); //유저 값 불러오기
   const [userData, setUserData] = useState<UserDataType>(
     user || {
       _id: 0,
@@ -54,11 +54,26 @@ export default function UserInfo() {
   };
 
   useEffect(() => {
+    if (!hasHydrated) return;
+    if (user) {
+      setUserData({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+      });
+    }
+  }, [user, hasHydrated]);
+
+  useEffect(() => {
+    if (!hasHydrated) return; // hydration 끝난 이후에 유저 정보 확인하도록 함
+
     if (user === null) {
       alert('로그인 정보가 없습니다. 로그인 페이지로 이동합니다.');
       router.push('/auth/login');
     }
-  }, [user, router]);
+  }, [user, hasHydrated, router]);
 
   useEffect(() => {
     if (actionState?.ok === 1) {
@@ -75,7 +90,7 @@ export default function UserInfo() {
 
   return (
     <div>
-      <form className="flex flex-col gap-4 w-[80%] px-20" action={handlesubmit}>
+      <form className="flex flex-col gap-4 w-[80%] sm:px-20 mx-auto" action={handlesubmit}>
         <Input id="id" type="number" name="_id" defaultValue={userData._id} readOnly hidden />
         <Input id="email" name="email" type="email" defaultValue={userData.email} readOnly hidden />
         <Input id="name" label="이름" name="name" type="text" value={userData.name} onChange={handleInputChange('name')} disabled={isdisabled} />
