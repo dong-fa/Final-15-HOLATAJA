@@ -2,17 +2,28 @@
 
 import Button from '@/components/Button';
 import CheckboxButton from '@/components/CheckboxButton';
+import Input from '@/components/Input';
 import Modal from '@/components/Modal';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
-import { deleteQnA } from '@/data/actions/qna';
+import Textarea from '@/components/Textarea';
+import { deleteQnA, patchQnA } from '@/data/actions/qna';
 import useAuthStore from '@/store/authStore';
 import { QnaItem } from '@/types/qna';
-import { CircleAlert, Pencil, Trash } from 'lucide-react';
+import { Check, CircleAlert, Pencil, Trash, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import React, { startTransition, useState } from 'react';
+
+const modalMessage = {
+  editSuccess: 'Q&A 수정이 완료되었습니다.',
+  editFail: 'Q&A 수정에 실패했습니다.',
+  deleteSuccess: 'Q&A 삭제가 완료되었습니다.',
+  deleteFail: 'Q&A 삭제에 실패하였습니다.',
+};
+
+type ModalType = 'editSuccess' | 'editFail' | 'deleteSuccess' | 'deleteFail' | null;
 
 function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
   const selectOptions = ['답변 대기', '답변 완료'];
@@ -20,9 +31,17 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
   const [isMyQnA, setIsMyQnA] = useState(false);
   const [selectedValue, setSelectedValue] = useState('답변 상태');
   const [isOpen, setIsOpen] = useState(0);
+
+  // 삭제 확인 모달
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [isFailModalOpen, setIsFailModalOpen] = useState(false);
+  // 완료/실패 모달
+  const [modal, setModal] = useState<ModalType>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState(0);
+
+  const [newTitle, setNewTitle] = useState('');
+  const [newContent, setNewContent] = useState('');
+  const [error, setError] = useState({ title: false, content: false });
 
   const { user } = useAuthStore();
   const router = useRouter();
@@ -54,7 +73,22 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
       } catch (error) {
         console.error(error);
         setIsConfirmModalOpen(false);
-        setIsFailModalOpen(true);
+        setModal('deleteFail');
+      }
+    });
+  };
+
+  // Q&A 수정
+  const handleEdit = (_id: number, title: string, content: string) => {
+    startTransition(async () => {
+      try {
+        await patchQnA(_id, title, content);
+        router.refresh();
+        setEditingId(0);
+        setModal('editSuccess');
+      } catch (error) {
+        setModal('editFail');
+        console.error(error);
       }
     });
   };
@@ -118,21 +152,36 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
                 pagedQnaList.map(qna => (
                   <React.Fragment key={qna.question._id}>
                     <tr
-                      key={qna.question._id}
                       className="border-b border-b-lightgray"
                       onClick={() => {
+                        if (editingId !== 0) return;
                         setIsOpen(isOpen === qna.question._id ? 0 : qna.question._id);
                       }}
                     >
                       <td className="p-4">
-                        <span className="cursor-pointer block truncate whitespace-nowrap overflow-hidden">{qna.question.title}</span>
+                        {editingId === qna.question._id ? (
+                          <>
+                            <Input
+                              id="title"
+                              name="title"
+                              type="text"
+                              value={newTitle}
+                              onChange={e => {
+                                setNewTitle(e.currentTarget.value);
+                              }}
+                            ></Input>
+                            {error.title && <p className="label-s text-negative mt-1">2글자 이상 입력해야 합니다.</p>}
+                          </>
+                        ) : (
+                          <span className="cursor-pointer block truncate whitespace-nowrap overflow-hidden">{qna.question.title}</span>
+                        )}
                       </td>
                       {my ? '' : <td className="p-4 text-center">{qna.question.user.name}</td>}
                       <td className="p-4 text-center">{qna.question.createdAt.split(' ')[0]}</td>
                       {qna.question.repliesCount > 0 ? (
                         <td className="p-4 text-center text-primary">답변 완료</td>
                       ) : (
-                        <td className="p-4 text-center">답변 대기</td>
+                        <td className="p-4 text-center text-darkgray">답변 대기</td>
                       )}
                       {my ? (
                         <td className="text-center">
@@ -154,23 +203,82 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
                             <span className="w-6 h-6 inline-block shrink-0 text-center content-center text-xs font-semibold bg-white rounded-full text-primary">
                               Q
                             </span>
-                            <p className="break-words whitespace-pre-wrap block ">{qna.question.content}</p>
+                            {editingId === qna.question._id ? (
+                              <div className="w-full">
+                                <Textarea
+                                  id="content"
+                                  name="content"
+                                  value={newContent}
+                                  onChange={e => {
+                                    setNewContent(e.currentTarget.value);
+                                  }}
+                                />
+                                {error.content && <p className="label-s text-negative mt-1 ">2글자 이상 입력해야 합니다.</p>}
+                              </div>
+                            ) : (
+                              <p className="break-words whitespace-pre-wrap block">{qna.question.content}</p>
+                            )}
                             {user?._id === qna.question.user._id && (
                               <div className="flex ms-auto">
-                                <Button icon size="small" aria-label="수정">
-                                  <Pencil color="var(--color-darkgray)" size={20} />
-                                </Button>
-                                <Button
-                                  icon
-                                  size="small"
-                                  aria-label="삭제"
-                                  onClick={() => {
-                                    setSelectedId(qna.question._id);
-                                    setIsConfirmModalOpen(true);
-                                  }}
-                                >
-                                  <Trash color="var(--color-darkgray)" size={20} />
-                                </Button>
+                                {editingId === qna.question._id ? (
+                                  <>
+                                    <Button
+                                      icon
+                                      size="small"
+                                      aria-label="저장"
+                                      onClick={() => {
+                                        if (newTitle.trim().length < 2 || newContent.trim().length < 2) {
+                                          setError({ title: newTitle.trim().length < 2, content: newContent.trim().length < 2 });
+                                        } else {
+                                          setError({ title: false, content: false });
+                                          handleEdit(qna.question._id, newTitle, newContent);
+                                        }
+                                      }}
+                                    >
+                                      <Check color="var(--color-darkgray)" size={20} />
+                                    </Button>
+                                    <Button
+                                      icon
+                                      size="small"
+                                      aria-label="취소"
+                                      onClick={() => {
+                                        setNewTitle(qna.question.title);
+                                        setNewContent(qna.question.content);
+                                        setError({ title: false, content: false });
+                                        setEditingId(0);
+                                      }}
+                                    >
+                                      <X color="var(--color-darkgray)" size={20} />
+                                    </Button>
+                                  </>
+                                ) : (
+                                  <>
+                                    {' '}
+                                    <Button
+                                      icon
+                                      size="small"
+                                      aria-label="수정"
+                                      onClick={() => {
+                                        setEditingId(qna.question._id);
+                                        setNewTitle(qna.question.title);
+                                        setNewContent(qna.question.content);
+                                      }}
+                                    >
+                                      <Pencil color="var(--color-darkgray)" size={20} />
+                                    </Button>
+                                    <Button
+                                      icon
+                                      size="small"
+                                      aria-label="삭제"
+                                      onClick={() => {
+                                        setSelectedId(qna.question._id);
+                                        setIsConfirmModalOpen(true);
+                                      }}
+                                    >
+                                      <Trash color="var(--color-darkgray)" size={20} />
+                                    </Button>
+                                  </>
+                                )}
                               </div>
                             )}
                           </div>
@@ -203,20 +311,25 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
 
         {qnaFilteredByUser.length ? <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} /> : null}
       </div>
+
+      {/* 삭제 확인 모달 */}
       <Modal
         isOpen={isConfirmModalOpen}
         handleClose={() => setIsConfirmModalOpen(false)}
         handleConfirm={() => selectedId && handleDelete(selectedId)}
         description="정말 삭제하시겠습니까?"
       ></Modal>
-      {/* 삭제 실패 모달 */}
-      <Modal
-        isOpen={isFailModalOpen}
-        handleClose={() => setIsFailModalOpen(false)}
-        handleConfirm={() => setIsFailModalOpen(false)}
-        description="삭제가 실패하였습니다."
-        hideCancelButton
-      ></Modal>
+
+      {/* 완료/실패 모달 */}
+      {modal && (
+        <Modal
+          isOpen={!!modal}
+          handleClose={() => setModal(null)}
+          handleConfirm={() => setModal(null)}
+          description={modalMessage[modal]}
+          hideCancelButton
+        ></Modal>
+      )}
     </div>
   );
 }
