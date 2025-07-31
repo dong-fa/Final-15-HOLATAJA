@@ -1,9 +1,8 @@
 import PostForm from '@/app/products/[id]/PostForm';
+import ProductPostForm from '@/app/products/[id]/ProductPostForm';
 import Review from '@/app/products/[id]/Review';
-import Button from '@/components/Button';
 import ProductImg from '@/components/ProductImg';
 import QnA from '@/components/QnA';
-// import QuantityCount from '@/components/QuantityCount';
 import SoundToggle from '@/components/SoundToggle';
 import Tab, { TabItem } from '@/components/Tab';
 import { ContentsTitle, SubTitle, Title } from '@/components/Typography';
@@ -13,7 +12,6 @@ import getProduct from '@/data/functions/product';
 import { getAnswer, getQuestion } from '@/data/functions/qna';
 import getReview from '@/data/functions/review';
 import { QnaItem, QuestionItem } from '@/types/qna';
-
 import Image from 'next/image';
 import React from 'react';
 
@@ -23,13 +21,9 @@ interface PageProps {
   }>;
 }
 
-// 상품 구매 시 전달할 정보
-// const purchaseData = [];
-
 export default async function ProductInfo({ params }: PageProps) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const { id } = await params;
-  // const [quantity, setQuantity] = useState(0);
 
   // 상품 상세 조회
   const productData = await getProduct(Number(id));
@@ -134,27 +128,7 @@ export default async function ProductInfo({ params }: PageProps) {
           <div>
             <span className="text-2xl font-bold">{productData.ok === 1 && productData.item?.price?.toLocaleString()}원</span>
           </div>
-          <div>
-            <span className="inline-block mb-2 font-semibold">옵션</span>
-            <div className="flex flex-wrap gap-2">
-              {productData.ok === 1 &&
-                productData.item?.extra?.option?.map((option, idx) => (
-                  <Button key={idx} size="medium" select>
-                    {option}
-                  </Button>
-                ))}
-            </div>
-          </div>
-          <div className="flex flex-col gap-4">
-            {/*  useState를 쓰는 방식으로 변경해야 함 */}
-            {/* <QuantityCount quantity={quantity} /> */}
-            <div className="flex flex-row gap-2 sm:gap-4">
-              <Button outlined size="full">
-                장바구니
-              </Button>
-              <Button size="full">구매하기</Button>
-            </div>
-          </div>
+          <ProductPostForm productData={productData} />
         </div>
       </div>
       <Tab tabItems={tabItems} />
