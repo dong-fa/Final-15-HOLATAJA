@@ -18,8 +18,25 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
   const [cartFailModal, setCartFailModal] = useState(false);
   const [purchaseFailModal, setPurchaseFailModal] = useState(false);
 
+  // 구매하기 데이터 담기
+  const checkout = () => {
+    if (!productData.ok || !option) {
+      setPurchaseFailModal(true);
+    } else {
+      const checkoutData = {
+        _id: productData.item._id,
+        quantity: quantity,
+        color: option,
+      };
+
+      sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+      router.push(`/checkout?from=info&product_id=${checkoutData._id}`);
+    }
+  };
+
+  // 장바구니에 담기
   const [state, formAction, isPending] = useActionState(addToCart, null);
-  console.log(state);
+
   useEffect(() => {
     if (state?.ok === 1) {
       setCartSuccessModal(true);
@@ -59,7 +76,9 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
             <Button outlined size="full" submit>
               장바구니
             </Button>
-            <Button size="full">구매하기</Button>
+            <Button size="full" onClick={checkout}>
+              구매하기
+            </Button>
           </div>
         </div>
       </form>
@@ -85,7 +104,13 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
       />
 
       {/* 구매 실패 모달 */}
-      {/* <Modal isOpen={} handleClose={} handleConfirm={} /> */}
+      <Modal
+        isOpen={purchaseFailModal}
+        handleClose={() => setPurchaseFailModal(false)}
+        handleConfirm={() => setPurchaseFailModal(false)}
+        description={option ? '구매에 실패했습니다.' : '옵션을 선택해주세요.'}
+        hideCancelButton
+      />
     </div>
   );
 }
