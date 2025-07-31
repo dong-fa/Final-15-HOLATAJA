@@ -30,33 +30,36 @@ export default function Modal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
       {/* 모달 박스 */}
-      <div className="relative bg-white rounded-lg shadow-lg p-8 w-[400px]">
-        {/* 오른쪽 상단 닫기 버튼 */}
-        <Button onClick={handleClose} className="absolute top-4 right-4" size="medium" icon>
-          <X size={24} /> {/* Lucide X 아이콘 */}
-        </Button>
+      <div className="relative bg-white rounded-lg shadow-lg  w-[400px]">
+        <div className="flex flex-row justify-end bg-white rounded-t-lg w-full">
+          {/* 오른쪽 상단 닫기 버튼 */}
+          <Button onClick={handleClose} className="" size="medium" icon>
+            <X size={24} /> {/* Lucide X 아이콘 */}
+          </Button>
+        </div>
+        <div className="px-6 pt-3">
+          {/* 모달 제목 */}
+          <h2 className="mb-4 text-center sub-title">{title}</h2>
 
-        {/* 모달 제목 */}
-        <h2 className="mb-4 text-center sub-title">{title}</h2>
+          {/* 모달 본문 */}
+          <p className="mb-6 text-center label-m whitespace-pre-line">{description}</p>
 
-        {/* 모달 본문 */}
-        <p className="mb-6 text-center label-m">{description}</p>
+          {/* 버튼 그룹 */}
+          <div className="flex justify-center gap-4 pb-5">
+            <>
+              {/* 취소 버튼 */}
+              {hideCancelButton ?? (
+                <Button outlined onClick={handleClose} size="medium">
+                  {isChoiceModal ? choiceOptions?.[0] : '취소'}
+                </Button>
+              )}
 
-        {/* 버튼 그룹 */}
-        <div className="flex justify-center gap-4">
-          <>
-            {/* 취소 버튼 */}
-            {hideCancelButton ?? (
-              <Button outlined onClick={handleClose} size="medium">
-                {isChoiceModal ? choiceOptions?.[0] : '취소'}
+              {/* 확인 버튼 */}
+              <Button onClick={handleConfirm} size="medium">
+                {isChoiceModal ? choiceOptions?.[1] : '확인'}
               </Button>
-            )}
-
-            {/* 확인 버튼 */}
-            <Button onClick={handleConfirm} size="medium">
-              {isChoiceModal ? choiceOptions?.[1] : '확인'}
-            </Button>
-          </>
+            </>
+          </div>
         </div>
       </div>
     </div>
