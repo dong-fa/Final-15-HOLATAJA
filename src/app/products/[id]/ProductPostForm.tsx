@@ -2,7 +2,7 @@
 
 import Button from '@/components/Button';
 import Modal from '@/components/Modal';
-import PrdInfoQuantity from '@/components/PrdInfoQuantity';
+import QuantityCount from '@/components/QuantityCount';
 import { addToCart } from '@/data/actions/product';
 import { ApiRes } from '@/types/api';
 import { ProductInfo } from '@/types/product';
@@ -70,7 +70,7 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
           <input type="hidden" name="color" value={option ?? ''} />
         </div>
         <div className="flex flex-col gap-4">
-          <PrdInfoQuantity quantity={quantity} handleCountQuantity={setQuantity} />
+          <QuantityCount quantity={quantity} handleCountQuantity={setQuantity} />
           <input type="hidden" name="quantity" value={quantity} />
           <div className="flex flex-row gap-2 sm:gap-4">
             <Button outlined size="full" submit>
