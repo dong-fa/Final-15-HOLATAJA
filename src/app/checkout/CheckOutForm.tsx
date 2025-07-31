@@ -1,19 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@/components/Button';
 import Image from 'next/image';
 import Select from '@/components/Select';
 import Input from '@/components/Input';
-
-// -----------------------------
-// 타입 및 인터페이스 정의
-// -----------------------------
+import useAuthStore from '@/store/authStore';
 
 // 결제 방식 타입
-type PaymentMethod = 'simple' | 'card' | 'bank';
+type PaymentMethod = '간편결제' | '체크/신용 카드' | '무통장 입금';
 // 간편결제 옵션 타입
-type SimplePaymentOption = 'toss' | 'naver';
+type SimplePaymentOption = '토스' | '네이버';
 
 // 배송지 정보 타입
 interface DeliveryInfo {
@@ -25,7 +22,7 @@ interface DeliveryInfo {
 
 // 상품 정보 타입
 interface ProductInfo {
-  id: string;
+  id: number;
   name: string;
   image: string;
   options: string;
@@ -36,9 +33,9 @@ interface ProductInfo {
 // 주문 정보 타입
 interface OrderInfo {
   products: ProductInfo[];
-  subtotal: number;
-  shippingFee: number;
-  total: number;
+  subtotal: number; // 상품 총액
+  shippingFee: number; // 배송비
+  total: number; // 총 결제 금액
 }
 
 // 결제 데이터 타입 (결제 완료 시 전달)
@@ -60,17 +57,18 @@ interface PaymentData {
 
 // 컴포넌트 Props 타입
 interface CheckoutPageProps {
+  token: string | null;
   deliveryInfo?: DeliveryInfo;
-  orderInfo?: OrderInfo;
+  orderInfo: OrderInfo;
   onDeliveryChange?: () => void;
   onPaymentComplete?: (paymentData: PaymentData) => void;
 }
 
-export default function CheckOutForm({ deliveryInfo, orderInfo, onPaymentComplete }: CheckoutPageProps) {
+export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
   // 결제 방법(탭) 상태
-  const [activePaymentMethod, setActivePaymentMethod] = useState<PaymentMethod>('simple');
+  const [activePaymentMethod, setActivePaymentMethod] = useState<PaymentMethod>('간편결제');
   // 간편결제 옵션 상태
-  const [selectedSimplePayment, setSelectedSimplePayment] = useState<SimplePaymentOption>('toss');
+  const [selectedSimplePayment, setSelectedSimplePayment] = useState<SimplePaymentOption>('토스');
   // 카드 결제 정보 상태
   const [cardInfo, setCardInfo] = useState({
     cardNumber: '',
@@ -86,48 +84,42 @@ export default function CheckOutForm({ deliveryInfo, orderInfo, onPaymentComplet
   // 결제 처리 중 로딩 상태
   const [isLoading, setIsLoading] = useState(false);
 
-  // 기본 배송지 정보 (props가 없을 때 사용)
-  const defaultDeliveryInfo: DeliveryInfo = {
-    name: '박철환',
-    phone: '010-1234-5678',
-    address: '서울특별시 송파구 우리집',
-    postalCode: '00000',
+  // 유저 배송지 정보 (props가 없을 때 사용)
+  const { user, hasHydrated } = useAuthStore();
+  console.log('유저 정보', user);
+
+  const deliveryInfo: DeliveryInfo = {
+    name: user?.name || '',
+    phone: user?.phone || '',
+    address: user?.address || '',
+    postalCode: user?.postalCode || '',
   };
 
+  const [currentDeliveryInfo, setCurrentDeliveryInfo] = useState<DeliveryInfo>(deliveryInfo);
+
+  useEffect(() => {
+    if (!hasHydrated) return;
+    if (user) {
+      setCurrentDeliveryInfo({
+        name: user.name || '',
+        phone: user.phone || '',
+        address: user.address || '',
+        postalCode: user.postalCode || '00000',
+      });
+    }
+  }, [hasHydrated, user]);
   // 결제에만 사용하는 배송지 정보 state
-  const [currentDeliveryInfo, setCurrentDeliveryInfo] = useState<DeliveryInfo>(deliveryInfo || defaultDeliveryInfo);
 
   // 배송지 수정 모드 상태
   const [isEditingDelivery, setIsEditingDelivery] = useState(false);
   // 배송지 수정 입력값 상태 (수정 모드에서 사용)
   const [editDeliveryInfo, setEditDeliveryInfo] = useState<DeliveryInfo>(currentDeliveryInfo);
 
-  // 기본 주문 정보 (props가 없을 때 사용)
-  const defaultOrderInfo: OrderInfo = {
-    products: [
-      {
-        id: '1',
-        name: '타게 버텍 키보드 한국에서 들여와서 배송은 땀 오래 걸림',
-        image: '/product_images/nuphy_kick75/nuphy_kick75_detail_01.webp',
-        options: '갈축 / 흰색',
-        quantity: 1,
-        price: 1200000,
-      },
-      {
-        id: '2',
-        name: '조금 싼 키보드 중국에서 만들어서 배송은 더 오래 걸림수도 대충',
-        image: '/product_images/nuphy_halo75/nuphy_halo75_detail_01.webp',
-        options: '갈축 / 흰색',
-        quantity: 2,
-        price: 30000,
-      },
-    ],
-    subtotal: 1230000,
-    shippingFee: 3000,
-    total: 1233000,
-  };
+  //주문 정보 (props가 없을 때 사용)
+  console.log('주문 정보', orderInfo);
+
   // 주문 정보는 수정하지 않으므로 변수로 관리
-  const currentOrderInfo = orderInfo || defaultOrderInfo;
+  const currentOrderInfo = orderInfo;
 
   // -----------------------------
   // 핸들러 함수들
@@ -201,8 +193,8 @@ export default function CheckOutForm({ deliveryInfo, orderInfo, onPaymentComplet
             type="radio"
             name="simplePayment"
             value="toss"
-            checked={selectedSimplePayment === 'toss'}
-            onChange={() => handleSimplePaymentChange('toss')}
+            checked={selectedSimplePayment === '토스'}
+            onChange={() => handleSimplePaymentChange('토스')}
             className="mr-2 sm:mr-3"
           />
           <div className="flex items-center">
@@ -224,8 +216,8 @@ export default function CheckOutForm({ deliveryInfo, orderInfo, onPaymentComplet
             type="radio"
             name="simplePayment"
             value="naver"
-            checked={selectedSimplePayment === 'naver'}
-            onChange={() => handleSimplePaymentChange('naver')}
+            checked={selectedSimplePayment === '네이버'}
+            onChange={() => handleSimplePaymentChange('네이버')}
             className="mr-2 sm:mr-3"
           />
           <div className="flex items-center">
@@ -362,11 +354,11 @@ export default function CheckOutForm({ deliveryInfo, orderInfo, onPaymentComplet
   // 결제 방법에 따라 탭 내용 렌더링
   const renderActiveTabContent = () => {
     switch (activePaymentMethod) {
-      case 'simple':
+      case '간편결제':
         return renderSimplePaymentContent();
-      case 'card':
+      case '체크/신용 카드':
         return renderCardPaymentContent();
-      case 'bank':
+      case '무통장 입금':
         return renderBankPaymentContent();
       default:
         return <div>결제 방법을 선택해주세요.</div>;
@@ -377,29 +369,50 @@ export default function CheckOutForm({ deliveryInfo, orderInfo, onPaymentComplet
   const handleCheckout = async () => {
     setIsLoading(true);
     try {
-      const paymentData: PaymentData = {
-        deliveryInfo: currentDeliveryInfo,
-        orderInfo: currentOrderInfo,
-        paymentMethod: activePaymentMethod,
-        paymentDetails:
-          activePaymentMethod === 'simple'
-            ? { type: 'simple', option: selectedSimplePayment }
-            : activePaymentMethod === 'card'
-              ? { type: 'card', ...cardInfo }
-              : { type: 'bank', ...bankInfo },
+      const products = currentOrderInfo.products.map(product => ({
+        _id: product.id,
+        quantity: product.quantity,
+      }));
+      const options = currentOrderInfo.products.map(product => ({
+        option: product.options,
+      }));
+      const address = {
+        name: currentDeliveryInfo.name,
+        phone: currentDeliveryInfo.phone,
+        address: currentDeliveryInfo.address,
+        postalCode: currentDeliveryInfo.postalCode,
       };
-      // 결제 완료 콜백이 있으면 실행
-      if (onPaymentComplete) {
-        await onPaymentComplete(paymentData);
-      } else {
-        alert('결제가 처리되었습니다!');
-      }
+      const payment = {
+        method: activePaymentMethod,
+        info:
+          activePaymentMethod === '간편결제'
+            ? selectedSimplePayment
+            : activePaymentMethod === '체크/신용 카드'
+              ? `${cardInfo.cardNumber}&${cardInfo.expiryDate}&${cardInfo.cvc}&${cardInfo.cardPassword}`
+              : activePaymentMethod === '무통장 입금'
+                ? `${bankInfo.selectedBank}&${bankInfo.depositorName}`
+                : '',
+      };
+      const requestBody = {
+        products,
+        options,
+        address,
+        payment,
+      };
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Client-Id': process.env.NEXT_PUBLIC_API_CLIENT_ID!,
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
+      const response = await res.json();
+      console.log('구매결과', response);
     } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message);
-      } else {
-        alert('결제 처리 중 오류가 발생했습니다.');
-      }
+      console.error('결제 처리 중 오류 발생:', error);
     } finally {
       setIsLoading(false);
     }
@@ -539,27 +552,27 @@ export default function CheckOutForm({ deliveryInfo, orderInfo, onPaymentComplet
         <div className="flex flex-col gap-4 sm:flex-row mb-6">
           <Button
             size="full"
-            outlined={activePaymentMethod === 'simple'}
-            select={activePaymentMethod === 'simple' ? false : true}
-            onClick={() => handlePaymentMethodChange('simple')}
+            outlined={activePaymentMethod === '간편결제'}
+            select={activePaymentMethod === '간편결제' ? false : true}
+            onClick={() => handlePaymentMethodChange('간편결제')}
             // className="flex-1 text-xs sm:text-sm md:text-base px-1 sm:px-3"
           >
             간편결제
           </Button>
           <Button
             size="full"
-            outlined={activePaymentMethod === 'card'}
-            select={activePaymentMethod === 'card' ? false : true}
-            onClick={() => handlePaymentMethodChange('card')}
+            outlined={activePaymentMethod === '체크/신용 카드'}
+            select={activePaymentMethod === '체크/신용 카드' ? false : true}
+            onClick={() => handlePaymentMethodChange('체크/신용 카드')}
             // className="flex-1 text-xs sm:text-sm md:text-base px-1 sm:px-3"
           >
             체크/신용카드 결제
           </Button>
           <Button
             size="full"
-            outlined={activePaymentMethod === 'bank'}
-            select={activePaymentMethod === 'bank' ? false : true}
-            onClick={() => handlePaymentMethodChange('bank')}
+            outlined={activePaymentMethod === '무통장 입금'}
+            select={activePaymentMethod === '무통장 입금' ? false : true}
+            onClick={() => handlePaymentMethodChange('무통장 입금')}
             // className="flex-1 text-xs sm:text-sm md:text-base px-1 sm:px-3"
           >
             무통장 입금
@@ -577,8 +590,8 @@ export default function CheckOutForm({ deliveryInfo, orderInfo, onPaymentComplet
           onClick={handleCheckout}
           disabled={
             isLoading ||
-            (activePaymentMethod === 'card' && (!cardInfo.cardNumber || !cardInfo.expiryDate || !cardInfo.cvc)) ||
-            (activePaymentMethod === 'bank' && (!bankInfo.selectedBank || !bankInfo.depositorName))
+            (activePaymentMethod === '체크/신용 카드' && (!cardInfo.cardNumber || !cardInfo.expiryDate || !cardInfo.cvc)) ||
+            (activePaymentMethod === '무통장 입금' && (!bankInfo.selectedBank || !bankInfo.depositorName))
           }
           className="w-full sm:w-auto min-w-[120px]"
         >
