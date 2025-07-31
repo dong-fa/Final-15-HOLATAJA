@@ -95,6 +95,7 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
     postalCode: user?.postalCode || '',
   };
 
+  // 결제에만 사용하는 배송지 정보 state
   const [currentDeliveryInfo, setCurrentDeliveryInfo] = useState<DeliveryInfo>(deliveryInfo);
 
   useEffect(() => {
@@ -108,16 +109,11 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
       });
     }
   }, [hasHydrated, user]);
-  // 결제에만 사용하는 배송지 정보 state
 
   // 배송지 수정 모드 상태
   const [isEditingDelivery, setIsEditingDelivery] = useState(false);
   // 배송지 수정 입력값 상태 (수정 모드에서 사용)
   const [editDeliveryInfo, setEditDeliveryInfo] = useState<DeliveryInfo>(currentDeliveryInfo);
-
-  //주문 정보 (props가 없을 때 사용)
-  console.log('주문 정보', orderInfo);
-
   // 주문 정보는 수정하지 않으므로 변수로 관리
   const currentOrderInfo = orderInfo;
 
