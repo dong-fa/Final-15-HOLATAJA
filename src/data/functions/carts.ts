@@ -1,21 +1,5 @@
 import { ApiResPromise } from '@/types/api';
-import { CartItemData, CartResponse } from '@/types/cart';
-
-// API 응답 기본 타입 정의
-interface ApiBaseResponse {
-  ok: number;
-  message?: string;
-}
-
-// 장바구니 아이템 삭제 응답 타입
-interface CartItemDeleteResponse extends ApiBaseResponse {
-  deleted?: boolean; // 삭제 성공 여부 (성공시)
-}
-
-// 장바구니 아이템 추가 응답 타입
-interface CartItemAddResponse extends ApiBaseResponse {
-  item?: CartItemData; // 추가된 아이템 정보 (성공시)
-}
+import { CartItemData } from '@/types/cart';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';

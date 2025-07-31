@@ -7,7 +7,7 @@ import { Title } from '@/components/Typography';
 import CartProductCard from '@/app/carts/components/CartProductCard';
 import CartSummary from '@/app/carts/components/CartSummary';
 import Button from '@/components/Button';
-import { removeCartItem, updateCartItemQuantity } from '@/data/actions/carts';
+import { removeCartItem } from '@/data/actions/carts';
 
 interface CartContainerProps {
   initialData: CartResponse | null; // 서버에서 전달받은 초기 장바구니 데이터
@@ -34,8 +34,6 @@ interface CartContainerProps {
  * 4. 500ms 후 API 호출 (handleDebouncedQuantityChange)
  */
 export default function CartContainer({ initialData, token, serverError }: CartContainerProps) {
-  const testData = updateCartItemQuantity(token, 86, 5);
-  console.log('테스트데이터: ', testData);
   // ==================== 상태 관리 ====================
 
   /** 클라이언트 하이드레이션 완료 여부 */
@@ -46,9 +44,6 @@ export default function CartContainer({ initialData, token, serverError }: CartC
 
   /** 개별 액션 로딩 상태 */
   const [isActionLoading, setIsActionLoading] = useState(false);
-
-  /** 수량 변경 API 호출 중인 상품 ID들 */
-  const [updatingQuantityIds, setUpdatingQuantityIds] = useState<Set<number>>(new Set());
 
   /** 에러 메시지 */
   const [error, setError] = useState<string | null>(null);
@@ -90,97 +85,6 @@ export default function CartContainer({ initialData, token, serverError }: CartC
     };
   };
 
-  // ==================== 수량 변경 핸들러 ====================
-
-  /**
-   * 즉시 수량 변경 핸들러 (UI 업데이트용)
-   * - 로컬 상태에서 수량 즉시 업데이트
-   * - 총 금액 재계산
-   * - UI에 즉시 반영되어 사용자 경험 향상
-   */
-  const handleImmediateQuantityChange = (productId: number, newQuantity: number) => {
-    console.log('container 즉시 수량 변경', { productId, newQuantity });
-    if (!cartData) return;
-
-    try {
-      // 로컬 상태에서 수량 업데이트
-      const updatedItems = cartData.item.map(item => (item.product._id === productId ? { ...item, quantity: newQuantity } : item));
-
-      // 상태 업데이트
-      setCartData(prev => ({
-        ...prev!,
-        item: updatedItems,
-        cost: recalculateCost(updatedItems),
-      }));
-
-      // 에러 상태 클리어
-      setError(null);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '수량 변경 중 오류가 발생했습니다.';
-      setError(errorMessage);
-      console.error('Local quantity change error:', err);
-    }
-    console.log('container 업데이트된 cartData: ', cartData);
-  };
-
-  /**
-   * 디바운싱된 수량 변경 핸들러 (API 호출용)
-   * - 서버에 수량 업데이트 API 호출
-   * - 실패시 이전 상태로 롤백
-   * - 로딩 상태 관리
-   */
-  const handleDebouncedQuantityChange = async (productId: number, newQuantity: number) => {
-    console.log('container 디바운싱된 변경된 수량', { productId, newQuantity });
-    if (!token || !cartData) return;
-
-    // 해당 상품의 장바구니 아이템 ID 찾기
-    const targetItem = cartData.item.find(item => item.product._id === productId);
-    if (!targetItem) return;
-
-    // 이전 상태 백업 (롤백용)
-    const previousData = cartData;
-    const previousQuantity = targetItem.quantity;
-
-    // 로딩 상태 시작
-    setUpdatingQuantityIds(prev => new Set(prev).add(productId));
-
-    try {
-      // 실제 수량 업데이트 API 호출
-      const result = await updateCartItemQuantity(token, targetItem._id, newQuantity);
-
-      if (result.ok !== 1) {
-        throw new Error(result.message || '수량 변경에 실패했습니다.');
-      }
-
-      // 성공시 에러 상태 클리어
-      setError(null);
-      console.log(`✅ 수량 변경 API 호출 성공: ${productId} -> ${newQuantity}`);
-    } catch (err) {
-      // API 실패시 이전 상태로 롤백
-      console.error('수량 변경 API 실패:', err);
-
-      // 롤백: 이전 수량으로 복원
-      const rolledBackItems = cartData.item.map(item => (item.product._id === productId ? { ...item, quantity: previousQuantity } : item));
-
-      setCartData({
-        ...previousData,
-        item: rolledBackItems,
-        cost: recalculateCost(rolledBackItems),
-      });
-
-      // 에러 메시지 표시
-      const errorMessage = err instanceof Error ? err.message : '수량 변경에 실패했습니다.';
-      setError(`수량 변경 실패: ${errorMessage}`);
-    } finally {
-      // 로딩 상태 종료
-      setUpdatingQuantityIds(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(productId);
-        return newSet;
-      });
-    }
-  };
-
   // ==================== 삭제 핸들러 ====================
 
   /**
@@ -189,10 +93,10 @@ export default function CartContainer({ initialData, token, serverError }: CartC
    * - API 호출로 서버에서 삭제
    * - API 실패시 이전 상태로 롤백
    */
-  const handleRemoveItem = async (productId: number) => {
+  const handleRemoveItem = async (cartId: number) => {
     if (!token || !cartData) return;
 
-    const targetItem = cartData.item.find(item => item.product._id === productId);
+    const targetItem = cartData.item.find(item => item._id === cartId);
     if (!targetItem) return;
 
     // 이전 상태 백업 (롤백용)
@@ -200,7 +104,7 @@ export default function CartContainer({ initialData, token, serverError }: CartC
 
     try {
       // 1. 즉시 로컬 상태에서 아이템 제거 (Optimistic Update)
-      const updatedItems = cartData.item.filter(item => item.product._id !== productId);
+      const updatedItems = cartData.item.filter(item => item._id !== cartId);
 
       setCartData(prev => ({
         ...prev!,
@@ -349,10 +253,9 @@ export default function CartContainer({ initialData, token, serverError }: CartC
                   key={item._id}
                   item={item}
                   token={token}
-                  onRemoveItem={handleRemoveItem}
+                  handleRemoveItem={handleRemoveItem}
                   // 로딩 상태
                   isDeleting={isActionLoading}
-                  isUpdatingQuantity={updatingQuantityIds.has(item.product._id)}
                 />
               ))}
             </div>
@@ -364,7 +267,7 @@ export default function CartContainer({ initialData, token, serverError }: CartC
             itemCount={cartData.item.length}
             onOrderClick={handleOrderClick}
             onContinueShoppingClick={handleContinueShopping}
-            isLoading={isActionLoading || updatingQuantityIds.size > 0}
+            isLoading={isActionLoading}
             isOrderDisabled={cartData.item.length === 0}
           />
         </div>

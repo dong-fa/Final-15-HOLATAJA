@@ -1,5 +1,5 @@
 import { ApiResPromise } from '@/types/api';
-import { CartItemData, CartResponse } from '@/types/cart';
+import { CartItemData } from '@/types/cart';
 import getCartList from '@/data/functions/carts';
 
 // API 응답 기본 타입 정의
@@ -11,11 +11,6 @@ interface ApiBaseResponse {
 // 장바구니 아이템 삭제 응답 타입
 interface CartItemDeleteResponse extends ApiBaseResponse {
   deleted?: boolean; // 삭제 성공 여부 (성공시)
-}
-
-// 장바구니 아이템 추가 응답 타입
-interface CartItemAddResponse extends ApiBaseResponse {
-  item?: CartItemData; // 추가된 아이템 정보 (성공시)
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -113,7 +108,7 @@ export async function clearCart(token: string): Promise<{ ok: 0 | 1; message?: s
  * 응답: 업데이트 된 장바구니 전체 정보
  */
 
-export async function updateCartItemQuantity(token: string, cartItemId: number, quantity: number): ApiResPromise<CartResponse> {
+export async function updateCartItemQuantity(token: string, cartItemId: number, quantity: number): ApiResPromise<CartItemData[]> {
   console.log('수량 변경 api 시작:', { cartItemId, quantity });
   try {
     if (!token) {

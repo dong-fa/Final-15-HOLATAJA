@@ -11,13 +11,13 @@ import { updateCartItemQuantity } from '@/data/actions/carts';
 
 interface CartProductCardProps {
   item: CartItemData; // 장바구니 아이템 데이터
-  onRemoveItem: (productId: number) => void; // 상품 삭제 콜백
+  handleRemoveItem: (productId: number) => void; // 상품 삭제 콜백
   isDeleting?: boolean; // 삭제 처리 중 상태
   isUpdatingQuantity?: boolean; // 수량 업데이트 중 상태
   token: string;
 }
 
-export default function CartProductCard({ item, token, onRemoveItem, isDeleting = false, isUpdatingQuantity = false }: CartProductCardProps) {
+export default function CartProductCard({ item, token, handleRemoveItem, isDeleting = false, isUpdatingQuantity = false }: CartProductCardProps) {
   // 클라이언트에서만 확인 다이얼로그 상태 관리
   const [isClient, setIsClient] = useState(false);
   const [quantity, setQuantity] = useState(item.quantity);
@@ -43,25 +43,29 @@ export default function CartProductCard({ item, token, onRemoveItem, isDeleting 
 
   // ==================== 이벤트 핸들러 ====================
 
-  const handleRemoveItem = (): void => {
+  const cartRemoveItem = (): void => {
     if (isClient) {
       const confirmDelete = window.confirm(`${item.product.name}을(를) 장바구니에서 삭제하시겠습니까?`);
       if (confirmDelete) {
-        onRemoveItem(item.product._id);
+        handleRemoveItem(item._id);
       }
-    } else {
-      onRemoveItem(item.product._id);
     }
   };
 
   const handleCountQuantity = async (quantity: number) => {
     try {
       const res = await updateCartItemQuantity(token, item._id, quantity);
+
       if (res.ok === 1) {
-        const newQuantity = res.item.filter((cartItem: CartItemData) => cartItem._id === item._id).quantity;
-        console.log('???: ', newQuantity);
+        const matchedItem = res.item.find(cartItem => cartItem._id === item._id);
+        if (matchedItem) {
+          const newQuantity = matchedItem.quantity;
+          setQuantity(newQuantity);
+        }
       }
-    } catch {}
+    } catch (err) {
+      console.error('수량 변경 중 오류:', err);
+    }
   };
 
   // ==================== 렌더링 ====================
@@ -73,7 +77,7 @@ export default function CartProductCard({ item, token, onRemoveItem, isDeleting 
       {/* 삭제 버튼 - 오른쪽 상단 고정 */}
       <Button
         icon={true}
-        onClick={handleRemoveItem}
+        onClick={cartRemoveItem}
         disabled={isDeleting || isUpdatingQuantity}
         className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10"
         aria-label={`${item.product.name} 상품 삭제`}
@@ -107,7 +111,7 @@ export default function CartProductCard({ item, token, onRemoveItem, isDeleting 
           col-start-2 sm:col-start-3
         "
         >
-          <QuantityCount quantity={item.quantity} handleCountQuantity={handleCountQuantity} />
+          <QuantityCount quantity={quantity} handleCountQuantity={handleCountQuantity} />
         </div>
 
         {/* 가격 */}
