@@ -1,0 +1,17 @@
+meta {
+  name: Q&A 답변 등록
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{url}}/posts/27/replies
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "content": "안녕하세요. 고객님! 테스트용 텍스트를 저희 사이트에 올려주셔서 땡스투 유! 올라타자 담당자 드림"
+  }
+}
