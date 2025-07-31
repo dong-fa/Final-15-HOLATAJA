@@ -7,7 +7,7 @@ import { Title } from '@/components/Typography';
 import CartProductCard from '@/app/carts/components/CartProductCard';
 import CartSummary from '@/app/carts/components/CartSummary';
 import Button from '@/components/Button';
-import { removeCartItem, updateCartItemQuantity } from '@/data/functions/carts';
+import { removeCartItem, updateCartItemQuantity } from '@/data/actions/carts';
 
 interface CartContainerProps {
   initialData: CartResponse | null; // 서버에서 전달받은 초기 장바구니 데이터
@@ -34,6 +34,8 @@ interface CartContainerProps {
  * 4. 500ms 후 API 호출 (handleDebouncedQuantityChange)
  */
 export default function CartContainer({ initialData, token, serverError }: CartContainerProps) {
+  const testData = updateCartItemQuantity(token, 86, 5);
+  console.log('테스트데이터: ', testData);
   // ==================== 상태 관리 ====================
 
   /** 클라이언트 하이드레이션 완료 여부 */
@@ -331,13 +333,6 @@ export default function CartContainer({ initialData, token, serverError }: CartC
           </div>
         )}
 
-        {/* 수량 변경 중 안내 메시지 */}
-        {updatingQuantityIds.size > 0 && (
-          <div className="bg-accent border border-lightgray rounded-lg p-4 mb-6">
-            <p className="text-primary text-sm">📡 수량을 서버에 저장하는 중입니다... ({updatingQuantityIds.size}개 상품)</p>
-          </div>
-        )}
-
         {/* 메인 콘텐츠 */}
         <div className="space-y-6">
           {/* 장바구니 아이템 목록 */}
@@ -353,9 +348,7 @@ export default function CartContainer({ initialData, token, serverError }: CartC
                 <CartProductCard
                   key={item._id}
                   item={item}
-                  // 디바운싱 콜백들
-                  onImmediateQuantityChange={handleImmediateQuantityChange}
-                  onDebouncedQuantityChange={handleDebouncedQuantityChange}
+                  token={token}
                   onRemoveItem={handleRemoveItem}
                   // 로딩 상태
                   isDeleting={isActionLoading}

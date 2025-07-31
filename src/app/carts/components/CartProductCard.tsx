@@ -7,26 +7,20 @@ import { CartItemData } from '@/types/cart';
 import QuantityCount from '@/components/QuantityCount';
 // import { ContentsTitle, Contents } from '@/components/Typography';
 import Button from '@/components/Button';
+import { updateCartItemQuantity } from '@/data/actions/carts';
 
 interface CartProductCardProps {
   item: CartItemData; // 장바구니 아이템 데이터
-  onImmediateQuantityChange: (productId: number, newQuantity: number) => void; // 즉시 UI 업데이트용
-  onDebouncedQuantityChange: (productId: number, newQuantity: number) => void; // 디바운싱된 API 호출용
   onRemoveItem: (productId: number) => void; // 상품 삭제 콜백
   isDeleting?: boolean; // 삭제 처리 중 상태
   isUpdatingQuantity?: boolean; // 수량 업데이트 중 상태
+  token: string;
 }
 
-export default function CartProductCard({
-  item,
-  onImmediateQuantityChange,
-  onDebouncedQuantityChange,
-  onRemoveItem,
-  isDeleting = false,
-  isUpdatingQuantity = false,
-}: CartProductCardProps) {
+export default function CartProductCard({ item, token, onRemoveItem, isDeleting = false, isUpdatingQuantity = false }: CartProductCardProps) {
   // 클라이언트에서만 확인 다이얼로그 상태 관리
   const [isClient, setIsClient] = useState(false);
+  const [quantity, setQuantity] = useState(item.quantity);
 
   React.useEffect(() => {
     setIsClient(true);
@@ -49,14 +43,6 @@ export default function CartProductCard({
 
   // ==================== 이벤트 핸들러 ====================
 
-  const handleImmediateQuantityChange = (newQuantity: number): void => {
-    onImmediateQuantityChange(item.product._id, newQuantity);
-  };
-
-  const handleDebouncedQuantityChange = (newQuantity: number): void => {
-    onDebouncedQuantityChange(item.product._id, newQuantity);
-  };
-
   const handleRemoveItem = (): void => {
     if (isClient) {
       const confirmDelete = window.confirm(`${item.product.name}을(를) 장바구니에서 삭제하시겠습니까?`);
@@ -66,6 +52,16 @@ export default function CartProductCard({
     } else {
       onRemoveItem(item.product._id);
     }
+  };
+
+  const handleCountQuantity = async (quantity: number) => {
+    try {
+      const res = await updateCartItemQuantity(token, item._id, quantity);
+      if (res.ok === 1) {
+        const newQuantity = res.item.filter((cartItem: CartItemData) => cartItem._id === item._id).quantity;
+        console.log('???: ', newQuantity);
+      }
+    } catch {}
   };
 
   // ==================== 렌더링 ====================
@@ -111,13 +107,7 @@ export default function CartProductCard({
           col-start-2 sm:col-start-3
         "
         >
-          <QuantityCount
-            quantity={item.quantity}
-            onImmediateChange={handleImmediateQuantityChange}
-            onDebouncedChange={handleDebouncedQuantityChange}
-            min={1}
-            disabled={isDeleting || isUpdatingQuantity}
-          />
+          <QuantityCount quantity={item.quantity} handleCountQuantity={handleCountQuantity} />
         </div>
 
         {/* 가격 */}
