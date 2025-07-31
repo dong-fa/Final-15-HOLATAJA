@@ -10,6 +10,9 @@ import { Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { deleteBookmark, postBookmark } from '@/data/actions/bookmark';
+import useAuthStore from '@/store/authStore';
+import Modal from '@/components/Modal';
+import { useRouter } from 'next/navigation';
 
 interface ProductImgProps {
   title: string;
@@ -21,6 +24,11 @@ interface ProductImgProps {
 }
 
 function ProductImg({ title, srcList, swipe, productId, bookmarkId: initialBookmarkId }: ProductImgProps) {
+  const { user, hasHydrated } = useAuthStore(); // 유저 값 불러오기
+
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 정보
+  const router = useRouter();
+
   // 처음 들어온 bookmarkId props를 initialBookmarkId로 지정, 버튼 눌리면 전환
   const [liked, setLiked] = useState(!!initialBookmarkId); // boolean값
   const buttonBg = liked ? 'bg-[#FFCC00]' : 'bg-darkgray';
@@ -36,6 +44,13 @@ function ProductImg({ title, srcList, swipe, productId, bookmarkId: initialBookm
 
   const handleBookmarkClick = async () => {
     if (isLoading || !productId) return;
+
+    // 로그인 여부 확인
+    if (!hasHydrated || user === null) {
+      setIsModalOpen(true); // 모달 띄움
+      return;
+    }
+
     setLoading(true);
     try {
       if (liked) {
@@ -123,6 +138,19 @@ function ProductImg({ title, srcList, swipe, productId, bookmarkId: initialBookm
           </button>
         </div>
       )}
+
+      {/* 로그인 요청 모달 */}
+      <Modal
+        isOpen={isModalOpen}
+        handleClose={() => setIsModalOpen(false)}
+        handleConfirm={() => {
+          setIsModalOpen(false);
+          router.push('/auth/login');
+        }}
+        description={`로그인 사용자에게만 제공되는 기능입니다.\n로그인 화면으로 이동할까요?`}
+        isChoiceModal={true}
+        choiceOptions={['그냥 보기', '로그인 하러 가기']}
+      ></Modal>
     </>
   );
 }
