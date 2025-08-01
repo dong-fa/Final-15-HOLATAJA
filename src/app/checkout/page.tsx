@@ -5,21 +5,22 @@ import { cookies } from 'next/headers';
 import Link from 'next/link';
 
 interface CheckoutPageProps {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 }
 
 export default async function CheckoutPage({ searchParams }: CheckoutPageProps) {
+  const params = await searchParams;
   // API 호출을 위해 쿠키에서 토큰 가져오기
   const cookie = (await cookies()).get('accessToken');
   const token = cookie ? cookie.value : '';
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  console.log('결제 페이지 searchParams:', searchParams);
+  console.log('결제 페이지 searchParams:', params);
 
   let orderData;
 
   // 1. 장바구니에서 온 경우 또는 기본 경우
-  if (searchParams.from === 'cart' || !searchParams.from) {
+  if (params.from === 'cart' || !params.from) {
     console.log('장바구니에서 결제 페이지로 이동');
 
     const cartRes = await getCartList(token);
@@ -48,11 +49,11 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
   }
 
   // 2. 상품 상세에서 온 경우 (기존 URL 형태)
-  else if (searchParams.from === 'info' && searchParams.product_id) {
+  else if (params.from === 'info' && params.product_id) {
     console.log('상품 상세에서 결제 페이지로 이동');
 
     try {
-      const productRes = await getProduct(Number(searchParams.product_id));
+      const productRes = await getProduct(Number(params.product_id));
 
       if (productRes.ok === 1 && productRes.item) {
         const product = productRes.item;
@@ -69,7 +70,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
               id: product._id,
               name: product.name,
               image: product.mainImages && product.mainImages.length > 0 ? `${API_URL}/${product.mainImages[0].path}` : '',
-              options: product.extra.option && product.extra.option.length > 0 ? product.extra.option[0] : '기본',
+              options: product.extra.option && product.extra.option.length > 0 ? product.extra.option[0] : '',
               quantity: quantity,
               price: productPrice,
             },

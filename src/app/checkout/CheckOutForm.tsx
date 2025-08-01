@@ -6,11 +6,18 @@ import Image from 'next/image';
 import Select from '@/components/Select';
 import Input from '@/components/Input';
 import useAuthStore from '@/store/authStore';
-
+import { useRouter } from 'next/navigation';
 // 결제 방식 타입
 type PaymentMethod = '간편결제' | '체크/신용 카드' | '무통장 입금';
 // 간편결제 옵션 타입
 type SimplePaymentOption = '토스' | '네이버';
+
+// 세션스토리지 체크아웃 데이터 타입
+interface CheckoutData {
+  _id: number;
+  color: string;
+  quantity: number;
+}
 
 // 배송지 정보 타입
 interface DeliveryInfo {
@@ -65,6 +72,7 @@ interface CheckoutPageProps {
 }
 
 export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
+  const router = useRouter();
   // 결제 방법(탭) 상태
   const [activePaymentMethod, setActivePaymentMethod] = useState<PaymentMethod>('간편결제');
   // 간편결제 옵션 상태
@@ -84,6 +92,9 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
   // 결제 처리 중 로딩 상태
   const [isLoading, setIsLoading] = useState(false);
 
+  // 세션스토리지 데이터를 반영한 주문 정보 상태
+  const [currentOrderInfo, setCurrentOrderInfo] = useState<OrderInfo>(orderInfo);
+
   // 유저 배송지 정보 (props가 없을 때 사용)
   const { user, hasHydrated } = useAuthStore();
   console.log('유저 정보', user);
@@ -97,6 +108,53 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
 
   // 결제에만 사용하는 배송지 정보 state
   const [currentDeliveryInfo, setCurrentDeliveryInfo] = useState<DeliveryInfo>(deliveryInfo);
+
+  // 세션스토리지에서 checkoutData 확인하여 주문 정보 업데이트
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const checkoutDataStr = sessionStorage.getItem('checkoutData');
+      if (checkoutDataStr) {
+        try {
+          const checkoutData: CheckoutData = JSON.parse(checkoutDataStr);
+
+          // orderInfo의 products를 세션스토리지 데이터로 업데이트
+          const updatedProducts = orderInfo.products.map(product => {
+            // _id가 일치하는 상품의 경우 세션스토리지 데이터로 교체
+            if (product.id === checkoutData._id) {
+              return {
+                ...product,
+                options: checkoutData.color, // 세션스토리지의 color로 교체
+                quantity: checkoutData.quantity, // 세션스토리지의 quantity로 교체
+              };
+            }
+            return product;
+          });
+
+          // 총액 재계산
+          const subtotal = updatedProducts.reduce((sum, product) => sum + product.price * product.quantity, 0);
+          const shippingFee = orderInfo.shippingFee; // 배송비는 기존 값 유지
+          const total = subtotal + shippingFee;
+
+          // 업데이트된 주문 정보로 상태 변경
+          setCurrentOrderInfo({
+            products: updatedProducts,
+            subtotal,
+            shippingFee,
+            total,
+          });
+
+          console.log('세션스토리지 체크아웃 데이터로 주문 정보 업데이트:', checkoutData);
+        } catch (error) {
+          console.error('세션스토리지 checkoutData 파싱 오류:', error);
+          // 파싱 오류 시 기본 orderInfo 사용
+          setCurrentOrderInfo(orderInfo);
+        }
+      } else {
+        // 세션스토리지에 데이터가 없으면 기본 orderInfo 사용
+        setCurrentOrderInfo(orderInfo);
+      }
+    }
+  }, [orderInfo]);
 
   useEffect(() => {
     if (!hasHydrated) return;
@@ -114,8 +172,6 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
   const [isEditingDelivery, setIsEditingDelivery] = useState(false);
   // 배송지 수정 입력값 상태 (수정 모드에서 사용)
   const [editDeliveryInfo, setEditDeliveryInfo] = useState<DeliveryInfo>(currentDeliveryInfo);
-  // 주문 정보는 수정하지 않으므로 변수로 관리
-  const currentOrderInfo = orderInfo;
 
   // -----------------------------
   // 핸들러 함수들
@@ -407,6 +463,8 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
       });
       const response = await res.json();
       console.log('구매결과', response);
+      sessionStorage.removeItem('checkoutData'); // 결제 후 세션스토리지 데이터 삭제
+      router.push(`/my/${response.item._id}`);
     } catch (error) {
       console.error('결제 처리 중 오류 발생:', error);
     } finally {
