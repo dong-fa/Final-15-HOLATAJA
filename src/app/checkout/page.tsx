@@ -15,18 +15,15 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
   const token = cookie ? cookie.value : '';
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  console.log('결제 페이지 searchParams:', params);
-
   let orderData;
 
   // 1. 장바구니에서 온 경우 또는 기본 경우
   if (params.from === 'cart' || !params.from) {
-    console.log('장바구니에서 결제 페이지로 이동');
-
     const cartRes = await getCartList(token);
     orderData =
       cartRes.ok === 1
         ? {
+            cartId: cartRes.item?.[0]?._id,
             products:
               cartRes.item?.map(item => ({
                 id: item.product_id,
@@ -50,8 +47,6 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
 
   // 2. 상품 상세에서 온 경우 (기존 URL 형태)
   else if (params.from === 'info' && params.product_id) {
-    console.log('상품 상세에서 결제 페이지로 이동');
-
     try {
       const productRes = await getProduct(Number(params.product_id));
 

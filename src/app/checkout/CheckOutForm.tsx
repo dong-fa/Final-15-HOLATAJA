@@ -39,6 +39,7 @@ interface ProductInfo {
 
 // 주문 정보 타입
 interface OrderInfo {
+  cartId?: number;
   products: ProductInfo[];
   subtotal: number; // 상품 총액
   shippingFee: number; // 배송비
@@ -73,6 +74,8 @@ interface CheckoutPageProps {
 
 export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
   const router = useRouter();
+  // URL searchParams에서 from 파라미터 확인
+  const [isFromCart, setIsFromCart] = useState<boolean>(false);
   // 결제 방법(탭) 상태
   const [activePaymentMethod, setActivePaymentMethod] = useState<PaymentMethod>('간편결제');
   // 간편결제 옵션 상태
@@ -97,7 +100,6 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
 
   // 유저 배송지 정보 (props가 없을 때 사용)
   const { user, hasHydrated } = useAuthStore();
-  console.log('유저 정보', user);
 
   const deliveryInfo: DeliveryInfo = {
     name: user?.name || '',
@@ -112,6 +114,10 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
   // 세션스토리지에서 checkoutData 확인하여 주문 정보 업데이트
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const fromParam = urlParams.get('from');
+      setIsFromCart(fromParam === 'cart' || !fromParam);
+
       const checkoutDataStr = sessionStorage.getItem('checkoutData');
       if (checkoutDataStr) {
         try {
@@ -137,13 +143,12 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
 
           // 업데이트된 주문 정보로 상태 변경
           setCurrentOrderInfo({
+            cartId: orderInfo.cartId,
             products: updatedProducts,
             subtotal,
             shippingFee,
             total,
           });
-
-          console.log('세션스토리지 체크아웃 데이터로 주문 정보 업데이트:', checkoutData);
         } catch (error) {
           console.error('세션스토리지 checkoutData 파싱 오류:', error);
           // 파싱 오류 시 기본 orderInfo 사용
@@ -417,6 +422,28 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
     }
   };
 
+  //장바구니 비우기
+  const clearCart = async () => {
+    try {
+      const cartId = currentOrderInfo.cartId; // 첫 번째 상품의 cartId 사용
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/carts/${cartId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Client-Id': process.env.NEXT_PUBLIC_API_CLIENT_ID!,
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+      } else {
+        console.error('장바구니 비우기 실패:', await res.text());
+      }
+    } catch (error) {
+      console.error('장바구니 비우기 중 오류 발생:', error);
+    }
+  };
+
   // 결제 버튼 클릭 시 결제 데이터 생성 및 처리
   const handleCheckout = async () => {
     setIsLoading(true);
@@ -463,7 +490,17 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
       });
       const response = await res.json();
       console.log('구매결과', response);
-      sessionStorage.removeItem('checkoutData'); // 결제 후 세션스토리지 데이터 삭제
+      //결제 완료 후처리
+
+      if (response.ok === 1) {
+        if (isFromCart) {
+          // 장바구니에서 결제한 경우 장바구니 비우기
+          await clearCart();
+        }
+      }
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('checkoutData'); // 결제 후 세션스토리지 데이터 삭제
+      }
       router.push(`/my/${response.item._id}`);
     } catch (error) {
       console.error('결제 처리 중 오류 발생:', error);
