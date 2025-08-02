@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import { sortType } from '@/app/products/components/ProductList';
+import React from 'react';
 
-const options = ['가나다순', '등록일순', '가격순'];
+const options: sortType[] = ['최신순', '가나다순', '가격 낮은순', '가격 높은순'];
 
-export default function CategoryToggle() {
-  const [selected, setSelected] = useState('가격순');
-
+export default function SortToggle({ selected, setSelected }: { selected: sortType; setSelected: (option: sortType) => void }) {
   return (
     <div className="flex gap-2 mb-3">
       {options.map(option => (
