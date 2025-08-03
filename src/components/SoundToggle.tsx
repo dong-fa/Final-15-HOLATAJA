@@ -45,8 +45,8 @@ export default function SoundToggle({ defaultOn = false, onChange }: SoundToggle
   }, [defaultOn]);
 
   return (
-    <div className="inline-flex flex-col items-center p-6 rounded-lg">
-      <div className="flex items-center mb-4">
+    <div className="inline-flex flex-col items-center p-2 rounded-lg">
+      <div className="flex items-center mb-2">
         <span className="label-m mr-2">OFF</span>
 
         <button

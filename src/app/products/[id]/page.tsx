@@ -1,19 +1,22 @@
-import PostForm from '@/app/products/[id]/PostForm';
-import ProductPostForm from '@/app/products/[id]/ProductPostForm';
-import Review from '@/app/products/[id]/Review';
-import ProductImg from '@/components/ProductImg';
-import QnA from '@/components/QnA';
-import SoundToggle from '@/components/SoundToggle';
-import Tab, { TabItem } from '@/components/Tab';
-import { ContentsTitle, SubTitle, Title } from '@/components/Typography';
-import { postQuestion } from '@/data/actions/qna';
-import { postReview } from '@/data/actions/review';
-import getProduct from '@/data/functions/product';
+import React from 'react';
+import Image from 'next/image';
+
+import { QnaItem, QuestionItem } from '@/types/qna';
 import { getAnswer, getQuestion } from '@/data/functions/qna';
 import getReview from '@/data/functions/review';
-import { QnaItem, QuestionItem } from '@/types/qna';
-import Image from 'next/image';
-import React from 'react';
+import getProduct from '@/data/functions/product';
+import { postReview } from '@/data/actions/review';
+import { postQuestion } from '@/data/actions/qna';
+
+import { ContentsTitle, SubTitle, Title } from '@/components/Typography';
+import Tab, { TabItem } from '@/components/Tab';
+import ProductImg from '@/components/ProductImg';
+import QnA from '@/components/QnA';
+import KeySoundDemo from '@/app/products/components/KeySoundDemo';
+
+import ProductPostForm from '@/app/products/[id]/ProductPostForm';
+import PostForm from '@/app/products/[id]/PostForm';
+import Review from '@/app/products/[id]/Review';
 
 interface PageProps {
   params: Promise<{
@@ -73,9 +76,8 @@ export default async function ProductInfo({ params }: PageProps) {
               ))} */}
             </ul>
           </div>
-          <div className="rounded-lg bg-lightgray">
-            <SoundToggle />
-            <div>{/* 키보드 */}</div>
+          <div className="rounded-lg bg-lightgray px-5 py-3 hidden sm:block">
+            {productData.ok === 1 && <KeySoundDemo switchType={productData.item?.extra?.category} />}
           </div>
           {productData.ok === 1 &&
             (productData.item?.mainImages.filter(img => img.type === 'info').map(img => API_URL + '/' + img.path) ?? []).map((img, idx) => (
