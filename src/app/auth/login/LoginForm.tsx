@@ -8,6 +8,8 @@ import { loginAction } from '@/data/actions/auth';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import useAuthStore from '@/store/authStore';
+import Modal from '@/components/Modal';
+
 // import { signIn } from 'next-auth/react';
 // import { loginWithAuthjs } from '@/data/actions/auth';
 
@@ -32,6 +34,8 @@ export default function LoginForm() {
   const router = useRouter();
 
   const [actionState, formAction, isPending] = useActionState(loginAction, null);
+  const [loginId, setLoginId] = useState<number | null>(null);
+  const [loginmodal, setLoginModal] = useState(false);
 
   const validateField = (field: string, value: string) => {
     try {
@@ -101,7 +105,8 @@ export default function LoginForm() {
     if (actionState?.ok) {
       console.log('액션 스테이트', actionState);
       setUser(actionState.item);
-      alert('로그인 성공!');
+      setLoginModal(true);
+      // alert('로그인 성공!');
       router.push('/products');
     }
   }, [actionState, router, setUser]);
@@ -142,6 +147,13 @@ export default function LoginForm() {
       <Link href={'/auth/signup'} className="text-secondary self-start mt-6">
         회원가입
       </Link>
+      <Modal
+        isOpen={loginmodal}
+        handleClose={() => setLoginModal(false)}
+        handleConfirm={() => loginId && setLoginId}
+        description="로그인 성공!"
+      ></Modal>
+      ;
       {/* <div>
         <button
           onClick={() => {
