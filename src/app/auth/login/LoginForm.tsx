@@ -8,6 +8,10 @@ import { loginAction } from '@/data/actions/auth';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import useAuthStore from '@/store/authStore';
+import Modal from '@/components/Modal';
+
+// import { signIn } from 'next-auth/react';
+// import { loginWithAuthjs } from '@/data/actions/auth';
 
 const loginSchema = z.object({
   email: z.string().min(1, '아이디를 입력해주세요').email('올바른 이메일 형식이 아닙니다'),
@@ -30,6 +34,8 @@ export default function LoginForm() {
   const router = useRouter();
 
   const [actionState, formAction, isPending] = useActionState(loginAction, null);
+  const [loginId, setLoginId] = useState<number | null>(null);
+  const [loginmodal, setLoginModal] = useState(false);
 
   const validateField = (field: string, value: string) => {
     try {
@@ -99,44 +105,64 @@ export default function LoginForm() {
     if (actionState?.ok) {
       console.log('액션 스테이트', actionState);
       setUser(actionState.item);
-      alert('로그인 성공!');
-      router.push('/product');
+      setLoginModal(true);
+      // alert('로그인 성공!');
+      router.push('/products');
     }
   }, [actionState, router, setUser]);
+
   return (
-    <form className="w-full flex flex-col gap-6" action={handleSubmit} noValidate>
-      <div>
-        <Input
-          id="id"
-          type="email"
-          name="email"
-          placeholder="이메일"
-          gap="gap-4"
-          value={formData.email}
-          onChange={handleInputChange('email')}
-          onBlur={handleInputBlur('email')}
-          disabled={isPending}
-        />
-        {!!error.email && <p className="label-s w-full text-negative mx-[2%] mt-2">{error.email}</p>}
-      </div>
-      <div>
-        <Input
-          id="pw"
-          type="password"
-          name="password"
-          placeholder="비밀번호"
-          gap="gap-4"
-          value={formData.password}
-          onChange={handleInputChange('password')}
-          onBlur={handleInputBlur('password')}
-          disabled={isPending}
-        />
-        {!!error.password && <p className="label-s w-full text-negative mx-[2%] mt-2">{error.password}</p>}
-      </div>
-      <Button submit>로그인</Button>
-      <Link href={'/auth/signup'} className="text-secondary">
+    <>
+      <form className="w-full flex flex-col gap-6" action={handleSubmit} noValidate>
+        <div>
+          <Input
+            id="id"
+            type="email"
+            name="email"
+            placeholder="이메일"
+            gap="gap-4"
+            value={formData.email}
+            onChange={handleInputChange('email')}
+            onBlur={handleInputBlur('email')}
+            disabled={isPending}
+          />
+          {!!error.email && <p className="label-s w-full text-negative mx-[2%] mt-2">{error.email}</p>}
+        </div>
+        <div>
+          <Input
+            id="pw"
+            type="password"
+            name="password"
+            placeholder="비밀번호"
+            gap="gap-4"
+            value={formData.password}
+            onChange={handleInputChange('password')}
+            onBlur={handleInputBlur('password')}
+            disabled={isPending}
+          />
+          {!!error.password && <p className="label-s w-full text-negative mx-[2%] mt-2">{error.password}</p>}
+        </div>
+        <Button submit>로그인</Button>
+      </form>
+      <Link href={'/auth/signup'} className="text-secondary self-start mt-6">
         회원가입
       </Link>
-    </form>
+      <Modal
+        isOpen={loginmodal}
+        handleClose={() => setLoginModal(false)}
+        handleConfirm={() => loginId && setLoginId}
+        description="로그인 성공!"
+      ></Modal>
+
+      {/* <div>
+        <button
+          onClick={() => {
+            signIn('kakao');
+          }}
+        >
+          카카오 로그인
+        </button>
+      </div> */}
+    </>
   );
 }

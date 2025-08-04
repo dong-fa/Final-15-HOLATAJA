@@ -1,25 +1,34 @@
-'use client';
-// import QnA from '@/components/QnA';
 import Tab, { TabItem } from '@/components/Tab';
 import { Title } from '@/components/Typography';
-import OrderTab from '@/app/my/components/Orders';
+import OrderTab from '@/app/my/components/OrderTab';
+import BookmarkTab from '@/app/my/components/BookmarkTab';
+import QnATab from '@/app/my/components/QnATab';
+import ReviewTab from '@/app/my/components/ReviewTab';
+import UserInfo from './components/UserInfo';
+import { getOrderList } from '@/data/functions/order';
+import { getBookmarkList } from '@/data/functions/bookmark';
 
-const tabItems: TabItem[] = [
-  { id: 'info', title: '회원 정보', content: <h1>회원 정보</h1> },
-  {
-    id: 'orders',
-    title: '구매 내역',
-    content: <OrderTab />,
-  },
-  { id: 'bookmark', title: '찜 목록', content: <h1>찜 목록</h1> },
-  { id: 'review', title: '나의 구매 후기', content: <h1>나의 구매후기</h1> },
-  // { id: 'qna', title: '나의 Q&A', content: <QnA /> },
-];
-export default function MyPage() {
+export default async function MyPage() {
+  // 구매 내역 목록 데이터 불러오기
+  const orderHistoryData = await getOrderList();
+  const orderHistoryList = orderHistoryData.ok === 1 ? orderHistoryData.item : [];
+
+  // 찜 목록 데이터 불러오기
+  const bookmarkData = await getBookmarkList();
+  const bookmarkList = bookmarkData.ok === 1 ? bookmarkData.item : [];
+
+  const tabItems: TabItem[] = [
+    { id: 'info', title: '회원 정보', content: <UserInfo /> },
+    { id: 'orders', title: '구매 내역', content: <OrderTab orderHistoryList={orderHistoryList} /> },
+    { id: 'bookmarks', title: '찜 목록', content: <BookmarkTab bookmarkList={bookmarkList} /> },
+    { id: 'reviews', title: '나의 구매 후기', content: <ReviewTab /> },
+    { id: 'qna', title: '나의 Q&A', content: <QnATab /> },
+  ];
+
   return (
     <>
       <Title className="title">마이 페이지</Title>
-      <Tab tabItems={tabItems} defaultActiveTabId={'orders'} />
+      <Tab tabItems={tabItems} defaultActiveTabId={'info'} />
     </>
   );
 }
