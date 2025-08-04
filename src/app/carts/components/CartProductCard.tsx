@@ -34,7 +34,7 @@ export default function CartProductCard({ item, token, handleRemoveItem, isDelet
 
   const getImageUrl = (): string => {
     if (item.product.image?.path) {
-      return `${process.env.NEXT_PUBLIC_API_URL}/${item.product.image.path}`;
+      return `${item.product.image.path}`;
     }
     return '/images/placeholder-product.jpg';
   };

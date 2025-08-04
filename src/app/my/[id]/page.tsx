@@ -12,8 +12,6 @@ type PageProps = {
 };
 
 export default async function OrderInfoPage({ params }: PageProps) {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
   const { id } = await params;
   const orderData = await getOrderInfo(Number(id));
 
@@ -49,7 +47,7 @@ export default async function OrderInfoPage({ params }: PageProps) {
         {orderInfo.products.map((product, index) => (
           <OrderedCard
             key={index}
-            src={product.image?.path ? `${API_URL}/${product.image.path}` : '/product_images/holataja_circle.webp'}
+            src={product.image?.path ? `${product.image.path}` : '/product_images/holataja_circle.webp'}
             name={product.name}
             price={product.price}
             quantity={product.quantity}

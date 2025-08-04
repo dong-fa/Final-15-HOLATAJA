@@ -5,15 +5,13 @@ import { getProductList } from '@/data/functions/product';
 import ProductList from '@/app/products/components/ProductList';
 
 export default async function ProductPage() {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
   // 상품 목록 데이터 불러오기
   const productData = await getProductList();
   const productList: Product[] =
     productData.ok === 1
       ? productData.item.map(item => ({
           _id: item._id,
-          imgSrc: item.mainImages[0]?.path ? `${API_URL}/${item.mainImages[0].path}` : '/product_images/holataja_circle.webp',
+          imgSrc: item.mainImages[0]?.path ? `${item.mainImages[0].path}` : '/product_images/holataja_circle.webp',
           name: item.name,
           price: item.price,
           category: item.extra.category,
