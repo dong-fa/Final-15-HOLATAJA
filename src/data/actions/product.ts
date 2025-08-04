@@ -18,7 +18,6 @@ export async function addToCart(state: ApiRes<ProductInfo[]> | null, formData: F
   let data: ApiRes<ProductInfo[]>;
   const body = { ...Object.fromEntries(formData), product_id: Number(formData.get('product_id')), quantity: Number(formData.get('quantity')) };
   const accessToken = (await cookies()).get('accessToken')?.value;
-  console.log(body);
   try {
     const response = await fetch(`${API_URL}/carts`, {
       method: 'POST',

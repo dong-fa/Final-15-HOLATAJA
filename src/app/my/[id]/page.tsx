@@ -22,8 +22,6 @@ export default async function OrderInfoPage({ params }: PageProps) {
 
   const bankInfo = orderInfo.payment.info.split('&')[0].trim();
 
-  console.log('orderData', orderData);
-
   return (
     <>
       <nav className="text-sm text-gray-500 mb-2 flex flex-row">
