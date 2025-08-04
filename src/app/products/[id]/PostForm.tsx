@@ -39,7 +39,7 @@ export default function PostForm<itemState>({ productId, orderId, action, type }
       // 등록 성공/실패(서버 오류) 시 모달 표시
       setIsModalOpen(true);
     }
-  }, [state]); // state가 변경될 때마다 모달 상태 변경
+  }, [state, router]); // state가 변경될 때마다 모달 상태 변경
 
   return (
     <div>
