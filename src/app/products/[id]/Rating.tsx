@@ -27,13 +27,19 @@ export default function Rating({ rating, setRating, editable }: RatingProps) {
           role="radio"
           // 별점 등록 후 다시 같은 별점 클릭 시 초기화
           onClick={() => {
-            editable && setRating(rating === idx + 1 ? 0 : idx + 1);
+            if (editable) {
+              setRating(rating === idx + 1 ? 0 : idx + 1);
+            }
           }}
           onMouseEnter={() => {
-            editable && setRatingHovered(idx + 1);
+            if (editable) {
+              setRatingHovered(idx + 1);
+            }
           }}
           onMouseLeave={() => {
-            editable && setRatingHovered(0);
+            if (editable) {
+              setRatingHovered(0);
+            }
           }}
         >
           <Star size={24} className={idx + 1 <= rating || idx + 1 <= ratingHovered ? 'fill-primary stroke-primary' : 'stroke-gray'} />

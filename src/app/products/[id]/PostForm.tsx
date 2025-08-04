@@ -7,7 +7,6 @@ import Modal from '@/components/Modal';
 import Textarea from '@/components/Textarea';
 import { Contents } from '@/components/Typography';
 import { ApiRes, ApiResPromise } from '@/types/api';
-import { Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import React, { useActionState, useEffect, useState } from 'react';

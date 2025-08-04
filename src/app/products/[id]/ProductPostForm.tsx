@@ -35,7 +35,7 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
   };
 
   // 장바구니에 담기
-  const [state, formAction, isPending] = useActionState(addToCart, null);
+  const [state, formAction] = useActionState(addToCart, null);
 
   useEffect(() => {
     if (state?.ok === 1) {
