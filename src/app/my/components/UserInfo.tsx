@@ -86,6 +86,7 @@ export default function UserInfo() {
       alert('회원 정보가 수정되었습니다.');
       setIsdisabled(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actionState, setUser]);
 
   return (

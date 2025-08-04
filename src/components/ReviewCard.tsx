@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Check, Pencil, Star, Trash, X } from 'lucide-react';
+import React, { useState } from 'react';
+import { Check, Pencil, Trash, X } from 'lucide-react';
 import '../app/globals.css';
 import Button from '@/components/Button';
 import Textarea from '@/components/Textarea';

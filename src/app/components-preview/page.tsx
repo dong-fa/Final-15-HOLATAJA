@@ -572,6 +572,10 @@ function CardElementsTab() {
             rating={reviewProps.rating}
             content={reviewProps.content}
             handleDelete={() => {}}
+            handleEdit={() => {}}
+            handleSave={() => {}}
+            handleCancel={() => {}}
+            isEditing={false}
           />
         </div>
         <div className="max-w-5xl p-4 rounded-lg  border border-lightgray">
@@ -581,6 +585,10 @@ function CardElementsTab() {
             rating={reviewProps.rating}
             content={reviewProps.content}
             handleDelete={() => {}}
+            handleEdit={() => {}}
+            handleSave={() => {}}
+            handleCancel={() => {}}
+            isEditing={false}
           />
         </div>
       </div>
