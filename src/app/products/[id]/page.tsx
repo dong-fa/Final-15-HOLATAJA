@@ -1,20 +1,22 @@
-import Button from '@/components/Button';
-import ProductImg from '@/components/ProductImg';
-import QnA from '@/components/QnA';
-// import QuantityCount from '@/components/QuantityCount';
-import ReviewCard from '@/components/ReviewCard';
-import SoundToggle from '@/components/SoundToggle';
-import Tab, { TabItem } from '@/components/Tab';
-import Textarea from '@/components/Textarea';
-import { Contents, ContentsTitle, SubTitle, Title } from '@/components/Typography';
-import getProduct from '@/data/functions/product';
+import React from 'react';
+import Image from 'next/image';
+
+import { QnaItem, QuestionItem } from '@/types/qna';
 import { getAnswer, getQuestion } from '@/data/functions/qna';
 import getReview from '@/data/functions/review';
-import { QnaItem, QuestionItem } from '@/types/qna';
+import getProduct from '@/data/functions/product';
+import { postReview } from '@/data/actions/review';
+import { postQuestion } from '@/data/actions/qna';
 
-import { Star } from 'lucide-react';
-import Image from 'next/image';
-import React from 'react';
+import { ContentsTitle, SubTitle, Title } from '@/components/Typography';
+import Tab, { TabItem } from '@/components/Tab';
+import ProductImg from '@/components/ProductImg';
+import QnA from '@/components/QnA';
+import KeySoundDemo from '@/app/products/components/KeySoundDemo';
+
+import ProductPostForm from '@/app/products/[id]/ProductPostForm';
+import PostForm from '@/app/products/[id]/PostForm';
+import Review from '@/app/products/[id]/Review';
 
 interface PageProps {
   params: Promise<{
@@ -22,19 +24,15 @@ interface PageProps {
   }>;
 }
 
-// 상품 구매 시 전달할 정보
-// const purchaseData = [];
-
 export default async function ProductInfo({ params }: PageProps) {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const { id } = await params;
-  // const [quantity, setQuantity] = useState(0);
 
   // 상품 상세 조회
   const productData = await getProduct(Number(id));
 
   // 상품 문의 목록 조회
   const questionData = await getQuestion();
+
   // 상품 id와 일치하는 문의 목록
   const questionList = questionData.ok === 1 ? questionData.item.filter((question: QuestionItem) => question.product_id === Number(id)) : [];
 
@@ -55,7 +53,6 @@ export default async function ProductInfo({ params }: PageProps) {
 
   // 상품 구매 후기 목록 조회
   const reviewData = await getReview(Number(id));
-  console.log(id, reviewData);
 
   const tabItems: TabItem[] = [
     {
@@ -78,12 +75,11 @@ export default async function ProductInfo({ params }: PageProps) {
               ))} */}
             </ul>
           </div>
-          <div className="rounded-lg bg-lightgray">
-            <SoundToggle />
-            <div>{/* 키보드 */}</div>
+          <div className="rounded-lg bg-lightgray px-5 py-3 hidden sm:block">
+            {productData.ok === 1 && <KeySoundDemo switchType={productData.item?.extra?.category} />}
           </div>
           {productData.ok === 1 &&
-            (productData.item?.mainImages.filter(img => img.type === 'info').map(img => API_URL + '/' + img.path) ?? []).map((img, idx) => (
+            (productData.item?.mainImages.filter(img => img.type === 'info').map(img => img.path) ?? []).map((img, idx) => (
               <div key={idx} className="relative w-full">
                 <Image src={img} alt="" width={0} height={0} priority sizes="100%" className="object-scale-down w-full h-auto" />
               </div>
@@ -95,52 +91,21 @@ export default async function ProductInfo({ params }: PageProps) {
       id: '2',
       title: '구매 후기',
       content: (
-        <>
-          <div className="flex flex-col gap-4 mb-6 sm:mb-12">
-            {reviewData.ok === 1 &&
-              reviewData.item?.map(review => (
-                <ReviewCard
-                  key={review._id}
-                  name={review.user.name}
-                  createdAt={review.createdAt.split(' ')[0]}
-                  rating={review.rating}
-                  content={review.content}
-                ></ReviewCard>
-              ))}
-          </div>
-          <div className="flex flex-col gap-4">
-            <Contents size="large">구매 후기 등록하기</Contents>
-            <div className="flex">
-              <Star color="var(--color-gray)" size={28} />
-              <Star color="var(--color-gray)" size={28} />
-              <Star color="var(--color-gray)" size={28} />
-              <Star color="var(--color-gray)" size={28} />
-              <Star color="var(--color-gray)" size={28} />
-            </div>
-            <Textarea name="" id="" />
-            <div className="flex justify-end">
-              <Button size="small">문의하기</Button>
-            </div>
-          </div>
-        </>
+        <div className="flex flex-col gap-6 sm:gap-12 p-4 mt-[-2rem]">
+          <Review reviewList={reviewData.ok ? reviewData.item : []} />
+          {/* TODO orderId 받아오기: 내 구매 목록 조회 후 productId가 일치하는 목록 filter */}
+          <PostForm productId={Number(id)} orderId={Number(id)} action={postReview} type="구매 후기" />
+        </div>
       ),
     },
     {
       id: '3',
       title: 'Q&A',
       content: (
-        <>
+        <div className="flex flex-col gap-6 sm:gap-12 p-4 mt-[-1rem]">
           <QnA qnaList={qnaList} />
-          <div className="flex flex-col gap-4">
-            <label htmlFor="">
-              <Contents size="large">Q&A 등록하기</Contents>
-            </label>
-            <Textarea id="" name="" />
-            <div className="flex justify-end">
-              <Button size="small">등록</Button>
-            </div>
-          </div>
-        </>
+          <PostForm productId={Number(id)} action={postQuestion} type="Q&A" />
+        </div>
       ),
     },
   ];
@@ -151,7 +116,9 @@ export default async function ProductInfo({ params }: PageProps) {
       <div className="grid sm:grid-cols-2 gap-9">
         <ProductImg
           title={productData.ok === 1 ? productData.item?.name : ''}
-          srcList={productData.ok === 1 ? productData.item?.mainImages.filter(img => img.type === 'detail').map(img => API_URL + '/' + img.path) : []}
+          srcList={productData.ok === 1 ? productData.item?.mainImages.filter(img => img.type === 'detail').map(img => img.path) : []}
+          productId={productData.ok === 1 ? productData.item._id : 0}
+          bookmarkId={productData.ok === 1 ? productData.item.myBookmarkId : 0}
           swipe
         ></ProductImg>
         <div className="flex flex-col self-center gap-4">
@@ -162,27 +129,7 @@ export default async function ProductInfo({ params }: PageProps) {
           <div>
             <span className="text-2xl font-bold">{productData.ok === 1 && productData.item?.price?.toLocaleString()}원</span>
           </div>
-          <div>
-            <span className="inline-block mb-2 font-semibold">옵션</span>
-            <div className="flex flex-wrap gap-2">
-              {productData.ok === 1 &&
-                productData.item?.extra?.option?.map((option, idx) => (
-                  <Button key={idx} size="medium" select>
-                    {option}
-                  </Button>
-                ))}
-            </div>
-          </div>
-          <div className="flex flex-col gap-4">
-            {/*  useState를 쓰는 방식으로 변경해야 함 */}
-            {/* <QuantityCount handleCountQuantity={num => setQuantity(num)} quantity={quantity} /> */}
-            <div className="flex flex-row gap-2 sm:gap-4">
-              <Button outlined size="full">
-                장바구니
-              </Button>
-              <Button size="full">구매하기</Button>
-            </div>
-          </div>
+          <ProductPostForm productData={productData} />
         </div>
       </div>
       <Tab tabItems={tabItems} />

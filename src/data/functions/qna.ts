@@ -1,6 +1,8 @@
+'use server';
+
 import { ApiResPromise } from '@/types/api';
 import { AnswerItem, QuestionItem } from '@/types/qna';
-
+import { cookies } from 'next/headers';
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
 
@@ -10,11 +12,13 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
  */
 export async function getQuestion(): ApiResPromise<QuestionItem[]> {
   try {
-    const response = await fetch(`${API_URL}/posts?type=qna`, {
+    const response = await fetch(`${API_URL}/posts?type=qna&?sort={"createdAt": -1}`, {
       headers: {
         'Client-Id': CLIENT_ID,
+        'Content-Type': 'application/json',
       },
       cache: 'force-cache',
+      next: { tags: ['qna-list'] },
     });
     return response.json();
   } catch (error) {
@@ -33,12 +37,35 @@ export async function getAnswer(_id: number): ApiResPromise<AnswerItem[]> {
     const response = await fetch(`${API_URL}/posts/${_id}/replies`, {
       headers: {
         'Client-Id': CLIENT_ID,
+        'Content-Type': 'application/json',
       },
       cache: 'force-cache',
+      next: { tags: [`answer-list-${_id}`] },
     });
     return response.json();
   } catch (error) {
     console.error(error);
     return { ok: 0, message: '답변 조회에 실패했습니다.' };
+  }
+}
+/**
+ * 유저가 작성한 Q&A 질문 게시글을 모두 가져옴
+ * @returns {Promise<ApiRes<QuestionItem[]>>} - 질문 목록 응답 객체
+ */
+export async function getMyQnA(): ApiResPromise<QuestionItem[]> {
+  const accessToken = (await cookies()).get('accessToken')?.value;
+  try {
+    const response = await fetch(`${API_URL}/posts/users?type=qna&?sort={"createdAt": -1}`, {
+      headers: {
+        'Client-Id': CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`, // 인증 토큰
+      },
+      cache: 'force-cache',
+      next: { tags: ['my-qna-list'] },
+    });
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: '내 질문 조회에 실패했습니다.' };
   }
 }

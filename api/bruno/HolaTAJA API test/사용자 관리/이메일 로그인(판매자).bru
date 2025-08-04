@@ -1,0 +1,22 @@
+meta {
+  name: 이메일 로그인(판매자)
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{url}}/users/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email":"holataja@holataja.com",
+    "password":"Aa1234567"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
