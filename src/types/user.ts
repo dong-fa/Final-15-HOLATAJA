@@ -5,6 +5,7 @@ export interface User {
   name: string; // 사용자 이름
   phone?: string; // 전화번호
   address?: string; // 주소
+  postalCode?: string; //우편번호
   type: 'user' | 'seller' | 'admin'; // 사용자 유형
   loginType?: 'email' | 'kakao' | 'google' | 'github' | 'naver'; // 로그인 방식
   image?: string; // 프로필 이미지
