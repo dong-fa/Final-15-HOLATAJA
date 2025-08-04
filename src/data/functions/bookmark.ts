@@ -18,7 +18,6 @@ export async function getBookmarkList(): ApiResPromise<BookmarkItemData[]> {
         Authorization: `Bearer ${accessToken}`, // 인증 토큰
         'Content-Type': 'application/json',
       },
-      cache: 'force-cache',
       next: { tags: ['bookmark-list'] },
     });
     return response.json();
@@ -41,7 +40,6 @@ export async function getBookmarkInfo(product_id: number): ApiResPromise<Bookmar
         Authorization: `Bearer ${accessToken}`, // 인증 토큰
         'Content-Type': 'application/json',
       },
-      cache: 'force-cache',
       next: { tags: ['bookmark-list'] },
     });
     return response.json();

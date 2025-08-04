@@ -17,7 +17,6 @@ export async function getQuestion(): ApiResPromise<QuestionItem[]> {
         'Client-Id': CLIENT_ID,
         'Content-Type': 'application/json',
       },
-      // cache: 'force-cache',
       next: { tags: ['qna-list'] },
     });
     return response.json();
@@ -39,7 +38,6 @@ export async function getAnswer(_id: number): ApiResPromise<AnswerItem[]> {
         'Client-Id': CLIENT_ID,
         'Content-Type': 'application/json',
       },
-      // cache: 'force-cache',
       next: { tags: [`answer-list-${_id}`] },
     });
     return response.json();
@@ -60,7 +58,6 @@ export async function getMyQnA(): ApiResPromise<QuestionItem[]> {
         'Client-Id': CLIENT_ID,
         Authorization: `Bearer ${accessToken}`, // 인증 토큰
       },
-      // cache: 'force-cache',
       next: { tags: ['my-qna-list'] },
     });
     return response.json();

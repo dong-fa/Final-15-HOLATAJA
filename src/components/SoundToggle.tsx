@@ -28,7 +28,6 @@ export default function SoundToggle({ defaultOn = false, onChange }: SoundToggle
             audio.pause();
             audio.currentTime = 0;
             hasActivatedAudio.current = true;
-            console.log('오디오 권한 활성화됨');
           })
           .catch(err => {
             console.warn('오디오 권한 획득 실패', err);

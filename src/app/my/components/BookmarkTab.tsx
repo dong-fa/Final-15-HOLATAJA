@@ -18,7 +18,6 @@ export default function BookmarkTab({ bookmarkList }: BookmarkTabProps) {
   const totalPages = Math.ceil(bookmarkList.length / limit);
   const pagedBookmarkList = bookmarkList.slice((page - 1) * limit, page * limit);
 
-  // console.log(pagedBookmarkList);
   return (
     <>
       <SubTitle className="label-l">찜 목록</SubTitle>

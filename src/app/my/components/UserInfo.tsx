@@ -42,13 +42,8 @@ export default function UserInfo() {
   };
   const handlesubmit = async (userData: FormData) => {
     if (isdisabled) {
-      // console.log('❌ 읽기 모드에서는 제출 무시');
       return;
     }
-
-    // for (const [key, value] of userData.entries()) {
-    //   console.log(`  ${key}: ${value}`);
-    // }
 
     formAction(userData);
   };

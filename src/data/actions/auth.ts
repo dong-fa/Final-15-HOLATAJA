@@ -25,7 +25,7 @@ export async function loginAction(prevState: ApiRes<User> | null, formData: Form
     });
 
     data = await response.json();
-    console.log('위치 액션', data);
+    // console.log('위치 액션', data);
     if (data.ok === 1) {
       (await cookies()).set('accessToken', data.item.token?.accessToken as string, {
         httpOnly: true,
@@ -74,7 +74,7 @@ export async function signupAction(prevState: ApiRes<User> | null, formData: For
     });
 
     data = await response.json();
-    console.log(data);
+    // console.log(data);
   } catch (error) {
     console.error(error);
     return {
@@ -90,7 +90,7 @@ export async function userPatchAction(prevState: ApiRes<User> | null, formData: 
   const accessToken = (await cookies()).get('accessToken')?.value;
   let response: Response;
   let data: ApiRes<User>;
-  console.log('유저 정보 수정 액션', formData);
+  // console.log('유저 정보 수정 액션', formData);
   try {
     const userId = formData.get('_id');
     const userData = {
@@ -109,7 +109,7 @@ export async function userPatchAction(prevState: ApiRes<User> | null, formData: 
       body: JSON.stringify(userData),
     });
     data = await response.json();
-    console.log(data);
+    // console.log(data);
   } catch (error) {
     console.error(error);
     return {
