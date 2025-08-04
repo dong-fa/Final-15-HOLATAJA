@@ -103,7 +103,6 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (actionState?.ok) {
-      console.log('액션 스테이트', actionState);
       setUser(actionState.item);
       setLoginModal(true);
       // alert('로그인 성공!');

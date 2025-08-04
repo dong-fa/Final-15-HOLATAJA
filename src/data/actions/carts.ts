@@ -29,7 +29,6 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
  * - 응답: 삭제 성공/실패 정보
  */
 export async function removeCartItem(token: string, cartItemId: number): ApiResPromise<CartItemDeleteResponse> {
-  console.log('상품 삭제 api 시작:', { cartItemId });
   try {
     // 토큰 유효성 검사
     if (!token) {
@@ -46,7 +45,6 @@ export async function removeCartItem(token: string, cartItemId: number): ApiResP
     });
 
     const result = await response.json();
-    console.log('상품 삭제 api 결과: ', result);
 
     // HTTP 상태 코드 확인
     if (!response.ok) {
@@ -109,7 +107,6 @@ export async function clearCart(token: string): Promise<{ ok: 0 | 1; message?: s
  */
 
 export async function updateCartItemQuantity(token: string, cartItemId: number, quantity: number): ApiResPromise<CartItemData[]> {
-  console.log('수량 변경 api 시작:', { cartItemId, quantity });
   try {
     if (!token) {
       return { ok: 0, message: '인증 토큰이 필요합니다.' };
@@ -132,7 +129,6 @@ export async function updateCartItemQuantity(token: string, cartItemId: number, 
       }),
     });
     const result = await response.json();
-    console.log('수량 변경 api 결과: ', result);
 
     // HTTP 상태 코드 확인
     if (!response.ok) {
