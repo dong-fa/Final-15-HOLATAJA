@@ -106,7 +106,7 @@ export default function LoginForm() {
       console.log('액션 스테이트', actionState);
       setUser(actionState.item);
       setLoginModal(true);
-      // alert('로그인 성공!');
+
       router.push('/products');
     }
   }, [actionState, router, setUser]);
@@ -151,7 +151,8 @@ export default function LoginForm() {
         isOpen={loginmodal}
         handleClose={() => setLoginModal(false)}
         handleConfirm={() => loginId && setLoginId}
-        description="로그인 성공!"
+        title="로그인 성공"
+        description="환영합니다!"
       ></Modal>
 
       {/* <div>

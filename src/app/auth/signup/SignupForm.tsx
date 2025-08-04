@@ -7,6 +7,7 @@ import { useState, useActionState, useEffect } from 'react';
 import { signupAction } from '@/data/actions/auth';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
+import Modal from '@/components/Modal';
 
 type FormField = 'email' | 'name' | 'password' | 'passwordCheck' | 'phone' | 'address';
 
@@ -35,6 +36,8 @@ export default function SignupForm() {
   const [touched, setTouched] = useState(initTouchedState);
   const [isChecked, setIsChecked] = useState(false);
   const router = useRouter();
+  const [signinId, setSigninId] = useState<number | null>(null); // 회원가입 응답 ID 값
+  const [signinModal, setSigninModal] = useState(false); // modal 창 실행 여부
 
   // Server Action 연결
   const [actionState, formAction, isPending] = useActionState(signupAction, null);
@@ -149,8 +152,12 @@ export default function SignupForm() {
 
   useEffect(() => {
     if (actionState?.ok) {
-      alert('회원 가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
-      router.replace('/auth/login');
+      // alert('회원 가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
+      setSigninModal(true);
+      setTimeout(() => {
+        router.replace('/auth/login');
+      }, 2000);
+      // router.replace('/auth/login');
     } else if (actionState?.ok === 0 && !actionState?.errors) {
       // 입력값 검증에러가 아닌 경우
       alert(actionState?.message);
@@ -158,111 +165,122 @@ export default function SignupForm() {
   }, [actionState, router]);
 
   return (
-    <form action={handleFormSubmit} className="w-full flex flex-col gap-6" noValidate>
-      <div>
-        <Input
-          id="email"
-          name="email"
-          label="이메일"
-          type="email"
-          gap="gap-4"
-          placeholder="이메일"
-          value={formData.email}
-          onChange={handleInputChange('email')}
-          onBlur={handleInputBlur('email')}
-          disabled={isPending}
-        />
-        {!!error.email && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.email}</p>}
-      </div>
-      <div>
-        <Input
-          id="name"
-          name="name"
-          label="이름"
-          type="text"
-          gap="gap-4"
-          placeholder="이름"
-          value={formData.name}
-          onChange={handleInputChange('name')}
-          onBlur={handleInputBlur('name')}
-          disabled={isPending}
-        />
-        {!!error.name && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.name}</p>}
-      </div>
-      <div>
-        <Input
-          id="pw"
-          name="password"
-          label="비밀번호"
-          type="password"
-          gap="gap-4"
-          placeholder="비밀번호"
-          value={formData.password}
-          onChange={handleInputChange('password')}
-          onBlur={handleInputBlur('password')}
-          disabled={isPending}
-        />
-        {!!error.password && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.password}</p>}
-      </div>
-      <div>
-        <Input
-          id="pwCheck"
-          name="passwordCheck"
-          label="비밀번호 확인"
-          type="password"
-          gap="gap-4"
-          placeholder="비밀번호 확인"
-          value={formData.passwordCheck}
-          onChange={handleInputChange('passwordCheck')}
-          onBlur={handleInputBlur('passwordCheck')}
-          disabled={isPending}
-        />
-        {!!error.passwordCheck && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.passwordCheck}</p>}
-      </div>
-      <div>
-        <Input
-          id="phoneNum"
-          name="phone"
-          label="휴대폰 번호"
-          type="tel"
-          gap="gap-4"
-          placeholder="휴대폰 번호"
-          value={formData.phone}
-          onChange={handleInputChange('phone')}
-          onBlur={handleInputBlur('phone')}
-          disabled={isPending}
-        />
-        {!!error.phone && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.phone}</p>}
-      </div>
-      <div>
-        <Input
-          id="address"
-          name="address"
-          label="주소"
-          type="text"
-          gap="gap-4"
-          placeholder="주소"
-          value={formData.address}
-          onChange={handleInputChange('address')}
-          onBlur={handleInputBlur('address')}
-          disabled={isPending}
-        />
-        {!!error.address && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.address}</p>}
-      </div>
-      <div className="mx-auto">
-        <CheckboxButton
-          name="agreeTerms"
-          checked={isChecked}
-          onChange={() => {
-            setIsChecked(!isChecked);
-          }}
-          label="개인정보 수집 및 이용약관에 동의 합니다."
-          disabled={isPending}
-        />
-      </div>
-      <Button submit disabled={isPending}>
-        가입하기
-      </Button>
-    </form>
+    <>
+      <form action={handleFormSubmit} className="w-full flex flex-col gap-6" noValidate>
+        <div>
+          <Input
+            id="email"
+            name="email"
+            label="이메일"
+            type="email"
+            gap="gap-4"
+            placeholder="이메일"
+            value={formData.email}
+            onChange={handleInputChange('email')}
+            onBlur={handleInputBlur('email')}
+            disabled={isPending}
+          />
+          {!!error.email && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.email}</p>}
+        </div>
+        <div>
+          <Input
+            id="name"
+            name="name"
+            label="이름"
+            type="text"
+            gap="gap-4"
+            placeholder="이름"
+            value={formData.name}
+            onChange={handleInputChange('name')}
+            onBlur={handleInputBlur('name')}
+            disabled={isPending}
+          />
+          {!!error.name && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.name}</p>}
+        </div>
+        <div>
+          <Input
+            id="pw"
+            name="password"
+            label="비밀번호"
+            type="password"
+            gap="gap-4"
+            placeholder="비밀번호"
+            value={formData.password}
+            onChange={handleInputChange('password')}
+            onBlur={handleInputBlur('password')}
+            disabled={isPending}
+          />
+          {!!error.password && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.password}</p>}
+        </div>
+        <div>
+          <Input
+            id="pwCheck"
+            name="passwordCheck"
+            label="비밀번호 확인"
+            type="password"
+            gap="gap-4"
+            placeholder="비밀번호 확인"
+            value={formData.passwordCheck}
+            onChange={handleInputChange('passwordCheck')}
+            onBlur={handleInputBlur('passwordCheck')}
+            disabled={isPending}
+          />
+          {!!error.passwordCheck && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.passwordCheck}</p>}
+        </div>
+        <div>
+          <Input
+            id="phoneNum"
+            name="phone"
+            label="휴대폰 번호"
+            type="tel"
+            gap="gap-4"
+            placeholder="휴대폰 번호"
+            value={formData.phone}
+            onChange={handleInputChange('phone')}
+            onBlur={handleInputBlur('phone')}
+            disabled={isPending}
+          />
+          {!!error.phone && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.phone}</p>}
+        </div>
+        <div>
+          <Input
+            id="address"
+            name="address"
+            label="주소"
+            type="text"
+            gap="gap-4"
+            placeholder="주소"
+            value={formData.address}
+            onChange={handleInputChange('address')}
+            onBlur={handleInputBlur('address')}
+            disabled={isPending}
+          />
+          {!!error.address && <p className="label-s w-full text-negative mx-[23%] mt-2">{error.address}</p>}
+        </div>
+        <div className="mx-auto">
+          <CheckboxButton
+            name="agreeTerms"
+            checked={isChecked}
+            onChange={() => {
+              setIsChecked(!isChecked);
+            }}
+            label="개인정보 수집 및 이용약관에 동의 합니다."
+            disabled={isPending}
+          />
+        </div>
+        <Button submit disabled={isPending}>
+          가입하기
+        </Button>
+      </form>
+      <Modal
+        isOpen={signinModal}
+        handleClose={() => {
+          setSigninModal(false);
+        }}
+        handleConfirm={() => signinId && setSigninId}
+        title="회원가입 성공"
+        description="로그인 페이지로 이동합니다."
+      ></Modal>
+    </>
   );
 }
