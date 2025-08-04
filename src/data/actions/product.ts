@@ -4,7 +4,7 @@ import { ApiRes, ApiResPromise } from '@/types/api';
 import { ProductInfo } from '@/types/product';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
 
