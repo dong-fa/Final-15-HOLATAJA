@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 
 interface SoundToggleProps {
@@ -10,12 +10,32 @@ interface SoundToggleProps {
 
 export default function SoundToggle({ defaultOn = false, onChange }: SoundToggleProps) {
   const [isOn, setIsOn] = useState<boolean>(defaultOn);
+  const hasActivatedAudio = useRef(false); // 중복 실행 방지
 
   const handleToggle = (): void => {
     const next = !isOn;
     setIsOn(next);
-    if (onChange) {
-      onChange(next);
+    onChange?.(next);
+
+    // 토글 ON으로 전환 시, 무음 재생을 통해 오디오 권한 획득 시도
+    if (next && !hasActivatedAudio.current) {
+      try {
+        const audio = new Audio('/sounds/keyboardSound_sample.m4a');
+        audio.volume = 0;
+        audio
+          .play()
+          .then(() => {
+            audio.pause();
+            audio.currentTime = 0;
+            hasActivatedAudio.current = true;
+            console.log('오디오 권한 활성화됨');
+          })
+          .catch(err => {
+            console.warn('오디오 권한 획득 실패', err);
+          });
+      } catch (err) {
+        console.warn('오디오 객체 생성 실패', err);
+      }
     }
   };
 
@@ -25,8 +45,8 @@ export default function SoundToggle({ defaultOn = false, onChange }: SoundToggle
   }, [defaultOn]);
 
   return (
-    <div className="inline-flex flex-col items-center p-6 rounded-lg">
-      <div className="flex items-center mb-4">
+    <div className="inline-flex flex-col items-center p-2 rounded-lg">
+      <div className="flex items-center mb-2">
         <span className="label-m mr-2">OFF</span>
 
         <button
