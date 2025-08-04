@@ -25,7 +25,6 @@ interface PageProps {
 }
 
 export default async function ProductInfo({ params }: PageProps) {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const { id } = await params;
 
   // 상품 상세 조회
@@ -80,7 +79,7 @@ export default async function ProductInfo({ params }: PageProps) {
             {productData.ok === 1 && <KeySoundDemo switchType={productData.item?.extra?.category} />}
           </div>
           {productData.ok === 1 &&
-            (productData.item?.mainImages.filter(img => img.type === 'info').map(img => API_URL + '/' + img.path) ?? []).map((img, idx) => (
+            (productData.item?.mainImages.filter(img => img.type === 'info').map(img => img.path) ?? []).map((img, idx) => (
               <div key={idx} className="relative w-full">
                 <Image src={img} alt="" width={0} height={0} priority sizes="100%" className="object-scale-down w-full h-auto" />
               </div>
@@ -117,7 +116,7 @@ export default async function ProductInfo({ params }: PageProps) {
       <div className="grid sm:grid-cols-2 gap-9">
         <ProductImg
           title={productData.ok === 1 ? productData.item?.name : ''}
-          srcList={productData.ok === 1 ? productData.item?.mainImages.filter(img => img.type === 'detail').map(img => API_URL + '/' + img.path) : []}
+          srcList={productData.ok === 1 ? productData.item?.mainImages.filter(img => img.type === 'detail').map(img => img.path) : []}
           productId={productData.ok === 1 ? productData.item._id : 0}
           bookmarkId={productData.ok === 1 ? productData.item.myBookmarkId : 0}
           swipe

@@ -12,8 +12,6 @@ interface OrderTabProps {
   orderHistoryList: OrderItem[];
 }
 export default function OrderTab({ orderHistoryList }: OrderTabProps) {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
   //Pagination
   const [page, setPage] = useState(1);
   const limit = 3;
@@ -35,7 +33,7 @@ export default function OrderTab({ orderHistoryList }: OrderTabProps) {
               key={index}
               id={order._id}
               status={getOrderStatusLabel(order.state)}
-              src={order.products?.[0]?.image?.path ? `${API_URL}/${order.products[0].image.path}` : '/product_images/holataja_circle.webp'}
+              src={order.products?.[0]?.image?.path ? `${order.products[0].image.path}` : '/product_images/holataja_circle.webp'}
               name={order.products[0].name}
               price={order.cost.total}
               quantity={order.products.length}

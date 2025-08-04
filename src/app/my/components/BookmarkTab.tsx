@@ -12,8 +12,6 @@ interface BookmarkTabProps {
 }
 
 export default function BookmarkTab({ bookmarkList }: BookmarkTabProps) {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
   //Pagination
   const [page, setPage] = useState(1);
   const limit = 4;
@@ -36,7 +34,7 @@ export default function BookmarkTab({ bookmarkList }: BookmarkTabProps) {
               bookmarkId={item._id}
               key={index}
               id={item.product._id}
-              src={item.product.mainImages?.[0]?.path ? `${API_URL}/${item.product.mainImages[0].path}` : '/product_images/holataja_circle.webp'}
+              src={item.product.mainImages?.[0]?.path ? `${item.product.mainImages[0].path}` : '/product_images/holataja_circle.webp'}
               name={item.product.name}
               price={item.product.price}
             />
