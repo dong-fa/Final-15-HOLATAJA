@@ -24,7 +24,6 @@ export default function PostForm<itemState>({ productId, orderId, action, type }
   // 별점 등록 상태
   const [rating, setRating] = useState<number>(0);
 
-  console.log(state);
   const router = useRouter();
 
   useEffect(() => {

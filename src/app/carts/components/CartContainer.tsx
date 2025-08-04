@@ -57,7 +57,6 @@ export default function CartContainer({ initialData, token, serverError }: CartC
    * 클라이언트 하이드레이션 및 초기 데이터 설정
    */
   useEffect(() => {
-    console.log('container 초기화', { initialData, serverError });
     setIsClient(true);
     setCartData(initialData);
     setError(serverError);

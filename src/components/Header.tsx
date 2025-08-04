@@ -10,7 +10,6 @@ import Button from './Button';
 export default function Header() {
   const { user, logout } = useAuthStore();
   const path = usePathname();
-  // console.log(path);
 
   return (
     <header className="bg-white flex justify-between items-center sub-title h-[60px]">

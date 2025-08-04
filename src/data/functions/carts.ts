@@ -16,7 +16,6 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
  * - 응답: { ok: number, item: CartItemData[], cost: CartTotalCost }
  */
 export default async function getCartList(token: string): ApiResPromise<CartItemData[]> {
-  console.log(' 장바구니 조회 api 시작:', { token: token?.slice(0, 20) + '...' });
   try {
     // 토큰 유효성 검사
     if (!token) {
@@ -29,11 +28,9 @@ export default async function getCartList(token: string): ApiResPromise<CartItem
         'Client-Id': CLIENT_ID, // API 클라이언트 식별자
         Authorization: `Bearer ${token}`, // JWT 토큰 인증
       },
-      cache: 'no-cache', // 캐시 정책 설정
     });
 
     const result = await response.json();
-    console.log('장바구니 조회 api 결과: ', result);
 
     // API 응답이 실패인 경우 그대로 반환
     if (result.ok !== 1) {

@@ -26,8 +26,6 @@ const modalMessage = {
 type ModalType = 'editSuccess' | 'editFail' | 'deleteSuccess' | 'deleteFail' | null;
 
 function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
-  console.log('확인해보기', qnaList);
-
   const selectOptions = ['답변 대기', '답변 완료'];
 
   const [isMyQnA, setIsMyQnA] = useState(false);

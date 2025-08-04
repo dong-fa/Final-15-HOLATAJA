@@ -18,7 +18,6 @@ export async function getOrderList(): ApiResPromise<OrderItem[]> {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`, // 인증 토큰
       },
-      cache: 'force-cache',
     });
     return response.json();
   } catch (error) {
@@ -41,7 +40,6 @@ export async function getOrderInfo(_id: number): ApiResPromise<OrderItem> {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`, // 인증 토큰
       },
-      cache: 'force-cache',
     });
     return response.json();
   } catch (error) {
