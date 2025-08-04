@@ -9,6 +9,7 @@ export interface Product {
   // 화면에 표시 안 되는 부분
   quantity: number;
   createdAt: string;
+  bookmarkId: number;
 }
 
 // 상품 상세
