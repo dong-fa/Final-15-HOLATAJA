@@ -3,7 +3,7 @@
 import SearchBar from '@/app/products/components/SearchBar';
 import ProductCard from '@/components/ProductCard';
 import Tab, { TabItem } from '@/components/Tab';
-import { Product, ProductInfo } from '@/types/product';
+import { Product } from '@/types/product';
 import { PackageX } from 'lucide-react';
 import React, { useState } from 'react';
 import SortToggle from '@/app/products/components/SortToggle';

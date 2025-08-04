@@ -13,7 +13,6 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
   // API 호출을 위해 쿠키에서 토큰 가져오기
   const cookie = (await cookies()).get('accessToken');
   const token = cookie ? cookie.value : '';
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   let orderData;
 
@@ -28,7 +27,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
               cartRes.item?.map(item => ({
                 id: item.product_id,
                 name: item.product.name,
-                image: `${API_URL}/${item.product.image.path}` || '',
+                image: `${item.product.image.path}` || '',
                 options: item.color,
                 quantity: item.quantity,
                 price: item.product.price,
@@ -64,7 +63,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
             {
               id: product._id,
               name: product.name,
-              image: product.mainImages && product.mainImages.length > 0 ? `${API_URL}/${product.mainImages[0].path}` : '',
+              image: product.mainImages && product.mainImages.length > 0 ? `${product.mainImages[0].path}` : '',
               options: product.extra.option && product.extra.option.length > 0 ? product.extra.option[0] : '',
               quantity: quantity,
               price: productPrice,
