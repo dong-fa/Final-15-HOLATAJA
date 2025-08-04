@@ -489,7 +489,6 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
         body: JSON.stringify(requestBody),
       });
       const response = await res.json();
-      console.log('구매결과', response);
       //결제 완료 후처리
 
       if (response.ok === 1) {

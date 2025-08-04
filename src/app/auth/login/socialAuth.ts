@@ -8,16 +8,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
   providers: [Kakao, Google],
   callbacks: {
-    async signIn({ user, account, profile, credentials }) {
-      console.log(user, account, profile, credentials);
+    async signIn({ user, account, profile /* credentials */ }) {
+      // console.log(user, account, profile, credentials);
       switch (account?.provider) {
         case 'credentials':
-          console.log('id/pwd 로그인', user);
+          // console.log('id/pwd 로그인', user);
           break;
         case 'kakao':
         case 'naver':
         case 'google':
-          console.log('OAuth 로그인', user);
+          // console.log('OAuth 로그인', user);
           let userInfo: User | null = null;
           try {
             // 자동 회원 가입
@@ -38,7 +38,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             const resData = await loginWithOAuth(account.providerAccountId);
             if (resData.ok) {
               userInfo = resData.item;
-              console.log('자동로그인', userInfo);
+              // console.log('자동로그인', userInfo);
             } else {
               // API 서버의 에러 메시지 처리
               throw new Error(resData.message);

@@ -177,7 +177,7 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
                         )}
                       </td>
                       {my ? '' : <td className="p-4 text-center">{qna.question.user.name}</td>}
-                      <td className="p-4 text-center">{qna.question.createdAt.split(' ')[0]}</td>
+                      <td className="p-4 text-center">{qna.question.createdAt?.split(' ')[0]}</td>
                       {qna.question.repliesCount > 0 ? (
                         <td className="p-4 text-center text-primary">답변 완료</td>
                       ) : (
@@ -295,7 +295,7 @@ function QnA({ qnaList, my }: { qnaList: QnaItem[]; my?: boolean }) {
                                   <br />
                                   올라타자 담당자 드림.
                                 </p>
-                                <span className="text-xs text-darkgray">{qna.answer?.createdAt.split(' ')[0]}</span>
+                                <span className="text-xs text-darkgray">{qna.answer?.createdAt?.split(' ')[0]}</span>
                               </div>
                             </div>
                           )}
