@@ -1,5 +1,5 @@
-import Footer from '@/components/Footer';
 import './globals.css';
+import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import { Metadata } from 'next';
 // import { SessionProvider } from 'next-auth/react';
@@ -68,6 +68,22 @@ export const metadata: Metadata = {
 
   category: '전자제품',
   classification: 'Business',
+  icons: [
+    {
+      rel: 'icon',
+      url: '/icon/favicon_light.svg',
+      media: '(prefers-color-scheme: light)',
+    },
+    {
+      rel: 'icon',
+      url: '/icon/favicon_dark.svg',
+      media: '(prefers-color-scheme: dark)',
+    },
+    {
+      rel: 'icon',
+      url: '/icon/favicon_light.svg',
+    },
+  ],
 };
 
 export default function RootLayout({
