@@ -21,7 +21,7 @@ export default function BookmarkTab({ bookmarkList }: BookmarkTabProps) {
   return (
     <>
       <SubTitle className="label-l">찜 목록</SubTitle>
-      <div className="flex justify-center items-center min-h-[40vh]">
+      <div className="justify-center items-center min-h-[40vh]">
         {!pagedBookmarkList.length ? (
           <div className="flex flex-col items-center py-8 text-darkgray">
             <Star className="mb-4" size={32} />
