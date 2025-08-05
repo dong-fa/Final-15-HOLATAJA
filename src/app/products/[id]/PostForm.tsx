@@ -54,9 +54,9 @@ export default function PostForm<itemState>({ productId, orderId, action, type }
         action={formData => {
           if (!user) {
             setLoginModal(true);
-          } else {
-            formAction(formData);
+            return;
           }
+          formAction(formData);
         }}
       >
         {type === '구매 후기' && <input type="hidden" name="order_id" defaultValue={orderId} />}

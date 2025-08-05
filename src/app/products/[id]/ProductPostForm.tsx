@@ -55,17 +55,32 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
     }
   }, [state]);
 
+  const formActionWrapper = (formData: FormData) => {
+    if (!user) {
+      setLoginModal(true);
+      return;
+    }
+
+    if (!option) {
+      setCartFailModal(true);
+      return;
+    }
+
+    formAction(formData); // ✅ 무조건 호출되는 외부 함수 안에서 조건 검사
+  };
   return (
     <div>
       <form
         action={formData => {
           if (!user) {
             setLoginModal(true);
-          } else if (!option) {
-            setCartFailModal(true);
-          } else {
-            formAction(formData);
+            return;
           }
+          if (!option) {
+            setCartFailModal(true);
+            return;
+          }
+          formAction(formData);
         }}
       >
         <input type="hidden" name="product_id" value={productData.ok === 1 ? productData.item._id : 0} />
