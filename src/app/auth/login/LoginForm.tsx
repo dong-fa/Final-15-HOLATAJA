@@ -32,9 +32,7 @@ export default function LoginForm() {
   const [touched, setTouched] = useState(initTouchedState);
   const { setUser } = useAuthStore();
   const router = useRouter();
-
   const [actionState, formAction, isPending] = useActionState(loginAction, null);
-  const [loginId, setLoginId] = useState<number | null>(null);
   const [loginmodal, setLoginModal] = useState(false);
 
   const validateField = (field: string, value: string) => {
@@ -105,8 +103,8 @@ export default function LoginForm() {
     if (actionState?.ok) {
       setUser(actionState.item);
       setLoginModal(true);
-      // alert('로그인 성공!');
-      router.push('/products');
+    } else if (actionState?.ok === 0 && !actionState?.errors) {
+      setLoginModal(true);
     }
   }, [actionState, router, setUser]);
 
@@ -148,10 +146,11 @@ export default function LoginForm() {
       </Link>
       <Modal
         isOpen={loginmodal}
+        hideCancelButton={true}
         handleClose={() => setLoginModal(false)}
-        handleConfirm={() => loginId && setLoginId}
-        description="로그인 성공!"
-      ></Modal>
+        handleConfirm={() => (actionState?.ok === 1 ? router.push('/products') : setLoginModal(false))}
+        description={actionState?.ok === 1 ? '로그인 성공' : actionState?.message || '로그인 실패'}
+      />
 
       {/* <div>
         <button
