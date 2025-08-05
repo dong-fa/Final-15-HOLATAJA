@@ -38,22 +38,14 @@ export const metadata: Metadata = {
     siteName: '올라타자',
     images: [
       {
-        url: '/og-image.png',
+        url: '/icon/holataja_logo.svg',
         width: 1200,
         height: 630,
-        alt: '올라타자 OG 이미지',
+        alt: '올라타자 - 온라인 프리미엄 타건샵',
       },
     ],
     locale: 'ko_KR',
     type: 'website',
-  },
-
-  twitter: {
-    card: 'summary_large_image',
-    site: '@holataja', // 실제 트위터 계정이 있다면
-    title: 'HOLA TAJA! - NUPHY 기계식 키보드 전문 쇼핑몰',
-    description: 'NUPHY 기계식 키보드 전문 쇼핑몰입니다. 커스텀 키보드부터 게이밍 키보드까지!',
-    images: ['/twitter-image.jpg'],
   },
 
   robots: {
@@ -76,13 +68,6 @@ export const metadata: Metadata = {
 
   category: '전자제품',
   classification: 'Business',
-
-  other: {
-    'google-site-verification': 'your-google-verification-code', // Google Search Console 인증 코드
-    'naver-site-verification': 'your-naver-verification-code', // 네이버 웹마스터 인증 코드
-    'product-type': 'Mechanical Keyboard',
-    'price-range': '199000-299000 KRW',
-  },
 };
 
 export default function RootLayout({
