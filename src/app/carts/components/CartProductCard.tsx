@@ -8,6 +8,7 @@ import QuantityCount from '@/components/QuantityCount';
 // import { ContentsTitle, Contents } from '@/components/Typography';
 import Button from '@/components/Button';
 import { updateCartItemQuantity } from '@/data/actions/carts';
+import Modal from '@/components/Modal';
 
 interface CartProductCardProps {
   item: CartItemData; // 장바구니 아이템 데이터
@@ -21,6 +22,9 @@ export default function CartProductCard({ item, token, handleRemoveItem, isDelet
   // 클라이언트에서만 확인 다이얼로그 상태 관리
   const [isClient, setIsClient] = useState(false);
   const [quantity, setQuantity] = useState(item.quantity);
+
+  const [deleteItem, setDeleteItem] = useState<number | null>(null);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   React.useEffect(() => {
     setIsClient(true);
@@ -45,10 +49,8 @@ export default function CartProductCard({ item, token, handleRemoveItem, isDelet
 
   const cartRemoveItem = (): void => {
     if (isClient) {
-      const confirmDelete = window.confirm(`${item.product.name}을(를) 장바구니에서 삭제하시겠습니까?`);
-      if (confirmDelete) {
-        handleRemoveItem(item._id);
-      }
+      setDeleteItem(item._id);
+      setDeleteModal(true);
     }
   };
 
@@ -72,23 +74,26 @@ export default function CartProductCard({ item, token, handleRemoveItem, isDelet
 
   return (
     <div
-      className={`relative py-3 sm:py-6 border-b border-lightgray last:border-b-0 transition-opacity ${isDeleting ? 'opacity-50' : 'opacity-100'}`}
+      className={`relative pt-1 pb-3 sm:py-6 border-b border-lightgray last:border-b-0 transition-opacity ${isDeleting ? 'opacity-50' : 'opacity-100'}`}
     >
       {/* 삭제 버튼 - 오른쪽 상단 고정 */}
-      <Button
-        icon={true}
-        onClick={cartRemoveItem}
-        disabled={isDeleting || isUpdatingQuantity}
-        className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10"
-        aria-label={`${item.product.name} 상품 삭제`}
-      >
-        <X size={16} className="sm:w-5 sm:h-5" />
-      </Button>
-
+      <section className="flex justify-between">
+        <div></div>
+        <Button
+          size={'small'}
+          icon={true}
+          onClick={cartRemoveItem}
+          disabled={isDeleting || isUpdatingQuantity}
+          className="z-10"
+          aria-label={`${item.product.name} 상품 삭제`}
+        >
+          <X size={16} className="w-5 h-5" />
+        </Button>
+      </section>
       <div
         className="
-        pr-8 sm:pr-10
-        grid gap-2 sm:gap-6 items-start sm:items-center
+        pr-2 sm:pr-5
+        grid gap-2 sm:gap-4 items-start sm:items-center
         grid-cols-[auto_1fr] 
         sm:grid-cols-[auto_1fr_auto_auto]
       "
@@ -100,29 +105,34 @@ export default function CartProductCard({ item, token, handleRemoveItem, isDelet
 
         {/* 상품 정보 */}
         <div className="min-w-0 overflow-hidden">
-          <div className="text-sm sm:text-base text-text truncate">{item.product.name}</div>
-          {item.color && <div className="text-xs sm:text-sm text-darkgray truncate">{item.color}</div>}
+          <div className="line-clamp-2 webkit-line-clamp-2 text-sm sm:text-base text-text">{item.product.name}</div>
+          <div className="flex mt-1 gap-1 items-center">
+            <span className="border border-darkgray rounded-md text-xs sm:text-sm px-1 whitespace-nowrap">옵션</span>
+            {item.color && <div className="text-xs sm:text-sm text-darkgray truncate">{item.color}</div>}
+          </div>
         </div>
+        <div className="flex-row items-center sm:contents">
+          {/* 수량 조절 */}
+          <div
+            className="
+            scale-75 sm:scale-90 origin-left sm:origin-center
+            col-start-2 sm:col-start-3
+            "
+          >
+            <QuantityCount quantity={quantity} handleCountQuantity={handleCountQuantity} />
+          </div>
 
-        {/* 수량 조절 */}
-        <div
-          className="
-          scale-75 sm:scale-90 origin-left sm:origin-center
-          col-start-2 sm:col-start-3
-        "
-        >
-          <QuantityCount quantity={quantity} handleCountQuantity={handleCountQuantity} />
-        </div>
-
-        {/* 가격 */}
-        <div
-          className="
-          text-sm sm:text-base font-bold text-text text-right
-          col-start-2 sm:col-start-4
-          justify-self-end
-        "
-        >
-          {`${formatPrice(totalPrice)}원`}
+          {/* 가격 */}
+          <div
+            className="
+            min-w-[6.3rem]
+            text-sm sm:text-base font-bold text-text text-right
+            col-start-2 sm:col-start-4
+            justify-self-end
+            "
+          >
+            {`${formatPrice(totalPrice)}원`}
+          </div>
         </div>
       </div>
 
@@ -135,6 +145,21 @@ export default function CartProductCard({ item, token, handleRemoveItem, isDelet
           </p>
         </div>
       )}
+      <Modal
+        isOpen={deleteModal}
+        handleClose={() => {
+          setDeleteModal(false);
+          setDeleteItem(null);
+        }}
+        handleConfirm={() => {
+          if (deleteItem !== null) {
+            handleRemoveItem(deleteItem);
+          }
+          setDeleteModal(false);
+          setDeleteItem(null);
+        }}
+        description={`${item.product.name}을(를) 삭제하시겠습니까?`}
+      ></Modal>
     </div>
   );
 }

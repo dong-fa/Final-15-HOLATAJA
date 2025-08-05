@@ -239,9 +239,9 @@ export default function CartContainer({ initialData, token, serverError }: CartC
         {/* 메인 콘텐츠 */}
         <div className="space-y-6">
           {/* 장바구니 아이템 목록 */}
-          <div className="bg-white rounded-lg shadow-sm border border-lightgray p-4 sm:p-6">
+          <div className="bg-white rounded-lg shadow-sm border border-lightgray pt-4 px-4 ">
             {/* 상품 목록 헤더 */}
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-lightgray">
+            <div className="flex items-center justify-between pb-3 border-b border-lightgray">
               <h2 className="text-lg font-bold text-text">선택상품 ({cartData.item.length}개)</h2>
             </div>
 

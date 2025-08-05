@@ -29,6 +29,7 @@ interface DeliveryInfo {
 
 // 상품 정보 타입
 interface ProductInfo {
+  cartId?: number;
   id: number;
   name: string;
   image: string;
@@ -39,7 +40,6 @@ interface ProductInfo {
 
 // 주문 정보 타입
 interface OrderInfo {
-  cartId?: number;
   products: ProductInfo[];
   subtotal: number; // 상품 총액
   shippingFee: number; // 배송비
@@ -97,7 +97,6 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
 
   // 세션스토리지 데이터를 반영한 주문 정보 상태
   const [currentOrderInfo, setCurrentOrderInfo] = useState<OrderInfo>(orderInfo);
-
   // 유저 배송지 정보 (props가 없을 때 사용)
   const { user, hasHydrated } = useAuthStore();
 
@@ -143,7 +142,6 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
 
           // 업데이트된 주문 정보로 상태 변경
           setCurrentOrderInfo({
-            cartId: orderInfo.cartId,
             products: updatedProducts,
             subtotal,
             shippingFee,
@@ -425,14 +423,16 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
   //장바구니 비우기
   const clearCart = async () => {
     try {
-      const cartId = currentOrderInfo.cartId; // 첫 번째 상품의 cartId 사용
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/carts/${cartId}`, {
+      const carts = currentOrderInfo.products.map(product => product.cartId);
+      console.log('장바구니 비우기 요청:', carts);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/carts`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
           'Client-Id': process.env.NEXT_PUBLIC_API_CLIENT_ID!,
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({ carts }),
       });
 
       if (res.ok) {

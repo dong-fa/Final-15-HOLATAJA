@@ -2,7 +2,13 @@ import { cookies } from 'next/headers';
 import getCartList from '@/data/functions/carts';
 import CartContainer from './components/CartContainer';
 import { CartResponse } from '@/types/cart';
+import { Metadata } from 'next';
 
+export const metadata: Metadata = {
+  title: '장바구니 - HOLATAJA',
+  description: '선택한 상품을 확인하고 결제로 이동하세요.',
+  robots: 'noindex, nofollow',
+};
 /**
  * 장바구니 페이지 서버 컴포넌트
  *
