@@ -1,4 +1,11 @@
 import SignupForm from './SignupForm';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '회원가입 - HOLATAJA',
+  description: 'HOLATAJA에 가입하셔서 회원 혜택을 누려보세요.',
+  robots: 'noindex, nofollow',
+};
 
 export default function SignUp() {
   return (

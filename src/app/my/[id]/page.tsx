@@ -1,10 +1,19 @@
-import OrderedCard from '@/components/OrderdCard';
-import { SubTitle, Title } from '@/components/Typography';
-import { getOrderInfo } from '@/data/functions/order';
-import { getAccountByBank, getOrderStatusLabel } from '@/data/tables/mappingTables';
-import { OrderItem } from '@/types/order';
 import Link from 'next/link';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+
+import { OrderItem } from '@/types/order';
+
+import OrderedCard from '@/components/OrderdCard';
+import { getOrderInfo } from '@/data/functions/order';
+import { SubTitle, Title } from '@/components/Typography';
+import { getAccountByBank, getOrderStatusLabel } from '@/data/tables/mappingTables';
+
+export const metadata: Metadata = {
+  title: '주문 내역 상세  - HOLATAJA',
+  description: '고객님의 주문 내역을 확인하세요.',
+  robots: 'noindex, nofollow',
+};
 
 type PageProps = {
   params: Promise<{

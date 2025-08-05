@@ -1,5 +1,6 @@
 'use client';
 
+import { Metadata } from 'next';
 import { useState } from 'react';
 import { Search, ShoppingCart, Star, ThumbsDown, ThumbsUp, User } from 'lucide-react';
 
@@ -19,6 +20,11 @@ import OrderedCard from '@/components/OrderdCard';
 import ProductCard from '@/components/ProductCard';
 import ReviewCard from '@/components/ReviewCard';
 import Pagination from '@/components/Pagination';
+
+export const metadata: Metadata = {
+  title: '컴포넌트 미리보기 - HOLATAJA',
+  robots: 'noindex, nofollow',
+};
 
 // Button Component Options
 const sizes = ['full', 'large', 'medium', 'small'] as const;
