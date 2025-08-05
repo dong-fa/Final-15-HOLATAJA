@@ -37,7 +37,7 @@ export default function Modal({
             <X size={24} /> {/* Lucide X 아이콘 */}
           </Button>
         </div>
-        <div className="px-6 pt-3">
+        <div className="px-6">
           {/* 모달 제목 */}
           <h2 className="mb-4 text-center sub-title">{title}</h2>
 

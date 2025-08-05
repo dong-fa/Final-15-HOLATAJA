@@ -35,14 +35,14 @@ export default function HistoryCard({ id, status, src, name, price, quantity, da
             className="min-w-28 min-h-28 rounded-xl object-cover col-start-1 row-start-1"
           />
           <div className="col-start-1 row-start-1 flex items-end justify-end">
-            <div className="bg-black text-white text-xs font-bold opacity-65 w-6 h-6 flex items-center justify-center">{quantity}</div>
+            <div className="bg-black text-white text-sm font-bold opacity-65 w-6 h-6 flex items-center justify-center">{quantity}</div>
           </div>
         </section>
 
         {/* Order info */}
         <section className="flex flex-col justify-between flex-grow">
           <p className="text-secondary label-s">Order #{id}</p>
-          <p className="text-xs">주문일시: {date}</p>
+          <p className="text-sm">주문일시: {date}</p>
 
           <div className="grid grid-cols-[1fr_auto] items-end gap-x-2">
             <h4 className="label-sm sm:label-md font-bold leading-snug line-clamp-2">{name}</h4>
@@ -84,7 +84,7 @@ export default function HistoryCard({ id, status, src, name, price, quantity, da
       {/* Modal Section */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="relative bg-white rounded-lg shadow-lg  w-[25rem]">
+          <div className="relative bg-white rounded-lg w-[25rem]">
             <div className="flex flex-row justify-end bg-white rounded-t-lg w-full">
               <Button onClick={() => setIsModalOpen(false)} className="" size="medium" icon>
                 <X size={24} />

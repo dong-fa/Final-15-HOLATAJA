@@ -155,7 +155,7 @@ function QnA({ qnaList, my }: { qnaList: QuestionItem[]; my?: boolean }) {
             <tbody>
               {!qnaFilteredByUser.length ? (
                 <tr>
-                  <td colSpan={4} align="center" className="py-8">
+                  <td colSpan={4} align="center" className="py-8 text-darkgray">
                     <CircleAlert className="mb-4" size={32} />
                     <p>작성된 Q&A가 없습니다.</p>
                   </td>
@@ -169,6 +169,15 @@ function QnA({ qnaList, my }: { qnaList: QuestionItem[]; my?: boolean }) {
                         if (editingId !== 0) return;
                         setIsOpen(isOpen === qna._id ? 0 : qna._id);
                         if (isOpen !== qna._id) showAnswer(qna._id);
+                      }}
+                      tabIndex={0}
+                      onKeyDown={e => {
+                        e.preventDefault();
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          if (editingId !== 0) return;
+                          setIsOpen(isOpen === qna._id ? 0 : qna._id);
+                          if (isOpen !== qna._id) showAnswer(qna._id);
+                        }
                       }}
                     >
                       <td className="p-4">
@@ -325,7 +334,7 @@ function QnA({ qnaList, my }: { qnaList: QuestionItem[]; my?: boolean }) {
         {/* 모바일: 카드 형식 */}
         <div className="block sm:hidden">
           {!qnaFilteredByUser.length ? (
-            <div className="text-center py-8">
+            <div className="text-center py-8 text-darkgray">
               <CircleAlert className="mb-4 mx-auto" size={32} />
               <p>작성된 Q&A가 없습니다.</p>
             </div>

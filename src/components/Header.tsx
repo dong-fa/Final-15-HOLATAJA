@@ -14,7 +14,7 @@ export default function Header() {
   return (
     <header className="bg-white flex justify-between items-center sub-title h-[60px]">
       <div className="w-full flex justify-between items-center max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Link className="flex gap-2" href="/">
+        <Link className="flex gap-2" href="/products">
           <Image src="/icon/holataja_logo.svg" alt="올라타자 로고" width={54} height={30} style={{ width: 54, height: 30 }} />
           <h1 className="text-2xl">HOLA TAJA!</h1>
         </Link>

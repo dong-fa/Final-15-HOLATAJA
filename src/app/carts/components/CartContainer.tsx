@@ -159,10 +159,10 @@ export default function CartContainer({ initialData, token, serverError }: CartC
   // 클라이언트 하이드레이션이 완료되지 않았으면 로딩 표시
   if (!isClient) {
     return (
-      <div className="min-h-screen bg-background py-4 sm:py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+      <div className="min-h-screen">
+        <div>
           <Title className="mb-6">장바구니</Title>
-          <div className="bg-white rounded-lg p-8 text-center shadow-sm">
+          <div className="bg-white rounded-lg p-8 text-center">
             <div className="w-16 h-16 mx-auto mb-4 bg-lightgray rounded-full flex items-center justify-center">
               <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
@@ -176,10 +176,10 @@ export default function CartContainer({ initialData, token, serverError }: CartC
   /** 토큰이 없는 경우 (로그인 필요) */
   if (!token) {
     return (
-      <div className="min-h-screen bg-background py-4 sm:py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+      <div className="min-h-screen">
+        <div>
           <Title className="mb-6">장바구니</Title>
-          <div className="bg-white rounded-lg p-8 text-center shadow-sm">
+          <div className="bg-white rounded-lg p-8 text-center">
             <div className="w-16 h-16 mx-auto mb-4 bg-lightgray rounded-full flex items-center justify-center">
               <span className="text-2xl">🔒</span>
             </div>
@@ -200,16 +200,18 @@ export default function CartContainer({ initialData, token, serverError }: CartC
   /** 장바구니가 비어있는 경우 */
   if (!cartData || cartData.ok !== 1 || !cartData.item || cartData.item.length === 0) {
     return (
-      <div className="min-h-screen bg-background py-4 sm:py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+      <div className="min-h-screen">
+        <div>
           <Title className="mb-6">장바구니</Title>
-          <div className="bg-white rounded-lg p-8 text-center shadow-sm">
+          <div className="bg-white rounded-lg p-8 text-center">
             <div className="w-16 h-16 mx-auto mb-4 bg-lightgray rounded-full flex items-center justify-center">
               <span className="text-2xl">🛒</span>
             </div>
             <h3 className="text-lg font-medium text-text mb-2">장바구니가 비어있습니다</h3>
             <p className="text-darkgray mb-6">원하는 상품을 장바구니에 담아보세요.</p>
-            <Button onClick={handleContinueShopping}>쇼핑 계속하기</Button>
+            <Button onClick={handleContinueShopping} size="medium">
+              쇼핑 계속하기
+            </Button>
           </div>
         </div>
       </div>
@@ -219,8 +221,8 @@ export default function CartContainer({ initialData, token, serverError }: CartC
   // ==================== 메인 렌더링 ====================
 
   return (
-    <div className="min-h-screen bg-background py-4 sm:py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+    <div className="min-h-screen">
+      <div>
         {/* 페이지 제목 */}
         <Title className="mb-6">장바구니</Title>
 
@@ -239,7 +241,7 @@ export default function CartContainer({ initialData, token, serverError }: CartC
         {/* 메인 콘텐츠 */}
         <div className="space-y-6">
           {/* 장바구니 아이템 목록 */}
-          <div className="bg-white rounded-lg shadow-sm border border-lightgray pt-4 px-4 ">
+          <div className="bg-white rounded-lg border border-lightgray p-4 sm:p-6">
             {/* 상품 목록 헤더 */}
             <div className="flex items-center justify-between pb-3 border-b border-lightgray">
               <h2 className="text-lg font-bold text-text">선택상품 ({cartData.item.length}개)</h2>

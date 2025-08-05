@@ -104,7 +104,7 @@ function ProductImg({ title, srcList, swipe, productId, bookmarkId: initialBookm
             {srcList.map((src, idx) => (
               <SwiperSlide key={idx}>
                 <div className="relative w-full overflow-hidden rounded-lg aspect-square max-w-screen">
-                  <Image src={src} alt={title + '이미지'} fill className="object-cover" sizes="(max-width: 640px) 100vw - 2rem - 15px, 100vw" />
+                  <Image src={src} alt={title} fill className="object-cover" sizes="(max-width: 640px) 100vw - 2rem - 15px, 100vw" />
                 </div>
               </SwiperSlide>
             ))}

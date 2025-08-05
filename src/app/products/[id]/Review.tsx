@@ -73,7 +73,7 @@ export default function Review({ reviewList }: { reviewList: ReviewItem[] }) {
   return (
     <div>
       {!reviewList.length ? (
-        <div className="flex flex-col items-center py-8 border-b-1 border-b-lightgray">
+        <div className="flex flex-col items-center py-8 border-b-1 border-b-lightgray text-darkgray">
           <MessageCircleMore className="mb-4" size={32} />
           <p>작성된 구매 후기가 없습니다.</p>
         </div>

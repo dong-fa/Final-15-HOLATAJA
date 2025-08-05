@@ -1,3 +1,4 @@
+import { ChevronDown } from 'lucide-react';
 import React, { SelectHTMLAttributes } from 'react';
 
 interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'size'> {
@@ -27,10 +28,10 @@ function Select({
   className,
   ...props
 }: SelectProps) {
-  const disabledStyle = disabled ? 'bg-disabled' : '';
+  const disabledStyle = disabled ? 'bg-disabled text-darkgray' : '';
 
   return (
-    <div className="flex justify-between items-center gap-4">
+    <div className="flex justify-between items-center gap-4 relative">
       {label && (
         <label className={showLabel ? 'shrink-0 label-m' : 'sr-only'} htmlFor={id}>
           {label}
@@ -40,7 +41,7 @@ function Select({
         id={id}
         name={name}
         value={selectedValue}
-        className={`w-full px-4 ${size === 'medium' ? 'py-2.5' : 'py-1.5'} bg-white border-lightgray border rounded-md focus:outline focus:border-primary ${disabledStyle} ${className}`}
+        className={`w-full ps-4 pe-12 ${size === 'medium' ? 'py-2.5' : 'py-1.5'} bg-white rounded-md outline-1 outline-gray focus:outline-primary appearance-none ${disabledStyle} ${className}`}
         {...props}
       >
         <option value={placeholder}>{placeholder}</option>
@@ -50,6 +51,7 @@ function Select({
           </option>
         ))}
       </select>
+      <ChevronDown className="absolute right-4" size={16} color="var(--color-secondary)" />
     </div>
   );
 }

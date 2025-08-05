@@ -86,15 +86,13 @@ export default function UserInfo() {
 
   return (
     <div>
-      <form className="flex flex-col gap-4 w-[80%] sm:px-20 mx-auto" action={handlesubmit}>
+      <form className="flex flex-col gap-4 sm:w-3/5 mt-[-32px]" action={handlesubmit}>
         <Input id="id" type="number" name="_id" defaultValue={userData._id} readOnly hidden />
         <Input id="email" name="email" type="email" defaultValue={userData.email} readOnly hidden />
         <Input id="name" label="이름" name="name" type="text" value={userData.name} onChange={handleInputChange('name')} disabled={isdisabled} />
         <div className="flex justify-between items-center">
           <span className="min-w-[93px] shrink-0 label-m">이메일</span>
-          <span className="w-full px-4 py-2.5 border-lightgray border rounded-md focus:outline focus:border-primary bg-disabled">
-            {userData.email}
-          </span>
+          <span className="w-full px-4 py-2.5 border-lightgray border rounded-md bg-disabled text-darkgray">{userData.email}</span>
         </div>
 
         <Input id="phone" label="연락처" name="phone" type="tel" value={userData.phone} onChange={handleInputChange('phone')} disabled={isdisabled} />
@@ -107,7 +105,17 @@ export default function UserInfo() {
           onChange={handleInputChange('address')}
           disabled={isdisabled}
         />
-        <div className="flex justify-end">{isdisabled ? <Button onClick={handleEditClick}>수정하기</Button> : <Button submit>수정완료</Button>}</div>
+        <div className="flex justify-end">
+          {isdisabled ? (
+            <Button onClick={handleEditClick} size="medium">
+              수정하기
+            </Button>
+          ) : (
+            <Button submit size="medium">
+              수정완료
+            </Button>
+          )}
+        </div>
       </form>
     </div>
   );

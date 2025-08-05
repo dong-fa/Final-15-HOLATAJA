@@ -29,6 +29,7 @@ export default function Input({
   className,
   size = 'medium',
   gap,
+  readOnly,
   ...props
 }: InputProps) {
   //인풋 요소 기본 스타일 세팅
@@ -36,17 +37,17 @@ export default function Input({
     container: 'flex justify-between items-center',
     small: {
       label: 'shrink-0 label-s',
-      input: 'w-full px-4 py-1.5 border-lightgray border rounded-md focus:outline focus:border-primary',
+      input: 'w-full px-4 py-1.5 outline-1 outline-gray rounded-md focus:outline-primary bg-white',
     },
     medium: {
       label: 'shrink-0 label-m',
-      input: 'w-full px-4 py-2.5 border-lightgray border rounded-md focus:outline focus:border-primary',
+      input: 'w-full px-4 py-2.5 outline-1 outline-gray rounded-md focus:outline-primary bg-white',
     },
   };
 
   const currentSize = sizeStyles[size] || sizeStyles.medium;
-  const errorStyle = error ? 'placeholder:text-negative' : 'placeholder:text-gray-400';
-  const disabledStyle = disabled ? 'bg-disabled' : ' ';
+  const errorStyle = error ? 'placeholder:text-negative outline-negative' : 'placeholder:text-gray-400';
+  const disabledStyle = disabled ? '!bg-disabled text-darkgray' : '';
 
   return (
     <div className={`${sizeStyles.container} ${gap}`}>
