@@ -8,6 +8,7 @@ import QuantityCount from '@/components/QuantityCount';
 // import { ContentsTitle, Contents } from '@/components/Typography';
 import Button from '@/components/Button';
 import { updateCartItemQuantity } from '@/data/actions/carts';
+import Modal from '@/components/Modal';
 
 interface CartProductCardProps {
   item: CartItemData; // 장바구니 아이템 데이터
@@ -21,6 +22,9 @@ export default function CartProductCard({ item, token, handleRemoveItem, isDelet
   // 클라이언트에서만 확인 다이얼로그 상태 관리
   const [isClient, setIsClient] = useState(false);
   const [quantity, setQuantity] = useState(item.quantity);
+
+  const [deleteItem, setDeleteItem] = useState<number | null>(null);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   React.useEffect(() => {
     setIsClient(true);
@@ -45,10 +49,8 @@ export default function CartProductCard({ item, token, handleRemoveItem, isDelet
 
   const cartRemoveItem = (): void => {
     if (isClient) {
-      const confirmDelete = window.confirm(`${item.product.name}을(를) 장바구니에서 삭제하시겠습니까?`);
-      if (confirmDelete) {
-        handleRemoveItem(item._id);
-      }
+      setDeleteItem(item._id);
+      setDeleteModal(true);
     }
   };
 
@@ -135,6 +137,21 @@ export default function CartProductCard({ item, token, handleRemoveItem, isDelet
           </p>
         </div>
       )}
+      <Modal
+        isOpen={deleteModal}
+        handleClose={() => {
+          setDeleteModal(false);
+          setDeleteItem(null);
+        }}
+        handleConfirm={() => {
+          if (deleteItem !== null) {
+            handleRemoveItem(deleteItem);
+          }
+          setDeleteModal(false);
+          setDeleteItem(null);
+        }}
+        description={`${item.product.name}을(를) 삭제하시겠습니까?`}
+      ></Modal>
     </div>
   );
 }
