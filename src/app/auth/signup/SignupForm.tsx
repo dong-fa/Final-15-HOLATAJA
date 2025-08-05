@@ -37,7 +37,7 @@ export default function SignupForm() {
   const [isChecked, setIsChecked] = useState(false);
   const router = useRouter();
 
-  const [signinModal, setSigninModal] = useState(false); // 회원 가입 시 modal 창 실행 여부
+  const [signinModal, setSigninModal] = useState(false); // 회원 가입 시 modal 창 실행 여부, 이미 등록된 계정 중복 체크
   const [checkAgree, setCheckAgree] = useState(false); // 이용 약관 체크 상태
 
   // Server Action 연결
