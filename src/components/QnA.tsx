@@ -208,7 +208,7 @@ function QnA({ qnaList, my }: { qnaList: QuestionItem[]; my?: boolean }) {
                       {my ? (
                         <td className="text-center">
                           <Link
-                            href={`/products/${qna.product_id}`}
+                            href={`/products/${qna.product_id}?tap=3`}
                             className=" py-1 px-2 w-[2rem] border-1 border-primary rounded-lg transition duration-200 ease-in-out bg-white text-primary hover:bg-accent"
                           >
                             보러 가기

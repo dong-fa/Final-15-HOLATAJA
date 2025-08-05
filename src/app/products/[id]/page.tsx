@@ -24,10 +24,14 @@ interface PageProps {
   params: Promise<{
     id: string;
   }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function ProductInfo({ params }: PageProps) {
+export default async function ProductInfo({ params, searchParams }: PageProps) {
   const { id } = await params;
+  const tapParams = await searchParams;
+
+  const activeTabId = Array.isArray(tapParams?.tap) ? tapParams.tap[0] : tapParams?.tap || '1';
 
   // 상품 상세 조회
   const productData = await getProduct(Number(id));
@@ -125,7 +129,7 @@ export default async function ProductInfo({ params }: PageProps) {
           <ProductPostForm productData={productData} />
         </div>
       </div>
-      <Tab tabItems={tabItems} />
+      <Tab tabItems={tabItems} defaultActiveTabId={activeTabId} />
     </div>
   );
 }
