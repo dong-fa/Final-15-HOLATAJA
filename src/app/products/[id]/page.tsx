@@ -1,8 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
+import { notFound } from 'next/navigation';
 
-import { QnaItem, QuestionItem } from '@/types/qna';
-import { getAnswer, getQuestion } from '@/data/functions/qna';
+import { QuestionItem } from '@/types/qna';
+import { getQuestion } from '@/data/functions/qna';
 import getReview from '@/data/functions/review';
 import getProduct from '@/data/functions/product';
 import { postReview } from '@/data/actions/review';
@@ -29,6 +30,11 @@ export default async function ProductInfo({ params }: PageProps) {
 
   // 상품 상세 조회
   const productData = await getProduct(Number(id));
+
+  // 존재하지 않는 상품이면 404 처리
+  if (productData.ok === 0) {
+    return notFound();
+  }
 
   // 상품 문의 목록 조회
   const questionData = await getQuestion();
