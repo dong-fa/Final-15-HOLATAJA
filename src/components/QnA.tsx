@@ -10,7 +10,7 @@ import Textarea from '@/components/Textarea';
 import { deleteQnA, patchQnA } from '@/data/actions/qna';
 import { getAnswer } from '@/data/functions/qna';
 import useAuthStore from '@/store/authStore';
-import { AnswerItem, QnaItem, QuestionItem } from '@/types/qna';
+import { AnswerItem, QuestionItem } from '@/types/qna';
 import { Check, CircleAlert, Pencil, Trash, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -140,7 +140,8 @@ function QnA({ qnaList, my }: { qnaList: QuestionItem[]; my?: boolean }) {
         </div>
       </div>
       <div>
-        <div className="w-full overflow-auto whitespace-nowrap">
+        {/* 웹: 테이블 형식 */}
+        <div className="hidden sm:block w-full overflow-auto whitespace-nowrap">
           <table className="w-full border-b-1 border-text">
             <thead className="border-t-2 border-y">
               <tr>
@@ -319,6 +320,184 @@ function QnA({ qnaList, my }: { qnaList: QuestionItem[]; my?: boolean }) {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* 모바일: 카드 형식 */}
+        <div className="block sm:hidden">
+          {!qnaFilteredByUser.length ? (
+            <div className="text-center py-8">
+              <CircleAlert className="mb-4 mx-auto" size={32} />
+              <p>작성된 Q&A가 없습니다.</p>
+            </div>
+          ) : (
+            <div className="space-y-1">
+              {pagedQnaList.map(qna => (
+                <div key={qna._id} className="border border-gray-200 rounded-lg overflow-hidden">
+                  <div
+                    className="p-4 bg-white cursor-pointer"
+                    onClick={() => {
+                      if (editingId !== 0) return;
+                      setIsOpen(isOpen === qna._id ? 0 : qna._id);
+                      if (isOpen !== qna._id) showAnswer(qna._id);
+                    }}
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex-1 min-w-0">
+                        {editingId === qna._id ? (
+                          <div>
+                            <Input
+                              id="title"
+                              name="title"
+                              type="text"
+                              value={newTitle}
+                              onChange={e => {
+                                setNewTitle(e.currentTarget.value);
+                              }}
+                            />
+                            {error.title && <p className="label-s text-negative mt-1">2글자 이상 입력해야 합니다.</p>}
+                          </div>
+                        ) : (
+                          <h3 className="font-medium truncate">{qna.title}</h3>
+                        )}
+                      </div>
+                      <div className="ml-2 flex-shrink-0">
+                        {qna.repliesCount > 0 ? (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-accent text-primary">
+                            답변 완료
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-lightgray">답변 대기</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between items-center text-sm text-gray-500">
+                      <div className="flex items-center space-x-4">
+                        {!my && <span>{qna.user.name}</span>}
+                        <span>{qna.createdAt?.split(' ')[0]}</span>
+                      </div>
+                      {my && (
+                        <Link
+                          href={`/products/${qna.product_id}`}
+                          className="text-xs py-1 px-2 border border-primary rounded text-primary hover:bg-accent"
+                          onClick={e => e.stopPropagation()}
+                        >
+                          보러 가기
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+
+                  {isOpen === qna._id && (
+                    <div className="p-4 bg-accent border-t border-t-gray">
+                      <div className={`flex gap-2 ${qna.repliesCount > 0 && 'mb-4'}`}>
+                        <span className="w-6 h-6 inline-block shrink-0 text-center content-center text-xs font-semibold bg-white rounded-full text-primary">
+                          Q
+                        </span>
+                        {editingId === qna._id ? (
+                          <div className="w-full">
+                            <Textarea
+                              id="content"
+                              name="content"
+                              value={newContent}
+                              onChange={e => {
+                                setNewContent(e.currentTarget.value);
+                              }}
+                            />
+                            {error.content && <p className="label-s text-negative mt-1">2글자 이상 입력해야 합니다.</p>}
+                          </div>
+                        ) : (
+                          <p className="break-words whitespace-pre-wrap block flex-1">{qna.content}</p>
+                        )}
+                        {user?._id === qna.user._id && (
+                          <div className="flex flex-col gap-1">
+                            {editingId === qna._id ? (
+                              <>
+                                <Button
+                                  icon
+                                  size="small"
+                                  aria-label="저장"
+                                  onClick={() => {
+                                    if (newTitle.trim().length < 2 || newContent.trim().length < 2) {
+                                      setError({
+                                        title: newTitle.trim().length < 2,
+                                        content: newContent.trim().length < 2,
+                                      });
+                                    } else {
+                                      setError({ title: false, content: false });
+                                      handleEdit(qna._id, newTitle, newContent);
+                                    }
+                                  }}
+                                >
+                                  <Check color="var(--color-darkgray)" size={16} />
+                                </Button>
+                                <Button
+                                  icon
+                                  size="small"
+                                  aria-label="취소"
+                                  onClick={() => {
+                                    setNewTitle(qna.title);
+                                    setNewContent(qna.content);
+                                    setError({ title: false, content: false });
+                                    setEditingId(0);
+                                  }}
+                                >
+                                  <X color="var(--color-darkgray)" size={16} />
+                                </Button>
+                              </>
+                            ) : (
+                              <>
+                                <Button
+                                  icon
+                                  size="small"
+                                  aria-label="수정"
+                                  onClick={() => {
+                                    setEditingId(qna._id);
+                                    setNewTitle(qna.title);
+                                    setNewContent(qna.content);
+                                  }}
+                                >
+                                  <Pencil color="var(--color-darkgray)" size={16} />
+                                </Button>
+                                <Button
+                                  icon
+                                  size="small"
+                                  aria-label="삭제"
+                                  onClick={() => {
+                                    setSelectedId(qna._id);
+                                    setIsConfirmModalOpen(true);
+                                  }}
+                                >
+                                  <Trash color="var(--color-darkgray)" size={16} />
+                                </Button>
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      {answers[qna._id] && (
+                        <div className="flex gap-2">
+                          <span className="w-6 h-6 inline-block shrink-0 text-center content-center text-xs font-semibold text-white rounded-full bg-primary">
+                            A
+                          </span>
+                          <div>
+                            <p className="break-words whitespace-pre-wrap block mb-2">
+                              안녕하세요. <br />
+                              {answers[qna._id].content}
+                              <br />
+                              <br />
+                              올라타자 담당자 드림.
+                            </p>
+                            <span className="text-xs text-darkgray">{answers[qna._id].createdAt?.split(' ')[0]}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {qnaFilteredByUser.length ? <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} /> : null}
