@@ -7,6 +7,13 @@ import ReviewTab from '@/app/my/components/ReviewTab';
 import UserInfo from './components/UserInfo';
 import { getOrderList } from '@/data/functions/order';
 import { getBookmarkList } from '@/data/functions/bookmark';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '마이페이지 - HOLATAJA',
+  description: '회원님의 정보와 활동 내역을 확인할 수 있습니다.',
+  robots: 'noindex, nofollow', // 검색엔진 노출 방지
+};
 
 export default async function MyPage() {
   // 구매 내역 목록 데이터 불러오기

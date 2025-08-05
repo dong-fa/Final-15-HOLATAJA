@@ -1,5 +1,12 @@
 import { Title } from '@/components/Typography';
 import LoginForm from './LoginForm';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '로그인 - HOLATAJA',
+  description: 'HOLATAJA에 로그인하세요.',
+  robots: 'noindex, nofollow',
+};
 
 export default function Login() {
   return (

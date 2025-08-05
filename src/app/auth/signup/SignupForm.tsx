@@ -279,6 +279,7 @@ export default function SignupForm() {
         }}
         title={actionState?.ok === 1 ? '회원가입 성공' : '회원가입 실패'}
         description={actionState?.ok === 1 ? '로그인 페이지로 이동합니다.' : actionState?.message || '일시적인 오류가 발생했습니다.'}
+        hideCancelButton
       ></Modal>
       <Modal
         isOpen={checkAgree}

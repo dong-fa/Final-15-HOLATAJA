@@ -31,7 +31,6 @@ export default async function getCartList(token: string): ApiResPromise<CartItem
     });
 
     const result = await response.json();
-
     // API 응답이 실패인 경우 그대로 반환
     if (result.ok !== 1) {
       return { ok: 0, message: result.message || '장바구니 조회 실패' };
