@@ -4,6 +4,7 @@ import Button from '@/components/Button';
 import Modal from '@/components/Modal';
 import QuantityCount from '@/components/QuantityCount';
 import { addToCart } from '@/data/actions/product';
+import useAuthStore from '@/store/authStore';
 import { ApiRes } from '@/types/api';
 import { ProductInfo } from '@/types/product';
 import { useRouter } from 'next/navigation';
@@ -11,16 +12,19 @@ import React, { useActionState, useEffect, useState } from 'react';
 
 function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) {
   const router = useRouter();
+  const { user } = useAuthStore();
 
   const [option, setOption] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [cartSuccessModal, setCartSuccessModal] = useState(false);
   const [cartFailModal, setCartFailModal] = useState(false);
   const [purchaseFailModal, setPurchaseFailModal] = useState(false);
+  const [loginModal, setLoginModal] = useState(false);
 
   // 구매하기 데이터 담기
   const checkout = () => {
-    if (!productData.ok || !option) {
+    if (!user) setLoginModal(true);
+    else if (!productData.ok || !option) {
       setPurchaseFailModal(true);
     } else {
       const checkoutData = {
@@ -38,7 +42,7 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
   const [state, formAction] = useActionState(addToCart, null);
 
   useEffect(() => {
-    if (productData.ok === 1 && productData.item?.extra?.option?.length === 1) {
+    if (productData.ok === 1 && productData.item?.extra?.option?.length === 1 && user) {
       setOption(productData.item.extra.option[0]);
     }
   }, [productData]);
@@ -55,7 +59,9 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
     <div>
       <form
         action={formData => {
-          if (!option) {
+          if (!user) {
+            setLoginModal(true);
+          } else if (!option) {
             setCartFailModal(true);
           } else {
             formAction(formData);
@@ -116,6 +122,16 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
         handleConfirm={() => setPurchaseFailModal(false)}
         description={option ? '구매에 실패했습니다.' : '옵션을 선택해주세요.'}
         hideCancelButton
+      />
+
+      {/* 로그인 필요 모달 */}
+      <Modal
+        isOpen={loginModal}
+        handleClose={() => setLoginModal(false)}
+        handleConfirm={() => router.push('/auth/login')}
+        description={'로그인이 필요합니다.'}
+        isChoiceModal
+        choiceOptions={['닫기', '로그인하기']}
       />
     </div>
   );
