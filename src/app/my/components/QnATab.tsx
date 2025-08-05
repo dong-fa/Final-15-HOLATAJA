@@ -11,9 +11,7 @@ export default async function QnATab() {
   return (
     <>
       <SubTitle className="label-l">나의 Q&A</SubTitle>
-      <div className="bg-white py-3 px-3 mt-3">
-        <QnA qnaList={questionList} my={true} />
-      </div>
+      <QnA qnaList={questionList} my={true} />
     </>
   );
 }

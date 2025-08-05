@@ -3,6 +3,7 @@ import getProduct from '@/data/functions/product';
 import CheckOutForm from './CheckOutForm';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
+import { Title } from '@/components/Typography';
 
 interface CheckoutPageProps {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -95,15 +96,15 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
   // 결제할 상품이 없는 경우
   if (!orderData || orderData.products.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto p-3 sm:p-6 bg-white">
+      <div className="bg-white rounded-lg">
         <div className="text-center py-12">
           <h2 className="text-xl font-bold text-gray-900 mb-4">결제할 상품이 없습니다</h2>
           <p className="text-gray-600 mb-6">장바구니에 상품을 담거나 상품을 선택해주세요.</p>
           <div className="space-y-4">
-            <Link href="/products" className="block bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700">
+            <Link href="/products" className="block bg-primary text-white py-3 px-6 rounded-lg hover:bg-blue-700">
               상품 둘러보기
             </Link>
-            <Link href="/cart" className="block bg-gray-200 text-gray-800 py-3 px-6 rounded-lg hover:bg-gray-300">
+            <Link href="/cart" className="block bg-lightgray text-gray-800 py-3 px-6 rounded-lg hover:bg-gray-300">
               장바구니 확인
             </Link>
           </div>
@@ -113,9 +114,9 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-3 sm:p-6 bg-white">
+    <div>
       {/* 페이지 제목 */}
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">결제</h1>
+      <Title className="mb-6">결제</Title>
       <CheckOutForm token={token} orderInfo={orderData} />
     </div>
   );

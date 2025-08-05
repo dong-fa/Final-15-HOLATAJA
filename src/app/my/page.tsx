@@ -27,7 +27,7 @@ export default async function MyPage() {
 
   return (
     <>
-      <Title className="title">마이 페이지</Title>
+      <Title className="mb-6">마이 페이지</Title>
       <Tab tabItems={tabItems} defaultActiveTabId={'info'} />
     </>
   );

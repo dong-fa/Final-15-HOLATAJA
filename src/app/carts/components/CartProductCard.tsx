@@ -103,7 +103,7 @@ export default function CartProductCard({ item, token, handleRemoveItem, isDelet
         {/* 상품 정보 */}
         <div className="min-w-0 overflow-hidden">
           <div className="text-sm sm:text-base text-text truncate">{item.product.name}</div>
-          {item.color && <div className="text-xs sm:text-sm text-darkgray truncate">{item.color}</div>}
+          {item.color && <div className="text-sm text-darkgray truncate">{item.color}</div>}
         </div>
 
         {/* 수량 조절 */}
@@ -131,7 +131,7 @@ export default function CartProductCard({ item, token, handleRemoveItem, isDelet
       {/* 로딩 상태 표시 */}
       {(isDeleting || isUpdatingQuantity) && (
         <div className="mt-2 pr-8 sm:pr-10">
-          <p className="text-primary text-xs sm:text-sm">
+          <p className="text-primary text-sm">
             <span className="inline-block w-2.5 h-2.5 sm:w-3 sm:h-3 border border-primary border-t-transparent rounded-full animate-spin mr-1 sm:mr-2"></span>
             {isDeleting ? '삭제 처리 중...' : '수량 변경 중...'}
           </p>

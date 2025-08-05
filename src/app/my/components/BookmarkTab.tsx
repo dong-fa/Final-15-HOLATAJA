@@ -21,9 +21,9 @@ export default function BookmarkTab({ bookmarkList }: BookmarkTabProps) {
   return (
     <>
       <SubTitle className="label-l">찜 목록</SubTitle>
-      <div className="bg-white py-3 mt-3">
+      <div className="flex justify-center items-center min-h-[40vh]">
         {!pagedBookmarkList.length ? (
-          <div className="flex flex-col items-center py-8 border-b-1 border-b-lightgray">
+          <div className="flex flex-col items-center py-8 text-darkgray">
             <Star className="mb-4" size={32} />
             <p>찜한 상품이 없습니다.</p>
           </div>

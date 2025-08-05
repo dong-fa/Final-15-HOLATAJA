@@ -141,7 +141,7 @@ export default function LoginForm() {
         </div>
         <Button submit>로그인</Button>
       </form>
-      <Link href={'/auth/signup'} className="text-secondary self-start mt-6">
+      <Link href={'/auth/signup'} className="text-secondary self-start mt-2 text-[14px]">
         회원가입
       </Link>
       <Modal
@@ -149,7 +149,7 @@ export default function LoginForm() {
         hideCancelButton={true}
         handleClose={() => setLoginModal(false)}
         handleConfirm={() => (actionState?.ok === 1 ? router.push('/products') : setLoginModal(false))}
-        description={actionState?.ok === 1 ? '로그인 성공' : actionState?.message || '로그인 실패'}
+        description={actionState?.ok === 1 ? '로그인되었습니다.' : actionState?.message || '로그인에 실패했습니다.'}
       />
 
       {/* <div>
