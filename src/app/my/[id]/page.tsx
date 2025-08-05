@@ -4,6 +4,7 @@ import { getOrderInfo } from '@/data/functions/order';
 import { getAccountByBank, getOrderStatusLabel } from '@/data/tables/mappingTables';
 import { OrderItem } from '@/types/order';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 type PageProps = {
   params: Promise<{
@@ -14,6 +15,11 @@ type PageProps = {
 export default async function OrderInfoPage({ params }: PageProps) {
   const { id } = await params;
   const orderData = await getOrderInfo(Number(id));
+
+  // 존재하지 않는 주문 정보면 404 처리
+  if (orderData.ok === 0) {
+    return notFound();
+  }
 
   const orderInfo: OrderItem | null = orderData.ok === 1 ? orderData.item : null;
   if (!orderInfo) {
