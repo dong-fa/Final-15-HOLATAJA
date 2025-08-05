@@ -40,6 +40,8 @@ export interface OrderItem {
     name: string;
     value: string;
     phone: string;
+    address: string;
+    postalCode: string;
   };
   payment: {
     method: string;

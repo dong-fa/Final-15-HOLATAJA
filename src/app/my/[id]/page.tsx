@@ -4,6 +4,7 @@ import { getOrderInfo } from '@/data/functions/order';
 import { getAccountByBank, getOrderStatusLabel } from '@/data/tables/mappingTables';
 import { OrderItem } from '@/types/order';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 type PageProps = {
   params: Promise<{
@@ -14,6 +15,11 @@ type PageProps = {
 export default async function OrderInfoPage({ params }: PageProps) {
   const { id } = await params;
   const orderData = await getOrderInfo(Number(id));
+
+  // 존재하지 않는 주문 정보면 404 처리
+  if (orderData.ok === 0) {
+    return notFound();
+  }
 
   const orderInfo: OrderItem | null = orderData.ok === 1 ? orderData.item : null;
   if (!orderInfo) {
@@ -58,8 +64,9 @@ export default async function OrderInfoPage({ params }: PageProps) {
       <section className="bg-white">
         <div className="flex flex-col items-start px-4 py-7">
           <p className="font-bold text-sm sm:text-base">{orderInfo.address.name}</p>
-          <p className="text-sm sm:text-base">{orderInfo.address.phone}</p>
-          <p className="text-sm sm:text-base">{orderInfo.address.value}</p>
+          {orderInfo.address.phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')}
+          <p className="text-sm sm:text-base">{orderInfo.address.address}</p>
+          <p className="text-sm sm:text-base">우편번호: {orderInfo.address.postalCode}</p>
         </div>
       </section>
 
@@ -70,15 +77,15 @@ export default async function OrderInfoPage({ params }: PageProps) {
           <p className="font-bold text-sm sm:text-base">결제 수단: {orderInfo.payment.method}</p>
           {orderInfo.payment.method === '무통장 입금' && (
             <>
-              <p className="font-bold text-sm sm:text-base">입금 계좌: {`${bankInfo} ${getAccountByBank(bankInfo)}`}</p>
-              <p className="font-bold text-sm sm:text-base">입금자명: {orderInfo.payment.info.split('&')[1]?.trim()}</p>
+              <p className="text-sm sm:text-base">입금 계좌: {`${bankInfo} ${getAccountByBank(bankInfo)}`}</p>
+              <p className="text-sm sm:text-base">입금자명: {orderInfo.payment.info.split('&')[1]?.trim()}</p>
             </>
           )}
 
-          {orderInfo.payment.method === '간편결제' && <p className="font-bold text-sm sm:text-base">{orderInfo.payment.info}</p>}
+          {orderInfo.payment.method === '간편결제' && <p className="font-bold text-sm sm:text-base">{orderInfo.payment.info} 페이</p>}
 
-          {orderInfo.payment.method === '체크/신용카드 결제' && (
-            <p className="font-bold text-sm sm:text-base">{orderInfo.payment.info.split('&')[0].trim()}</p>
+          {orderInfo.payment.method === '체크/신용 카드' && (
+            <p className="text-sm sm:text-base">카드번호: {orderInfo.payment.info.split('&')[0].trim()}</p>
           )}
 
           {/* 주문 금액 정보 */}
