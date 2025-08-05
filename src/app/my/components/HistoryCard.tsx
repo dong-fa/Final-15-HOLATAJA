@@ -100,7 +100,7 @@ export default function HistoryCard({ id, status, src, name, price, quantity, da
                       <button
                         key={product.id}
                         onClick={() => router.push(`/products/${product.id}`)}
-                        className="w-full cursor-pointer max-w-[18.75rem] line-clamp-2 px-3 py-1 bg-primary border border-primary text-white text-sm rounded hover:bg-white hover:text-primary transition"
+                        className="w-full max-w-[18.75rem] line-clamp-2 px-3 py-1 bg-background text-text text-sm font-medium border-1 border-lightgray rounded hover:border-primary hover:text-primary transition cursor-pointer "
                       >
                         {product.name}
                       </button>
