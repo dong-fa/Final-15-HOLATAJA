@@ -37,7 +37,8 @@ export default function SignupForm() {
   const [isChecked, setIsChecked] = useState(false);
   const router = useRouter();
   const [signinId, setSigninId] = useState<number | null>(null); // 회원가입 응답 ID 값
-  const [signinModal, setSigninModal] = useState(false); // modal 창 실행 여부
+  const [signinModal, setSigninModal] = useState(false); // 회원 가입 시 modal 창 실행 여부
+  const [checkAgree, setCheckAgree] = useState(false);
 
   // Server Action 연결
   const [actionState, formAction, isPending] = useActionState(signupAction, null);
@@ -142,7 +143,7 @@ export default function SignupForm() {
     // 에러가 있으면 제출하지 않음
     const hasErrors = Object.values(newError).some(error => error !== '');
     if (hasErrors || !isChecked) {
-      if (!isChecked) alert('약관에 동의해주세요');
+      if (!isChecked) setCheckAgree(true);
       return;
     }
 
@@ -152,7 +153,6 @@ export default function SignupForm() {
 
   useEffect(() => {
     if (actionState?.ok) {
-      // alert('회원 가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
       setSigninModal(true);
       setTimeout(() => {
         router.replace('/auth/login');
@@ -280,6 +280,14 @@ export default function SignupForm() {
         handleConfirm={() => signinId && setSigninId}
         title="회원가입 성공"
         description="로그인 페이지로 이동합니다."
+      ></Modal>
+      <Modal
+        isOpen={checkAgree}
+        handleClose={() => {
+          setCheckAgree(false);
+        }}
+        handleConfirm={() => checkAgree && setCheckAgree}
+        description="이용 약관을 확인해주시기 바랍니다."
       ></Modal>
     </>
   );
