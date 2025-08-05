@@ -150,6 +150,7 @@ export default function LoginForm() {
         isOpen={loginmodal}
         handleClose={() => setLoginModal(false)}
         handleConfirm={() => loginId && setLoginId}
+        hideCancelButton
         title="로그인 성공"
         description="환영합니다!"
       ></Modal>
