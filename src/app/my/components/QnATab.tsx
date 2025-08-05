@@ -1,7 +1,6 @@
 import QnA from '@/components/QnA';
 import { SubTitle } from '@/components/Typography';
-import { getMyQnA, getAnswer } from '@/data/functions/qna';
-import { QnaItem, QuestionItem } from '@/types/qna';
+import { getMyQnA } from '@/data/functions/qna';
 
 export default async function QnATab() {
   // 사용자가 작성한 질문글 가져오기
