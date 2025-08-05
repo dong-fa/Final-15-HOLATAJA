@@ -36,21 +36,6 @@ export default async function ProductInfo({ params }: PageProps) {
   // 상품 id와 일치하는 문의 목록
   const questionList = questionData.ok === 1 ? questionData.item.filter((question: QuestionItem) => question.product_id === Number(id)) : [];
 
-  // 상품 문의와 답변을 묶어서 저장
-  const qnaList: QnaItem[] = [];
-
-  if (questionData.ok === 1) {
-    // 모든 비동기 작업이 끝나면 결과를 배열로 반환
-    await Promise.all(
-      questionList.map(async (question: QuestionItem) => {
-        // 문의글 id와 일치하는 답변 조회
-        const res = await getAnswer(question._id);
-        // 답변 조회 성공 시 question 정보와 answer 정보 함께 저장, 실패 시 question 정보만 저장
-        qnaList.push({ question: question, answer: res.ok === 1 ? res.item[0] : null });
-      }),
-    );
-  }
-
   // 상품 구매 후기 목록 조회
   const reviewData = await getReview(Number(id));
 
@@ -103,7 +88,7 @@ export default async function ProductInfo({ params }: PageProps) {
       title: 'Q&A',
       content: (
         <div className="flex flex-col gap-6 sm:gap-12 p-4 mt-[-1rem]">
-          <QnA qnaList={qnaList} />
+          <QnA qnaList={questionList} />
           <PostForm productId={Number(id)} action={postQuestion} type="Q&A" />
         </div>
       ),
