@@ -258,7 +258,7 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
             <Image
               src="/toss-logo.png"
               alt="토스페이"
-              width={123.88}
+              width={124}
               height={24}
               className="w-[80px] sm:w-[123.88px] h-[16px] sm:h-[24px] object-contain"
             />
@@ -281,7 +281,7 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
             <Image
               src="/npay-logo.png"
               alt="네이버페이"
-              width={82.08}
+              width={82}
               height={28}
               className="w-[55px] sm:w-[82.08px] h-[19px] sm:h-[28px] object-contain"
             />
