@@ -28,7 +28,7 @@ export default async function ProductPage() {
       </section>
 
       <section className="max-w-5xl py-3 mx-auto">
-        <Title>상품 목록</Title>
+        <Title className="mb-6">상품 목록</Title>
         <ProductList productData={productList} />
       </section>
     </>

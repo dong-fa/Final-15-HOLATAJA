@@ -8,7 +8,7 @@ interface CheckboxButtonProps extends InputHTMLAttributes<HTMLInputElement> {
 export default function CheckboxButton({ checked, onChange, label, className, ...props }: CheckboxButtonProps) {
   return (
     <label className={`flex items-center cursor-pointer ${className ?? ''}`}>
-      <input type="checkbox" checked={checked} onChange={onChange} className="sr-only" {...props} />
+      <input type="checkbox" checked={checked} onChange={onChange} className="sr-only peer" {...props} />
       <div
         className={`
       w-5 h-5
@@ -20,7 +20,7 @@ export default function CheckboxButton({ checked, onChange, label, className, ..
       justify-center
       items-center
       ${checked ? 'border-primary' : 'border-gray'}
-      
+      peer-focus-visible:ring-2
     `}
       >
         {checked && <Check size={14} color="var(--color-primary)" strokeWidth={3} />}

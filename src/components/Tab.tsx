@@ -20,15 +20,15 @@ export default function Tab({ tabItems, defaultActiveTabId }: TabProps) {
   return (
     <div className="w-full mx-auto">
       {/* Tab Nav */}
-      <nav className="">
+      <nav>
         {tabItems.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={
               activeTab === tab.id
-                ? 'inline-block w-auto text-sm sm:text-base px-1 py-4 sm:p-4 cursor-pointer text-primary font-bold border-b-2 border-b-primary'
-                : 'inline-block w-auto text-sm sm:text-base px-1 py-4 sm:p-4 cursor-pointer text-secondary hover:border-b-2 hover:border-b-primary'
+                ? 'inline-block w-auto text-[14px] sm:text-base px-2 py-4 sm:p-4 cursor-pointer text-primary font-bold border-b-2 border-b-primary'
+                : 'inline-block w-auto text-[14px] sm:text-base px-2 py-4 sm:p-4 cursor-pointer text-secondary hover:border-b-2 hover:border-b-primary'
             }
           >
             {tab.title}
@@ -40,7 +40,7 @@ export default function Tab({ tabItems, defaultActiveTabId }: TabProps) {
       <hr className=" border-t-2 border-lightgray relative top-[-2px] -z-1" />
 
       {/* Tab Content */}
-      <div className=" mt-4">{tabItems.find(tab => tab.id === activeTab)?.content}</div>
+      <div className="p-4">{tabItems.find(tab => tab.id === activeTab)?.content}</div>
     </div>
   );
 }

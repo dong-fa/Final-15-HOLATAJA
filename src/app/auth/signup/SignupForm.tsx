@@ -257,7 +257,7 @@ export default function SignupForm() {
             onChange={() => {
               setIsChecked(!isChecked);
             }}
-            label="개인정보 수집 및 이용약관에 동의 합니다."
+            label="개인정보 수집 및 이용약관에 동의합니다."
             disabled={isPending}
           />
         </div>

@@ -21,9 +21,9 @@ export default function OrderTab({ orderHistoryList }: OrderTabProps) {
   return (
     <>
       <SubTitle className="label-l">구매 내역</SubTitle>
-      <div className="bg-white py-3 mt-3">
+      <div>
         {!pagedOrderList.length ? (
-          <div className="flex flex-col items-center py-8 border-b-1 border-b-lightgray">
+          <div className="flex flex-col items-center py-8 border-b-1 border-b-lightgray text-darkgray">
             <History className="mb-4" size={32} />
             <p>구매 내역이 없습니다.</p>
           </div>

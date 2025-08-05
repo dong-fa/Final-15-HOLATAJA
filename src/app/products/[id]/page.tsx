@@ -55,7 +55,7 @@ export default async function ProductInfo({ params, searchParams }: PageProps) {
       id: '1',
       title: '제품 상세 정보',
       content: (
-        <div className="flex flex-col gap-6 px-4 sm:gap-12">
+        <div className="flex flex-col gap-6 sm:gap-12">
           <div>
             <ContentsTitle className="mb-4">제품 소개</ContentsTitle>
             <p>{productData.ok === 1 && productData.item?.extra.description}</p>
@@ -88,7 +88,7 @@ export default async function ProductInfo({ params, searchParams }: PageProps) {
       id: '2',
       title: '구매 후기',
       content: (
-        <div className="flex flex-col gap-6 sm:gap-12 p-4 mt-[-2rem]">
+        <div className="flex flex-col gap-6 sm:gap-12">
           <Review reviewList={reviewData.ok ? reviewData.item : []} />
           {/* TODO orderId 받아오기: 내 구매 목록 조회 후 productId가 일치하는 목록 filter */}
           <PostForm productId={Number(id)} orderId={Number(id)} action={postReview} type="구매 후기" />
@@ -99,7 +99,7 @@ export default async function ProductInfo({ params, searchParams }: PageProps) {
       id: '3',
       title: 'Q&A',
       content: (
-        <div className="flex flex-col gap-6 sm:gap-12 p-4 mt-[-1rem]">
+        <div className="flex flex-col gap-6 sm:gap-12">
           <QnA qnaList={questionList} />
           <PostForm productId={Number(id)} action={postQuestion} type="Q&A" />
         </div>

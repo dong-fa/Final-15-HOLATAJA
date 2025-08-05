@@ -45,8 +45,8 @@ export default async function OrderInfoPage({ params }: PageProps) {
         </Link>
         <p className="mx-1 text-text">Order Details</p>
       </nav>
-      <Title className="title">구매 내역 상세</Title>
-      <div className="flex flex-row justify-between my-2">
+      <Title className="mb-4">구매 내역 상세</Title>
+      <div className="flex flex-row justify-between mb-8">
         <div>
           <p className="text-secondary label-s">
             Order #{orderInfo._id} · 주문일시: {orderInfo.createdAt}
@@ -55,8 +55,8 @@ export default async function OrderInfoPage({ params }: PageProps) {
         <p className="label-s font-bold">{getOrderStatusLabel(orderInfo.state)}</p>
       </div>
 
-      <SubTitle className="label-l">주문 상품</SubTitle>
-      <section className="bg-white">
+      <SubTitle className="label-l mb-4">주문 상품</SubTitle>
+      <section className="bg-white rounded-lg border-1 border-lightgray border-b-0">
         {orderInfo.products.map((product, index) => (
           <OrderedCard
             key={index}
@@ -69,8 +69,8 @@ export default async function OrderInfoPage({ params }: PageProps) {
         ))}
       </section>
 
-      <SubTitle className="label-l mt-2">배송지</SubTitle>
-      <section className="bg-white">
+      <SubTitle className="label-l mb-4 mt-8">배송지</SubTitle>
+      <section className="bg-white rounded-lg border-1 border-lightgray">
         <div className="flex flex-col items-start px-4 py-7">
           <p className="font-bold text-sm sm:text-base">{orderInfo.address.name}</p>
           {orderInfo.address.phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')}
@@ -79,8 +79,8 @@ export default async function OrderInfoPage({ params }: PageProps) {
         </div>
       </section>
 
-      <SubTitle className="label-l mt-2">결제 정보</SubTitle>
-      <section className="bg-white">
+      <SubTitle className="label-l mb-4 mt-8">결제 정보</SubTitle>
+      <section className="bg-white rounded-lg border-1 border-lightgray">
         <div className="flex flex-col items-start px-4 py-7">
           {/* 결제 정보 : 수단에 따라 정보 상이하게 표시 */}
           <p className="font-bold text-sm sm:text-base">결제 수단: {orderInfo.payment.method}</p>

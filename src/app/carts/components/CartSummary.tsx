@@ -28,7 +28,7 @@ export default function CartSummary({
 
   return (
     <div>
-      <div className="bg-white p-6 space-y-4">
+      <div className="bg-white p-6 space-y-4 rounded-lg border border-lightgray">
         {/* 상품 금액 */}
         <div className="flex justify-between items-center">
           <Contents className="text-secondary">상품 금액</Contents>
