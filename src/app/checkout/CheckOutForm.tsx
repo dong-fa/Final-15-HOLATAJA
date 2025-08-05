@@ -282,9 +282,9 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
               <Image
                 src="/npay-logo.svg"
                 alt="네이버페이"
-                width={82.08}
+                width={82}
                 height={28}
-                className="w-[55px] sm:w-[82.08px] h-[19px] sm:h-[28px] object-contain"
+                className="w-[55px] sm:w-[82px] h-[19px] sm:h-[28px] object-contain"
               />
             </div>
             <span className="text-sm sm:text-base font-medium">네이버페이</span>
