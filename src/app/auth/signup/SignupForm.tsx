@@ -36,9 +36,9 @@ export default function SignupForm() {
   const [touched, setTouched] = useState(initTouchedState);
   const [isChecked, setIsChecked] = useState(false);
   const router = useRouter();
-  const [signinId, setSigninId] = useState<number | null>(null); // 회원가입 응답 ID 값
+
   const [signinModal, setSigninModal] = useState(false); // 회원 가입 시 modal 창 실행 여부
-  const [checkAgree, setCheckAgree] = useState(false);
+  const [checkAgree, setCheckAgree] = useState(false); // 이용 약관 체크 상태
 
   // Server Action 연결
   const [actionState, formAction, isPending] = useActionState(signupAction, null);
@@ -152,17 +152,10 @@ export default function SignupForm() {
   };
 
   useEffect(() => {
-    if (actionState?.ok) {
+    if (actionState) {
       setSigninModal(true);
-      setTimeout(() => {
-        router.replace('/auth/login');
-      }, 2000);
-      // router.replace('/auth/login');
-    } else if (actionState?.ok === 0 && !actionState?.errors) {
-      // 입력값 검증에러가 아닌 경우
-      alert(actionState?.message);
     }
-  }, [actionState, router]);
+  }, [actionState]);
 
   return (
     <>
@@ -277,16 +270,22 @@ export default function SignupForm() {
         handleClose={() => {
           setSigninModal(false);
         }}
-        handleConfirm={() => signinId && setSigninId}
-        title="회원가입 성공"
-        description="로그인 페이지로 이동합니다."
+        handleConfirm={() => {
+          if (actionState?.ok === 1) {
+            router.replace('/auth/login');
+          } else {
+            setSigninModal(false);
+          }
+        }}
+        title={actionState?.ok === 1 ? '회원가입 성공' : '회원가입 실패'}
+        description={actionState?.ok === 1 ? '로그인 페이지로 이동합니다.' : actionState?.message || '일시적인 오류가 발생했습니다.'}
       ></Modal>
       <Modal
         isOpen={checkAgree}
         handleClose={() => {
           setCheckAgree(false);
         }}
-        handleConfirm={() => checkAgree && setCheckAgree}
+        handleConfirm={() => setCheckAgree(false)}
         description="이용 약관을 확인해주시기 바랍니다."
       ></Modal>
     </>
