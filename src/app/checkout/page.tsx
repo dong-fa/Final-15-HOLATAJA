@@ -22,9 +22,9 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
     orderData =
       cartRes.ok === 1
         ? {
-            cartId: cartRes.item?.[0]?._id,
             products:
               cartRes.item?.map(item => ({
+                cartId: item._id,
                 id: item.product_id,
                 name: item.product.name,
                 image: `${item.product.image.path}` || '',
