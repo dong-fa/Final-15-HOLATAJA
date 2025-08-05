@@ -5,6 +5,7 @@ import { Metadata } from 'next';
 // import { SessionProvider } from 'next-auth/react';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://final-15-holataja.vercel.app/'),
   title: {
     default: 'HOLATAJA - 온라인 프리미엄 타건샵',
     template: '%s | 올라타자',
