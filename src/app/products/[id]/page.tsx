@@ -73,7 +73,11 @@ export default async function ProductInfo({ params, searchParams }: PageProps) {
             </ul>
           </div>
           <div className="rounded-lg bg-lightgray px-5 py-3 hidden sm:block">
-            {productData.ok === 1 && <KeySoundDemo switchType={productData.item?.extra?.category} />}
+            {productData.ok === 1 && (
+              <KeySoundDemo
+                soundFilePath={productData.item?.extra?.soundfile ? productData.item?.extra?.soundfile : '/sounds/keyboardSound_sample.m4a'}
+              />
+            )}
           </div>
           {productData.ok === 1 &&
             (productData.item?.mainImages.filter(img => img.type === 'info').map(img => img.path) ?? []).map((img, idx) => (
