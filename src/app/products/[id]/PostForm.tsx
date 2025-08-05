@@ -11,7 +11,6 @@ import { ApiRes, ApiResPromise } from '@/types/api';
 import { useRouter } from 'next/navigation';
 
 import React, { useActionState, useEffect, useState } from 'react';
-import { tr } from 'zod/locales';
 
 interface PostFormProps<itemState> {
   productId: number;
@@ -24,6 +23,7 @@ export default function PostForm<itemState>({ productId, orderId, action, type }
   const [state, formAction /* isPending*/] = useActionState(action, null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loginModal, setLoginModal] = useState(false);
+  const [orderModal, setOrderModal] = useState(false);
   // 별점 등록 상태
   const [rating, setRating] = useState<number>(0);
 
@@ -54,6 +54,10 @@ export default function PostForm<itemState>({ productId, orderId, action, type }
         action={formData => {
           if (!user) {
             setLoginModal(true);
+            return;
+          }
+          if (!orderId) {
+            setOrderModal(true);
             return;
           }
           formAction(formData);
@@ -109,6 +113,15 @@ export default function PostForm<itemState>({ productId, orderId, action, type }
         description={'로그인이 필요합니다.'}
         isChoiceModal
         choiceOptions={['닫기', '로그인하기']}
+      />
+
+      {/* 구매 내역 없음 모달 */}
+      <Modal
+        isOpen={orderModal}
+        handleClose={() => setOrderModal(false)}
+        handleConfirm={() => setOrderModal(false)}
+        description={'구매하지 않은 상품입니다.'}
+        hideCancelButton
       />
     </div>
   );

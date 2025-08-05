@@ -19,6 +19,7 @@ import ProductPostForm from '@/app/products/[id]/ProductPostForm';
 import PostForm from '@/app/products/[id]/PostForm';
 import Review from '@/app/products/[id]/Review';
 import { KeyRound } from 'lucide-react';
+import { getOrderList } from '@/data/functions/order';
 
 interface PageProps {
   params: Promise<{
@@ -49,6 +50,12 @@ export default async function ProductInfo({ params, searchParams }: PageProps) {
 
   // 상품 구매 후기 목록 조회
   const reviewData = await getReview(Number(id));
+
+  // 사용자의 구매 내역 가져오기
+  const orderList = await getOrderList();
+
+  // 해당 상품이 포함된 구매 내역 id 가져오기
+  const orderId = orderList.ok ? orderList.item.find(order => order.products.some(product => product._id === Number(id)))?._id : 0;
 
   const tabItems: TabItem[] = [
     {
@@ -90,8 +97,7 @@ export default async function ProductInfo({ params, searchParams }: PageProps) {
       content: (
         <div className="flex flex-col gap-6 sm:gap-12">
           <Review reviewList={reviewData.ok ? reviewData.item : []} />
-          {/* TODO orderId 받아오기: 내 구매 목록 조회 후 productId가 일치하는 목록 filter */}
-          <PostForm productId={Number(id)} orderId={Number(id)} action={postReview} type="구매 후기" />
+          <PostForm productId={Number(id)} orderId={orderId} action={postReview} type="구매 후기" />
         </div>
       ),
     },
