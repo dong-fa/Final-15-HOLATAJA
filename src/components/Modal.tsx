@@ -27,13 +27,31 @@ export default function Modal({
   // 열려있지 않으면 렌더링하지 않음
   if (!isOpen) return null;
 
+  if (isOpen) {
+    document.body.style.overflow = 'hidden';
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70"
+      onClick={() => {
+        handleClose();
+        document.body.style.overflow = 'auto';
+      }}
+    >
       {/* 모달 박스 */}
-      <div className="relative bg-white rounded-lg shadow-lg  w-[400px]">
+      <div className="relative bg-white rounded-lg shadow-lg w-[400px]" onClick={e => e.stopPropagation()}>
         <div className="flex flex-row justify-end bg-white rounded-t-lg w-full">
           {/* 오른쪽 상단 닫기 버튼 */}
-          <Button onClick={handleClose} className="" size="medium" icon>
+          <Button
+            onClick={() => {
+              handleClose();
+              document.body.style.overflow = 'auto';
+            }}
+            className="pt-2 pe-2"
+            size="medium"
+            icon
+          >
             <X size={24} /> {/* Lucide X 아이콘 */}
           </Button>
         </div>
@@ -48,14 +66,26 @@ export default function Modal({
           <div className="flex justify-center gap-4 pb-5">
             <>
               {/* 취소 버튼 */}
-              {hideCancelButton ?? (
-                <Button outlined onClick={handleClose} size="medium">
+              {!hideCancelButton && (
+                <Button
+                  outlined
+                  onClick={() => {
+                    handleClose();
+                    document.body.style.overflow = 'auto';
+                  }}
+                  size="medium"
+                >
                   {isChoiceModal ? choiceOptions?.[0] : '취소'}
                 </Button>
               )}
-
               {/* 확인 버튼 */}
-              <Button onClick={handleConfirm} size="medium">
+              <Button
+                onClick={() => {
+                  handleConfirm();
+                  document.body.style.overflow = 'auto';
+                }}
+                size="medium"
+              >
                 {isChoiceModal ? choiceOptions?.[1] : '확인'}
               </Button>
             </>
