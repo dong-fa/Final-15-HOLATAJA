@@ -38,6 +38,12 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
   const [state, formAction] = useActionState(addToCart, null);
 
   useEffect(() => {
+    if (productData.ok === 1 && productData.item?.extra?.option?.length === 1) {
+      setOption(productData.item.extra.option[0]);
+    }
+  }, [productData]);
+
+  useEffect(() => {
     if (state?.ok === 1) {
       setCartSuccessModal(true);
     } else if (state?.ok === 0) {
@@ -48,11 +54,11 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
   return (
     <div>
       <form
-        action={async formData => {
+        action={formData => {
           if (!option) {
             setCartFailModal(true);
           } else {
-            await formAction(formData);
+            formAction(formData);
           }
         }}
       >
