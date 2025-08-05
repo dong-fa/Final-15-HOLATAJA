@@ -150,8 +150,7 @@ export default function CartProductCard({ item, token, handleRemoveItem, isDelet
           setDeleteModal(false);
           setDeleteItem(null);
         }}
-        title={`${item.product.name}을(를) 삭제하시겠습니까?`}
-        description=""
+        description={`${item.product.name}을(를) 삭제하시겠습니까?`}
       ></Modal>
     </div>
   );
