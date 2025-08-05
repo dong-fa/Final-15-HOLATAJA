@@ -18,6 +18,7 @@ import KeySoundDemo from '@/app/products/components/KeySoundDemo';
 import ProductPostForm from '@/app/products/[id]/ProductPostForm';
 import PostForm from '@/app/products/[id]/PostForm';
 import Review from '@/app/products/[id]/Review';
+import { KeyRound } from 'lucide-react';
 
 interface PageProps {
   params: Promise<{
@@ -57,13 +58,14 @@ export default async function ProductInfo({ params }: PageProps) {
           </div>
           <div>
             <ContentsTitle className="mb-4">기능</ContentsTitle>
-            <ul className="grid gap-2 sm:gap-4 sm:grid-cols-3">
-              {/* {productData?.extra['function-tag'].map((tag, idx) => (
-                <li key={idx} className="flex items-center justify-center h-16 gap-2 p-4 font-semibold bg-white border rounded-lg border-lightgray">
-                  <KeyRound />
-                  <div>tag</div>
-                </li>
-              ))} */}
+            <ul className="grid gap-2 sm:grid-cols-3 text-[14px]">
+              {productData.ok &&
+                productData.item.extra['function-tag'].map((tag, idx) => (
+                  <li key={idx} className="flex items-center h-14 gap-3 p-4 font-medium bg-white border rounded-lg border-lightgray">
+                    <KeyRound />
+                    <p>{tag}</p>
+                  </li>
+                ))}
             </ul>
           </div>
           <div className="rounded-lg bg-lightgray px-5 py-3 hidden sm:block">
