@@ -1,8 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
+import { notFound } from 'next/navigation';
 
-import { QnaItem, QuestionItem } from '@/types/qna';
-import { getAnswer, getQuestion } from '@/data/functions/qna';
+import { QuestionItem } from '@/types/qna';
+import { getQuestion } from '@/data/functions/qna';
 import getReview from '@/data/functions/review';
 import getProduct from '@/data/functions/product';
 import { postReview } from '@/data/actions/review';
@@ -17,39 +18,34 @@ import KeySoundDemo from '@/app/products/components/KeySoundDemo';
 import ProductPostForm from '@/app/products/[id]/ProductPostForm';
 import PostForm from '@/app/products/[id]/PostForm';
 import Review from '@/app/products/[id]/Review';
+import { KeyRound } from 'lucide-react';
 
 interface PageProps {
   params: Promise<{
     id: string;
   }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function ProductInfo({ params }: PageProps) {
+export default async function ProductInfo({ params, searchParams }: PageProps) {
   const { id } = await params;
+  const tapParams = await searchParams;
+
+  const activeTabId = Array.isArray(tapParams?.tap) ? tapParams.tap[0] : tapParams?.tap || '1';
 
   // 상품 상세 조회
   const productData = await getProduct(Number(id));
+
+  // 존재하지 않는 상품이면 404 처리
+  if (productData.ok === 0) {
+    return notFound();
+  }
 
   // 상품 문의 목록 조회
   const questionData = await getQuestion();
 
   // 상품 id와 일치하는 문의 목록
   const questionList = questionData.ok === 1 ? questionData.item.filter((question: QuestionItem) => question.product_id === Number(id)) : [];
-
-  // 상품 문의와 답변을 묶어서 저장
-  const qnaList: QnaItem[] = [];
-
-  if (questionData.ok === 1) {
-    // 모든 비동기 작업이 끝나면 결과를 배열로 반환
-    await Promise.all(
-      questionList.map(async (question: QuestionItem) => {
-        // 문의글 id와 일치하는 답변 조회
-        const res = await getAnswer(question._id);
-        // 답변 조회 성공 시 question 정보와 answer 정보 함께 저장, 실패 시 question 정보만 저장
-        qnaList.push({ question: question, answer: res.ok === 1 ? res.item[0] : null });
-      }),
-    );
-  }
 
   // 상품 구매 후기 목록 조회
   const reviewData = await getReview(Number(id));
@@ -66,13 +62,14 @@ export default async function ProductInfo({ params }: PageProps) {
           </div>
           <div>
             <ContentsTitle className="mb-4">기능</ContentsTitle>
-            <ul className="grid gap-2 sm:gap-4 sm:grid-cols-3">
-              {/* {productData?.extra['function-tag'].map((tag, idx) => (
-                <li key={idx} className="flex items-center justify-center h-16 gap-2 p-4 font-semibold bg-white border rounded-lg border-lightgray">
-                  <KeyRound />
-                  <div>tag</div>
-                </li>
-              ))} */}
+            <ul className="grid gap-2 sm:grid-cols-3 text-[14px]">
+              {productData.ok &&
+                productData.item.extra['function-tag'].map((tag, idx) => (
+                  <li key={idx} className="flex items-center h-14 gap-3 p-4 font-medium bg-white border rounded-lg border-lightgray">
+                    <KeyRound />
+                    <p>{tag}</p>
+                  </li>
+                ))}
             </ul>
           </div>
           <div className="rounded-lg bg-lightgray px-5 py-3 hidden sm:block">
@@ -103,7 +100,7 @@ export default async function ProductInfo({ params }: PageProps) {
       title: 'Q&A',
       content: (
         <div className="flex flex-col gap-6 sm:gap-12 p-4 mt-[-1rem]">
-          <QnA qnaList={qnaList} />
+          <QnA qnaList={questionList} />
           <PostForm productId={Number(id)} action={postQuestion} type="Q&A" />
         </div>
       ),
@@ -132,7 +129,7 @@ export default async function ProductInfo({ params }: PageProps) {
           <ProductPostForm productData={productData} />
         </div>
       </div>
-      <Tab tabItems={tabItems} />
+      <Tab tabItems={tabItems} defaultActiveTabId={activeTabId} />
     </div>
   );
 }

@@ -3,6 +3,13 @@ import getProduct from '@/data/functions/product';
 import CheckOutForm from './CheckOutForm';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '결제 - HOLATAJA',
+  description: '선택한 상품을 결제합니다.',
+  robots: 'noindex, nofollow',
+};
 
 interface CheckoutPageProps {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -22,9 +29,9 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
     orderData =
       cartRes.ok === 1
         ? {
-            cartId: cartRes.item?.[0]?._id,
             products:
               cartRes.item?.map(item => ({
+                cartId: item._id,
                 id: item.product_id,
                 name: item.product.name,
                 image: `${item.product.image.path}` || '',
