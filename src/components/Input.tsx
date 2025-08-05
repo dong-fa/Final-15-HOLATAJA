@@ -29,7 +29,6 @@ export default function Input({
   className,
   size = 'medium',
   gap,
-  readOnly,
   ...props
 }: InputProps) {
   //인풋 요소 기본 스타일 세팅
