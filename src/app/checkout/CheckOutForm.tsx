@@ -253,14 +253,16 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
             className="mr-2 sm:mr-3"
           />
           <div className="flex items-center">
-            <Image
-              src="/toss-logo.png"
-              alt="토스페이"
-              width={124}
-              height={24}
-              className="w-[80px] sm:w-[123.88px] h-[16px] sm:h-[24px] object-contain"
-            />
-            <span className="text-sm sm:text-base font-medium px-2 sm:px-[15.12px] pt-1.5 text-[var(--color-primary)]">토스페이</span>
+            <div className="w-[80px] sm:w-[130px] me-2">
+              <Image
+                src="/toss-logo.png"
+                alt="토스페이"
+                width={130}
+                height={49}
+                className="w-[80px] sm:w-[130px] h-[16px] sm:h-[49px] object-contain"
+              />
+            </div>
+            <span className="text-sm sm:text-base font-medium">토스페이</span>
           </div>
         </label>
       </div>
@@ -276,14 +278,16 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
             className="mr-2 sm:mr-3"
           />
           <div className="flex items-center">
-            <Image
-              src="/npay-logo.png"
-              alt="네이버페이"
-              width={82}
-              height={28}
-              className="w-[55px] sm:w-[82.08px] h-[19px] sm:h-[28px] object-contain"
-            />
-            <span className="text-sm sm:text-base font-medium px-4 sm:px-[55.92px] pt-1.5 text-[var(--color-primary)]">네이버페이</span>
+            <div className="w-[80px] sm:w-[130px] me-2">
+              <Image
+                src="/npay-logo.svg"
+                alt="네이버페이"
+                width={82}
+                height={28}
+                className="w-[55px] sm:w-[82px] h-[19px] sm:h-[28px] object-contain"
+              />
+            </div>
+            <span className="text-sm sm:text-base font-medium">네이버페이</span>
           </div>
         </label>
       </div>
@@ -391,7 +395,7 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
         {bankInfo.selectedBank && (
           <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
             <h5 className="font-semibold mb-2 text-sm sm:text-base">입금 계좌 정보</h5>
-            <p className="text-xs sm:text-sm text-gray-700">
+            <p className="text-sm text-gray-700">
               {bankInfo.selectedBank === '국민은행' && '국민은행 123-456-789012'}
               {bankInfo.selectedBank === '신한은행' && '신한은행 987-654-321098'}
               {bankInfo.selectedBank === '우리은행' && '우리은행 1002-123-456789'}
@@ -399,7 +403,7 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
               {bankInfo.selectedBank === '농협은행' && '농협은행 999-888-777666'}
               {bankInfo.selectedBank === '카카오뱅크' && '카카오뱅크 3333-02-9023121'}
             </p>
-            <p className="text-xs sm:text-sm text-gray-700 mt-1">예금주: (주)올라타자</p>
+            <p className="text-sm text-gray-700 mt-1">예금주: (주)올라타자</p>
           </div>
         )}
       </div>
@@ -510,7 +514,7 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
 
   return (
     <>
-      <div className="p-3 sm:p-6 rounded-lg mb-6 sm:mb-8">
+      <div className="p-3 sm:p-6 rounded-lg mb-6 sm:mb-8 bg-white border-1 border-lightgray">
         <div className="flex justify-between items-start gap-4">
           <div className="flex-1">
             <h2 className="text-lg sm:text-xl font-semibold mb-4">배송지</h2>
@@ -595,7 +599,7 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
       </div>
 
       {/* 주문 상품 정보 섹션 */}
-      <div className="p-3 sm:p-6 rounded-lg mb-6 sm:mb-8">
+      <div className="p-3 sm:p-6 rounded-lg mb-6 sm:mb-8 bg-white border-1 border-lightgray">
         <h2 className="text-lg sm:text-xl font-semibold mb-4">주문 상품</h2>
         <div className="space-y-3 sm:space-y-4">
           {currentOrderInfo.products.map(product => (
@@ -608,18 +612,18 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
                 className="sm:w-24 sm:h-24  object-cover rounded-lg flex-shrink-0"
               />
               <div className="flex-1 min-w-0">
-                <h3 className="font-medium text-xs sm:text-sm md:text-base">{product.name}</h3>
-                <p className="text-xs sm:text-sm text-gray-500">옵션: {product.options}</p>
-                <p className="text-xs sm:text-sm text-gray-500">{product.quantity}개</p>
+                <h3 className="font-medium text-sm md:text-base">{product.name}</h3>
+                <p className="text-sm text-gray-500">옵션: {product.options}</p>
+                <p className="text-sm text-gray-500">{product.quantity}개</p>
               </div>
               <div className="flex-shrink-0 text-right">
-                <p className="font-semibold text-xs sm:text-sm md:text-base">{formatPrice(product.price)}</p>
+                <p className="font-semibold text-sm md:text-base">{formatPrice(product.price)}</p>
               </div>
             </div>
           ))}
         </div>
         {/* 주문 금액 요약 */}
-        <div className="mt-6 pt-6 border-t">
+        <div className="mt-6 pt-6 border-t border-lightgray">
           <div className="flex justify-between items-center mb-2">
             <span className="text-gray-600 text-sm sm:text-base">상품 금액</span>
             <span className="text-sm sm:text-base">{formatPrice(currentOrderInfo.subtotal)}</span>
@@ -636,16 +640,16 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
       </div>
 
       {/* 결제 수단 선택 섹션 */}
-      <div className="p-3 sm:p-6 rounded-lg mb-6 sm:mb-8">
+      <div className="p-3 sm:p-6 rounded-lg mb-6 sm:mb-8 bg-white border-1 border-lightgray">
         <h2 className="text-lg sm:text-xl font-semibold mb-4">결제 수단</h2>
         {/* 결제 방법 탭 버튼 */}
-        <div className="flex flex-col gap-4 sm:flex-row mb-6">
+        <div className="flex flex-col gap-2 sm:gap-4 sm:flex-row mb-6">
           <Button
             size="full"
             outlined={activePaymentMethod === '간편결제'}
             select={activePaymentMethod === '간편결제' ? false : true}
             onClick={() => handlePaymentMethodChange('간편결제')}
-            // className="flex-1 text-xs sm:text-sm md:text-base px-1 sm:px-3"
+            // className="flex-1 text-sm md:text-base px-1 sm:px-3"
           >
             간편결제
           </Button>
@@ -654,7 +658,7 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
             outlined={activePaymentMethod === '체크/신용 카드'}
             select={activePaymentMethod === '체크/신용 카드' ? false : true}
             onClick={() => handlePaymentMethodChange('체크/신용 카드')}
-            // className="flex-1 text-xs sm:text-sm md:text-base px-1 sm:px-3"
+            // className="flex-1 text-sm md:text-base px-1 sm:px-3"
           >
             체크/신용카드 결제
           </Button>
@@ -663,7 +667,7 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
             outlined={activePaymentMethod === '무통장 입금'}
             select={activePaymentMethod === '무통장 입금' ? false : true}
             onClick={() => handlePaymentMethodChange('무통장 입금')}
-            // className="flex-1 text-xs sm:text-sm md:text-base px-1 sm:px-3"
+            // className="flex-1 text-sm md:text-base px-1 sm:px-3"
           >
             무통장 입금
           </Button>

@@ -22,7 +22,7 @@ export default function OrderedCard({ src, name, price, quantity, option }: Orde
           <span className="border border-darkgray rounded-md w-9 h-5 label-s px-1 mr-2.5">옵션</span>
           <span className="label-s">{option}</span>
         </p>
-        <p className="text-text font-bold text-xs">{quantity}개</p>
+        <p className="text-text font-bold text-sm">{quantity}개</p>
         <p className="text-text font-semibold text-lg">{formatPrice}원</p>
       </div>
     </div>

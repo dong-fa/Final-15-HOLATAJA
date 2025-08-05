@@ -16,9 +16,7 @@ export default async function ReviewTab() {
   return (
     <>
       <SubTitle className="label-l">나의 구매 후기</SubTitle>
-      <div className="bg-white py-3 px-3 mt-3">
-        <Review reviewList={reviewList} />
-      </div>
+      <Review reviewList={reviewList} />
     </>
   );
 }

@@ -141,7 +141,7 @@ export default function LoginForm() {
         </div>
         <Button submit>로그인</Button>
       </form>
-      <Link href={'/auth/signup'} className="text-secondary self-start mt-6">
+      <Link href={'/auth/signup'} className="text-secondary self-start mt-2 text-[14px]">
         회원가입
       </Link>
       <Modal
@@ -152,7 +152,7 @@ export default function LoginForm() {
         description={
           actionState?.ok === 1
             ? `로그인 성공!\n${actionState.item.name}님 오늘도 즐거운 쇼핑하세요! 올라타자!`
-            : actionState?.message || '로그인 실패'
+            : actionState?.message || '로그인에 실패했습니다.'
         }
       />
 

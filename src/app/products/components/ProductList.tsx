@@ -45,7 +45,7 @@ export default function ProductList({ productData }: { productData: Product[] })
         <SearchBar searchValue={searchValue} setSearchValue={setSearchValue} />
         <SortToggle selected={sort} setSelected={setSort} />
         {filtered.length ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 min-h-[40vh]">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 min-h-[40vh]">
             {filtered.map((product, index) => (
               <ProductCard
                 key={index}
