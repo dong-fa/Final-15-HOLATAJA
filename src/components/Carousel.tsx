@@ -113,8 +113,9 @@ export default function Carousel() {
                 alt={slide.title}
                 className="w-full h-full object-cover object-center rounded-xl"
                 fill
-                sizes="(min-width: 768px) 768px,100vw"
+                sizes="(min-width: 1280px) 1280px, (min-width: 768px) 768px, 100vw"
                 priority
+                quality={100}
               />
               <div className="absolute inset-0 bg-black/25 rounded-xl">
                 <div className="absolute inset-0 flex justify-center items-center px-6">
