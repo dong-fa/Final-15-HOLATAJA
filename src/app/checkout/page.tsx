@@ -107,11 +107,11 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
         <div className="text-center py-12">
           <h2 className="text-xl font-bold text-gray-900 mb-4">결제할 상품이 없습니다</h2>
           <p className="text-gray-600 mb-6">장바구니에 상품을 담거나 상품을 선택해주세요.</p>
-          <div className="space-y-4">
-            <Link href="/products" className="block bg-primary text-white py-3 px-6 rounded-lg hover:bg-blue-700">
+          <div className="space-x-4">
+            <Link href="/products" className="bg-primary text-white py-3 px-6 rounded-lg hover:bg-hover">
               상품 둘러보기
             </Link>
-            <Link href="/cart" className="block bg-lightgray text-gray-800 py-3 px-6 rounded-lg hover:bg-gray-300">
+            <Link href="/cart" className="bg-lightgray text-gray-800 py-3 px-6 rounded-lg hover:bg-gray-300">
               장바구니 확인
             </Link>
           </div>
