@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎹 HOLATAJA - 온라인 키보드 타건샵
 
-## Getting Started
+## 📍 프로젝트 소개
 
-First, run the development server:
+**HOLATAJA**는 키보드를 직접 만져보지 않고도  
+**타건음과 스위치 특징을 온라인에서 체험하듯 비교할 수 있는 키보드 쇼핑몰 플랫폼**입니다.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+기계식 키보드 시장이 커짐에 따라 수많은 제품과 스위치가 등장했고,  
+이제는 단순히 디자인이나 가격만으로는 선택하기 어려워졌습니다.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+하지만 실제 매장에 가지 않는 이상  
+**소비자가 직접 타건음과 스위치 특징을 확인할 수 있는 방법은 매우 제한적**입니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+우리는 이 문제에서 출발해,  
+**오프라인 매장에서의 경험을 온라인에서 구현한 '타건샵' 쇼핑몰**을 만들었습니다.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 💻 주요 기능 소개
 
-To learn more about Next.js, take a look at the following resources:
+### 🖥 메인 화면
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 쇼핑몰에 접속하면 현재 판매 중인 상품 목록이 자동 슬라이드 형태로 노출됩니다.
+- 모든 주요 기능은 로그인 사용자만 이용 가능하며, 화면 우측 상단에서 로그인 및 회원가입을 진행할 수 있습니다.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+### 🔐 로그인 & 회원가입
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- 이메일, 비밀번호, 이름, 휴대폰번호, 주소 등 모든 항목에 대한 **유효성 검사** 처리
+- **중복 계정 방지**, 비밀번호 일치 확인 등 UX 요소 구현
+- 로그인 성공 시 **accessToken은 쿠키에 저장**하여 관리
+- 가입 완료 시 로그인 모달이 실행되며, 사용자 이름이 출력됨
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+### 👤 마이페이지
+
+- 로그인한 사용자만 접근 가능
+- **회원 정보 수정, 구매 내역, 찜한 상품, 나의 Q&A, 구매 후기 내역** 등
+  사용자의 모든 활동 이력을 확인 및 관리 가능
+
+---
+
+### 🛒 상품 목록 & 상세 페이지
+
+- 상품을 탭 또는 검색을 통해 필터링
+- 상세 페이지에서:
+  - 수량 조절
+  - 옵션 선택
+  - 찜하기
+  - 장바구니 담기
+  - 구매 후기 작성
+  - Q&A 작성 가능
+
+**✔️ 핵심 기능 - ‘사운드 토글’**  
+→ 해당 키보드에 내장된 스위치의 **타건음을 직접 들어볼 수 있습니다**
+
+---
+
+### 🧺 장바구니
+
+- 로그인 사용자만 접근 가능
+- 수량 조절, 상품 삭제, 쇼핑 계속하기 버튼 등 기능 제공
+- 주문하기를 누르면 결제 페이지로 상품 전달 처리
+
+---
+
+### 💳 결제하기
+
+- 배송지 정보는 로그인한 회원의 정보로 자동 입력
+- 배송지 수정 가능
+- 결제 수단
+  - 간편 결제(토스페이, 네이버 페이)
+  - 신용/체크카드
+  - 무통장 입금
+
+결제 진행 시 **로딩 처리 및 유효성 검사** 적용
+
+---
+
+### 📦 구매 내역
+
+- 결제 완료 후, 구매 내역 페이지에서
+  - 제품 정보
+  - 배송 상태
+  - 결제 수단 등 확인 가능
+
+---
+
+## 🛠 기술 스택
+
+| 분류         | 툴                                                                                                                                                                                                                                                                |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 기술 스택    | ![Next.js](https://img.shields.io/badge/Next.js-black?logo=next.js) ![React](https://img.shields.io/badge/React-61DAFB?logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript)                                                  |
+| UI/UX        | ![Figma](https://img.shields.io/badge/Figma-F24E1E?logo=figma)                                                                                                                                                                                                    |
+| 개발 환경    | ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite)                                                                                                                                                                                                       |
+| 커뮤니케이션 | ![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github) ![Git](https://img.shields.io/badge/Git-F05032?logo=git) ![Discord](https://img.shields.io/badge/Discord-5865F2?logo=discord) ![Notion](https://img.shields.io/badge/Notion-000000?logo=notion) |
+| 배포         | ![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel)                                                                                                                                                                                                 |
+
+---
+
+## 🔗 배포 주소
+
+[👉 HOLATAJA 바로가기](https://final-15-holataja.vercel.app/)
+
+---
+
+## 👥 팀원 소개
+
+| 이름   | 역할     | GitHub                        |
+| ------ | -------- | ----------------------------- |
+| 임지윤 | 팀장, PM | [GitHub](https://github.com/) |
+| 최동환 | 팀원, PL | [GitHub](https://github.com/) |
+| 배희정 | 팀원     | [GitHub](https://github.com/) |
+| 황수곤 | 팀원     | [GitHub](https://github.com/) |
+
+---
+
+## 📂 프로젝트 구조 및 기타
