@@ -7,6 +7,7 @@ import Select from '@/components/Select';
 import Input from '@/components/Input';
 import useAuthStore from '@/store/authStore';
 import { useRouter } from 'next/navigation';
+import { clearCart } from '@/data/actions/carts';
 // 결제 방식 타입
 type PaymentMethod = '간편결제' | '체크/신용 카드' | '무통장 입금';
 // 간편결제 옵션 타입
@@ -65,7 +66,7 @@ interface PaymentData {
 
 // 컴포넌트 Props 타입
 interface CheckoutPageProps {
-  token: string | null;
+  token: string;
   deliveryInfo?: DeliveryInfo;
   orderInfo: OrderInfo;
   onDeliveryChange?: () => void;
@@ -424,30 +425,6 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
     }
   };
 
-  //장바구니 비우기
-  const clearCart = async () => {
-    try {
-      const carts = currentOrderInfo.products.map(product => product.cartId);
-      console.log('장바구니 비우기 요청:', carts);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/carts`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Client-Id': process.env.NEXT_PUBLIC_API_CLIENT_ID!,
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ carts }),
-      });
-
-      if (res.ok) {
-      } else {
-        console.error('장바구니 비우기 실패:', await res.text());
-      }
-    } catch (error) {
-      console.error('장바구니 비우기 중 오류 발생:', error);
-    }
-  };
-
   // 결제 버튼 클릭 시 결제 데이터 생성 및 처리
   const handleCheckout = async () => {
     setIsLoading(true);
@@ -498,7 +475,7 @@ export default function CheckOutForm({ token, orderInfo }: CheckoutPageProps) {
       if (response.ok === 1) {
         if (isFromCart) {
           // 장바구니에서 결제한 경우 장바구니 비우기
-          await clearCart();
+          await clearCart(token);
         }
       }
       if (typeof window !== 'undefined') {
