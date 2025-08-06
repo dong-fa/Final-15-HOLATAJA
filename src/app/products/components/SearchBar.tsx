@@ -3,9 +3,13 @@ import Input from '@/components/Input';
 export default function SearchBar({ searchValue, setSearchValue }: { searchValue: string; setSearchValue: (value: string) => void }) {
   return (
     <div className="w-full flex flex-row">
-      <span className="w-full sm:w-80 ml-auto">
+      <div className="w-full sm:w-80 ml-auto">
+        <label htmlFor="search" className="sr-only">
+          상품 검색
+        </label>
         <Input
           id="search"
+          name="search"
           type="text"
           placeholder="검색어를 입력해주세요."
           size="small"
@@ -14,7 +18,7 @@ export default function SearchBar({ searchValue, setSearchValue }: { searchValue
           value={searchValue}
           onChange={e => setSearchValue(e.currentTarget.value)}
         />
-      </span>
+      </div>
     </div>
   );
 }
