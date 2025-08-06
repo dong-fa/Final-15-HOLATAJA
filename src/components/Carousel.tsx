@@ -43,7 +43,7 @@ const slideData = [
     title: 'BH65 FULL ALUMINUM',
     switch: 'Jade PRO',
     description: 'Craft Your Perfect Keyboard',
-    link: '/products/',
+    link: '/products/11',
     buttonStyle: 'bg-background text-black',
   },
   // {
