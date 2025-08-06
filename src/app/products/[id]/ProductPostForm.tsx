@@ -45,7 +45,7 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
     if (productData.ok === 1 && productData.item?.extra?.option?.length === 1 && user) {
       setOption(productData.item.extra.option[0]);
     }
-  }, [productData]);
+  }, [productData, user]);
 
   useEffect(() => {
     if (state?.ok === 1) {
@@ -55,19 +55,6 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
     }
   }, [state]);
 
-  const formActionWrapper = (formData: FormData) => {
-    if (!user) {
-      setLoginModal(true);
-      return;
-    }
-
-    if (!option) {
-      setCartFailModal(true);
-      return;
-    }
-
-    formAction(formData); // ✅ 무조건 호출되는 외부 함수 안에서 조건 검사
-  };
   return (
     <div>
       <form

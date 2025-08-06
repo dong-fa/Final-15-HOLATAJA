@@ -26,7 +26,7 @@ export default function Pagination({ totalPages, currentPage, onPageChange }: Pa
   }
 
   return (
-    <div className="flex items-center justify-center gap-1 py-4">
+    <div className="font-sans flex items-center justify-center gap-1 py-4">
       {/* prev button */}
       <button
         onClick={() => handlePageClick(currentPage - 1)}
