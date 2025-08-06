@@ -56,7 +56,7 @@ export default function PostForm<itemState>({ productId, orderId, action, type }
             setLoginModal(true);
             return;
           }
-          if (!orderId) {
+          if (!orderId && type === '구매 후기') {
             setOrderModal(true);
             return;
           }
