@@ -6,6 +6,7 @@ import Input from '@/components/Input';
 import Modal from '@/components/Modal';
 import Textarea from '@/components/Textarea';
 import { Contents } from '@/components/Typography';
+import useAuthStore from '@/store/authStore';
 import { ApiRes, ApiResPromise } from '@/types/api';
 import { useRouter } from 'next/navigation';
 
@@ -21,10 +22,13 @@ interface PostFormProps<itemState> {
 export default function PostForm<itemState>({ productId, orderId, action, type }: PostFormProps<itemState>) {
   const [state, formAction /* isPending*/] = useActionState(action, null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loginModal, setLoginModal] = useState(false);
+  const [orderModal, setOrderModal] = useState(false);
   // 별점 등록 상태
   const [rating, setRating] = useState<number>(0);
 
   const router = useRouter();
+  const { user } = useAuthStore();
 
   useEffect(() => {
     if (state?.ok) {
@@ -45,7 +49,20 @@ export default function PostForm<itemState>({ productId, orderId, action, type }
       <Contents size="large" className="mb-4">
         {`${type} 등록하기`}
       </Contents>
-      <form className="flex flex-col gap-4" action={formAction}>
+      <form
+        className="flex flex-col gap-4"
+        action={formData => {
+          if (!user) {
+            setLoginModal(true);
+            return;
+          }
+          if (!orderId) {
+            setOrderModal(true);
+            return;
+          }
+          formAction(formData);
+        }}
+      >
         {type === '구매 후기' && <input type="hidden" name="order_id" defaultValue={orderId} />}
         {type === 'Q&A' && <input type="hidden" name="type" defaultValue="qna" />}
         <input type="hidden" name="product_id" defaultValue={productId ?? ''} />
@@ -87,6 +104,25 @@ export default function PostForm<itemState>({ productId, orderId, action, type }
         description={state?.ok ? `${type} 등록이 완료되었습니다.` : `${type} 등록에 실패했습니다.`}
         hideCancelButton
       ></Modal>
+
+      {/* 로그인 필요 모달 */}
+      <Modal
+        isOpen={loginModal}
+        handleClose={() => setLoginModal(false)}
+        handleConfirm={() => router.push('/auth/login')}
+        description={'로그인이 필요합니다.'}
+        isChoiceModal
+        choiceOptions={['닫기', '로그인하기']}
+      />
+
+      {/* 구매 내역 없음 모달 */}
+      <Modal
+        isOpen={orderModal}
+        handleClose={() => setOrderModal(false)}
+        handleConfirm={() => setOrderModal(false)}
+        description={'구매하지 않은 상품입니다.'}
+        hideCancelButton
+      />
     </div>
   );
 }
