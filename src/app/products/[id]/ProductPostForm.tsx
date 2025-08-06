@@ -55,19 +55,6 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
     }
   }, [state]);
 
-  const formActionWrapper = (formData: FormData) => {
-    if (!user) {
-      setLoginModal(true);
-      return;
-    }
-
-    if (!option) {
-      setCartFailModal(true);
-      return;
-    }
-
-    formAction(formData); // ✅ 무조건 호출되는 외부 함수 안에서 조건 검사
-  };
   return (
     <div>
       <form
