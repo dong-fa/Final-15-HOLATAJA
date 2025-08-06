@@ -31,6 +31,7 @@ export default function QuantityCount({ quantity, handleCountQuantity }: Quantit
         disabled={quantity === 1} // 수량이 1이면 비활성화
         onClick={handleMinus} // 클릭 시 handleMinus 실행
         type="button"
+        aria-label="수량 감소"
       >
         <Minus className="w-5 h-5 " /> {/* 마이너스 아이콘 */}
       </button>
@@ -39,6 +40,7 @@ export default function QuantityCount({ quantity, handleCountQuantity }: Quantit
         className="w-10 h-10 rounded-full bg-lightgray flex items-center justify-center hover:bg-hover hover:text-white transition cursor-pointer"
         onClick={handlePlus} // 클릭 시 handlePlus 실행
         type="button"
+        aria-label="수량 증가"
       >
         <Plus className="w-5" /> {/* 플러스 아이콘 */}
       </button>
