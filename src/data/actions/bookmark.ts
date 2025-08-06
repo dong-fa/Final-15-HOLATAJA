@@ -40,6 +40,7 @@ export async function postBookmark(productId: number): ApiResPromise<BookmarkRes
   if (resData.ok) {
     revalidateTag(`bookmark-list`);
     revalidateTag(`product-list`);
+    revalidateTag(`product-${productId}`);
   }
   return resData;
 }
@@ -49,7 +50,7 @@ export async function postBookmark(productId: number): ApiResPromise<BookmarkRes
  * @param {number} bookmarkId - 북마크 id
  * @returns {Promise<ApiRes>} - Q&A id에 해당하는 Q&A 응답 객체
  */
-export async function deleteBookmark(bookmarkId: number): ApiResPromise<BookmarkResData> {
+export async function deleteBookmark(bookmarkId: number, productId: number): ApiResPromise<BookmarkResData> {
   let resData: ApiRes<BookmarkResData>;
   const accessToken = (await cookies()).get('accessToken')?.value;
   try {
@@ -70,6 +71,7 @@ export async function deleteBookmark(bookmarkId: number): ApiResPromise<Bookmark
   if (resData.ok) {
     revalidateTag('bookmark-list');
     revalidateTag(`product-list`);
+    revalidateTag(`product-${productId}`);
   }
   return resData;
 }
