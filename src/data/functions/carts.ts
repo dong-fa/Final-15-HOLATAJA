@@ -28,6 +28,7 @@ export default async function getCartList(token: string): ApiResPromise<CartItem
         'Client-Id': CLIENT_ID, // API 클라이언트 식별자
         Authorization: `Bearer ${token}`, // JWT 토큰 인증
       },
+      next: { tags: ['cart-list'] },
     });
 
     const result = await response.json();

@@ -18,6 +18,7 @@ export async function getOrderList(): ApiResPromise<OrderItem[]> {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`, // 인증 토큰
       },
+      next: { tags: ['my-order-list'] },
     });
     return response.json();
   } catch (error) {
