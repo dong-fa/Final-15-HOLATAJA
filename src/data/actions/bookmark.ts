@@ -39,6 +39,7 @@ export async function postBookmark(productId: number): ApiResPromise<BookmarkRes
 
   if (resData.ok) {
     revalidateTag(`bookmark-list`);
+    revalidateTag(`product-list`);
   }
   return resData;
 }
@@ -68,6 +69,7 @@ export async function deleteBookmark(bookmarkId: number): ApiResPromise<Bookmark
 
   if (resData.ok) {
     revalidateTag('bookmark-list');
+    revalidateTag(`product-list`);
   }
   return resData;
 }

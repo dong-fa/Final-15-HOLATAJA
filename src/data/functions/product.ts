@@ -19,7 +19,7 @@ export async function getProductList(): ApiResPromise<ProductInfo[]> {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`, // 인증 토큰
       },
-      cache: 'no-store',
+      cache: 'force-cache',
       next: { tags: ['product-list'] },
     });
     return response.json();
@@ -43,7 +43,7 @@ export default async function getProduct(_id: number): ApiResPromise<ProductInfo
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`, // 인증 토큰
       },
-      cache: 'no-store',
+      cache: 'force-cache',
       next: { tags: [`product-${_id}`] },
     });
     return response.json();
