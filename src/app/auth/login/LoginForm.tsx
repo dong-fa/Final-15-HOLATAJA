@@ -149,9 +149,10 @@ export default function LoginForm() {
         hideCancelButton={true}
         handleClose={() => setLoginModal(false)}
         handleConfirm={() => (actionState?.ok === 1 ? router.push('/products') : setLoginModal(false))}
+        title={actionState?.ok === 1 ? '로그인 성공!' : ''}
         description={
           actionState?.ok === 1
-            ? `로그인 성공!\n${actionState.item.name}님 오늘도 즐거운 쇼핑하세요! 올라타자!`
+            ? `${actionState.item.name}님 \n 오늘도 즐거운 쇼핑하세요! 올라타자♬`
             : actionState?.message || '로그인에 실패했습니다.'
         }
       />
