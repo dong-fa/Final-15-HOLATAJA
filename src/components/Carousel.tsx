@@ -123,10 +123,10 @@ export default function Carousel() {
                     className={`flex flex-col text-white font-bold z-10 max-w-5xl w-full
                                 ${slide.position}`}
                   >
-                    <h1 className="sr-only">Hero section title</h1>
+                    <p className="sr-only">Hero section title</p>
                     <div className="flex flex-row items-baseline gap-1">
-                      <h2 className="title text-background text-4xl">{slide.title}</h2>
-                      <h2 className="title text-background text-lg">{slide.switch}</h2>
+                      <p className="title text-background text-4xl">{slide.title}</p>
+                      <p className="title text-background text-lg">{slide.switch}</p>
                     </div>
                     <p className="contents text-background">{slide.description}</p>
                     <Link className={`${slide.buttonStyle} px-4 py-2 md:px-8 md:py-3 mt-5 rounded cursor-pointer w-fit`} href={slide.link}>

@@ -11,8 +11,8 @@ export default function SortToggle({ selected, setSelected }: { selected: sortTy
       {options.map(option => (
         <label key={option} className="flex-1 sm:flex-none cursor-pointer">
           <input type="radio" name="sort" value={option} checked={selected === option} onChange={() => setSelected(option)} className="sr-only" />
-          <div
-            className={`px-1 sm:px-4 py-1.5 rounded text-center text-sm sm:text-xs transition whitespace-nowrap
+          <span
+            className={`block px-1 sm:px-4 py-1.5 rounded text-center text-sm sm:text-xs transition whitespace-nowrap
               ${selected === option ? 'bg-primary text-white' : 'bg-accent text-gray-600'}`}
             tabIndex={0}
             onKeyDown={e => {
@@ -24,7 +24,7 @@ export default function SortToggle({ selected, setSelected }: { selected: sortTy
             }}
           >
             {option}
-          </div>
+          </span>
         </label>
       ))}
     </div>

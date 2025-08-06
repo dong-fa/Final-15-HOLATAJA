@@ -1,7 +1,7 @@
 import React from 'react';
 import { CartTotalCost } from '@/types/cart';
 import Button from '@/components/Button';
-import { Contents, ContentsTitle } from '@/components/Typography';
+import { Contents } from '@/components/Typography';
 
 interface CartSummaryProps {
   cost?: CartTotalCost;
@@ -28,6 +28,7 @@ export default function CartSummary({
 
   return (
     <div>
+      <h3 className="sr-only">금액 정보</h3>
       <div className="bg-white p-6 space-y-4 rounded-lg border border-lightgray">
         {/* 상품 금액 */}
         <div className="flex justify-between items-center">
@@ -43,8 +44,8 @@ export default function CartSummary({
 
         {/* 총 주문금액 */}
         <div className="flex justify-between items-center">
-          <ContentsTitle className="text-primary font-bold">총 주문금액</ContentsTitle>
-          <ContentsTitle className="text-primary font-bold">{formatPrice(cost?.total || 0)}</ContentsTitle>
+          <Contents className="text-lg text-primary font-bold">총 주문금액</Contents>
+          <Contents className="text-lg text-primary font-bold">{formatPrice(cost?.total || 0)}</Contents>
         </div>
       </div>
       <div className="flex justify-between mt-4 gap-2">
