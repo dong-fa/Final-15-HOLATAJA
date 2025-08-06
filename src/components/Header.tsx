@@ -32,6 +32,7 @@ export default function Header() {
               onClick={() => {
                 logout();
               }}
+              aria-label="로그아웃"
             >
               <LogOut />
             </Button>
