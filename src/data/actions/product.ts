@@ -31,7 +31,7 @@ export async function addToCart(state: ApiRes<ProductInfo[]> | null, formData: F
   }
 
   if (data.ok) {
-    revalidateTag('');
+    revalidateTag('cart-list');
   }
   return data;
 }

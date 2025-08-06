@@ -26,18 +26,21 @@ export default function HistoryCard({ id, status, src, name, price, quantity, da
     <div className="flex flex-col sm:flex-row sm:items-center justify-between sm:gap-6 min-w-80 border-b border-lightgray px-4 py-4">
       <div className="flex flex-row gap-4">
         {/* Image */}
-        <section className="grid shrink-0 rounded-xl w-[7rem] h-[7rem] min-w-28 min-h-28 overflow-hidden">
-          <Image
-            src={src}
-            alt={`${name} 이미지`}
-            width={112}
-            height={112}
-            className="min-w-28 min-h-28 rounded-xl object-cover col-start-1 row-start-1"
-          />
-          <div className="col-start-1 row-start-1 flex items-end justify-end">
-            <div className="bg-black text-white text-sm font-bold opacity-65 w-6 h-6 flex items-center justify-center">{quantity}</div>
-          </div>
-        </section>
+        <Link href={`/products/${products_info[0].id}`}>
+          {' '}
+          <section className="grid shrink-0 rounded-xl w-[7rem] h-[7rem] min-w-28 min-h-28 overflow-hidden">
+            <Image
+              src={src}
+              alt={`${name} 이미지`}
+              width={112}
+              height={112}
+              className="min-w-28 min-h-28 rounded-xl object-cover col-start-1 row-start-1"
+            />
+            <div className="col-start-1 row-start-1 flex items-end justify-end">
+              <div className="bg-black text-white text-sm font-bold opacity-65 w-6 h-6 flex items-center justify-center">{quantity}</div>
+            </div>
+          </section>
+        </Link>
 
         {/* Order info */}
         <section className="flex flex-col justify-between flex-grow">

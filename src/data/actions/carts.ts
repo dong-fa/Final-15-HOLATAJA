@@ -1,6 +1,9 @@
-import { ApiResPromise } from '@/types/api';
+'use server';
+
+import { ApiRes, ApiResPromise } from '@/types/api';
 import { CartItemData } from '@/types/cart';
 import getCartList from '@/data/functions/carts';
+import { revalidateTag } from 'next/cache';
 
 // API 응답 기본 타입 정의
 interface ApiBaseResponse {
@@ -29,6 +32,8 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_API_CLIENT_ID ?? '';
  * - 응답: 삭제 성공/실패 정보
  */
 export async function removeCartItem(token: string, cartItemId: number): ApiResPromise<CartItemDeleteResponse> {
+  let resData: ApiRes<CartItemDeleteResponse>;
+
   try {
     // 토큰 유효성 검사
     if (!token) {
@@ -44,22 +49,24 @@ export async function removeCartItem(token: string, cartItemId: number): ApiResP
       },
     });
 
-    const result = await response.json();
+    resData = await response.json();
 
     // HTTP 상태 코드 확인
-    if (!response.ok) {
+    if (!resData.ok) {
       return {
         ok: 0,
-        message: result.message || `상품 삭제에 실패했습니다. (${response.status})`,
+        message: resData.message || `상품 삭제에 실패했습니다. (${response.status})`,
       };
     }
-
-    return result;
   } catch (error) {
     // 네트워크 오류 등 예외 처리
     console.error('장바구니 아이템 삭제 오류:', error);
     return { ok: 0, message: '상품 삭제에 실패했습니다.' };
   }
+  if (resData.ok) {
+    revalidateTag('cart-list');
+  }
+  return resData;
 }
 
 /**
@@ -73,6 +80,8 @@ export async function removeCartItem(token: string, cartItemId: number): ApiResP
  * 보통 DELETE /carts 또는 POST /carts/clear 등의 형태
  */
 export async function clearCart(token: string): Promise<{ ok: 0 | 1; message?: string }> {
+  // let resData: ApiRes<{ ok: 0 | 1; message?: string }>;
+
   try {
     if (!token) {
       return { ok: 0, message: '인증 토큰이 필요합니다' };
@@ -82,6 +91,8 @@ export async function clearCart(token: string): Promise<{ ok: 0 | 1; message?: s
     if (cartData.ok === 1 && Array.isArray(cartData.item)) {
       const deletePromises = cartData.item.map((item: CartItemData) => removeCartItem(token, item._id));
       await Promise.all(deletePromises);
+      revalidateTag('cart-list');
+
       // API 호출은 성공했지만 데이터 또는 API 실패 응답
       return { ok: 1, message: '장바구니가 비워졌습니다.' };
     }
@@ -107,6 +118,8 @@ export async function clearCart(token: string): Promise<{ ok: 0 | 1; message?: s
  */
 
 export async function updateCartItemQuantity(token: string, cartItemId: number, quantity: number): ApiResPromise<CartItemData[]> {
+  let resData: ApiRes<CartItemData[]>;
+
   try {
     if (!token) {
       return { ok: 0, message: '인증 토큰이 필요합니다.' };
@@ -128,16 +141,18 @@ export async function updateCartItemQuantity(token: string, cartItemId: number, 
         quantity: quantity,
       }),
     });
-    const result = await response.json();
+    resData = await response.json();
 
     // HTTP 상태 코드 확인
-    if (!response.ok) {
+    if (!resData.ok) {
       return {
         ok: 0,
-        message: result.message || `수량 변경에 실패했습니다. (${response.status})`,
+        message: resData.message || `수량 변경에 실패했습니다. (${response.status})`,
       };
     }
-    return result;
+    revalidateTag('cart-list');
+
+    return resData;
   } catch (error) {
     console.error('장바구니 수량 변경 오류: ', error);
     return { ok: 0, message: '수량 변경에 실패했습니다.' };
