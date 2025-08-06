@@ -199,6 +199,7 @@ export default function KeySoundDemo({ soundFilePath }: KeySoundDemoProps) {
             </div>
           ))}
         </div>
+        <div className="w-full text-right mt-3 text-gray-600 text-sm">※ Nuphy에서 정식으로 제공 받아 가공한 사운드입니다.</div>
       </div>
     </div>
   );
