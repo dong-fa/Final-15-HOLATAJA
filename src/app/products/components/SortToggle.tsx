@@ -16,8 +16,11 @@ export default function SortToggle({ selected, setSelected }: { selected: sortTy
               ${selected === option ? 'bg-primary text-white' : 'bg-accent text-gray-600'}`}
             tabIndex={0}
             onKeyDown={e => {
-              e.preventDefault();
-              if (e.key === 'Enter' || e.key === ' ') setSelected(option);
+              if (e.key === ' ') {
+                e.preventDefault();
+                setSelected(option);
+              }
+              if (e.key === 'Enter') setSelected(option);
             }}
           >
             {option}

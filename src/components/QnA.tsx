@@ -172,8 +172,8 @@ function QnA({ qnaList, my }: { qnaList: QuestionItem[]; my?: boolean }) {
                       }}
                       tabIndex={0}
                       onKeyDown={e => {
-                        e.preventDefault();
                         if (e.key === 'Enter' || e.key === ' ') {
+                          if (e.key === ' ') e.preventDefault();
                           if (editingId !== 0) return;
                           setIsOpen(isOpen === qna._id ? 0 : qna._id);
                           if (isOpen !== qna._id) showAnswer(qna._id);

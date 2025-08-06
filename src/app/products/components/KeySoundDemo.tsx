@@ -8,20 +8,11 @@ interface KeyDefinition {
   code: string;
 }
 
-export default function KeySoundDemo({ switchType }: { switchType: 'BLUE' | 'BROWN' | 'RED' | 'OTHER' }) {
-  // 축 타입에 따라서 다른 파일 사용
-  let soundFilePath = '';
+interface KeySoundDemoProps {
+  soundFilePath: string;
+}
 
-  if (switchType === 'BLUE') {
-    soundFilePath = '/sounds/keyboardSound_sample.m4a';
-  } else if (switchType === 'BROWN') {
-    soundFilePath = '/sounds/keyboardSound_sample.m4a';
-  } else if (switchType === 'RED') {
-    soundFilePath = '/sounds/keyboardSound_sample.m4a';
-  } else {
-    soundFilePath = '/sounds/keyboardSound_sample.m4a';
-  }
-
+export default function KeySoundDemo({ soundFilePath }: KeySoundDemoProps) {
   // 키 배열 라벨/코드 정의
   const keysToRender: KeyDefinition[][] = useMemo(
     () => [
