@@ -45,7 +45,7 @@ function ProductPostForm({ productData }: { productData: ApiRes<ProductInfo> }) 
     if (productData.ok === 1 && productData.item?.extra?.option?.length === 1 && user) {
       setOption(productData.item.extra.option[0]);
     }
-  }, [productData]);
+  }, [productData, user]);
 
   useEffect(() => {
     if (state?.ok === 1) {
