@@ -1,5 +1,16 @@
 # 🎹 HOLATAJA - 온라인 키보드 타건샵
 
+## 👥 팀원 소개
+
+| 이름   | 역할     | GitHub                                  |
+| ------ | -------- | --------------------------------------- |
+| 임지윤 | 팀장, PM | [GitHub](https://github.com/whynotKeys) |
+| 최동환 | 팀원, PL | [GitHub](https://github.com/dong-fa)    |
+| 배희정 | 팀원     | [GitHub](https://github.com/hjb0304)    |
+| 황수곤 | 팀원     | [GitHub](https://github.com/sugonhwang) |
+
+---
+
 ## 📍 프로젝트 소개
 
 **HOLATAJA**는 키보드를 직접 만져보지 않고도  
@@ -98,22 +109,9 @@
 | 커뮤니케이션 | ![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github) ![Git](https://img.shields.io/badge/Git-F05032?logo=git) ![Discord](https://img.shields.io/badge/Discord-5865F2?logo=discord) ![Notion](https://img.shields.io/badge/Notion-000000?logo=notion) |
 | 배포         | ![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel)                                                                                                                                                                                                 |
 
----
-
 ## 🔗 배포 주소
 
 [👉 HOLATAJA 바로가기](https://final-15-holataja.vercel.app/)
-
----
-
-## 👥 팀원 소개
-
-| 이름   | 역할     | GitHub                        |
-| ------ | -------- | ----------------------------- |
-| 임지윤 | 팀장, PM | [GitHub](https://github.com/) |
-| 최동환 | 팀원, PL | [GitHub](https://github.com/) |
-| 배희정 | 팀원     | [GitHub](https://github.com/) |
-| 황수곤 | 팀원     | [GitHub](https://github.com/) |
 
 ---
 
