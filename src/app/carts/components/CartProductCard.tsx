@@ -107,8 +107,8 @@ export default function CartProductCard({ item, token, handleRemoveItem, isDelet
         <div className="min-w-0 overflow-hidden">
           <div className="line-clamp-2 webkit-line-clamp-2 text-sm sm:text-base text-text">{item.product.name}</div>
           <div className="flex mt-1 gap-1 items-center">
-            <span className="border border-darkgray rounded-md text-xs sm:text-sm px-1 whitespace-nowrap">옵션</span>
-            {item.color && <div className="text-xs sm:text-sm text-darkgray truncate">{item.color}</div>}
+            <span className="border border-darkgray rounded-md text-sm px-1 whitespace-nowrap">옵션</span>
+            {item.color && <div className="text-sm text-darkgray truncate">{item.color}</div>}
           </div>
         </div>
         <div className="flex-row items-center sm:contents">
