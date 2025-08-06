@@ -60,7 +60,7 @@ function ProductImg({ title, srcList, swipe, productId, bookmarkId: initialBookm
           setLoading(false);
           return;
         }
-        const res = await deleteBookmark(bookmarkId);
+        const res = await deleteBookmark(bookmarkId, productId);
         if (res.ok) {
           setLiked(false);
           setBookmarkId(0);

@@ -80,7 +80,7 @@ export async function removeCartItem(token: string, cartItemId: number): ApiResP
  * 보통 DELETE /carts 또는 POST /carts/clear 등의 형태
  */
 export async function clearCart(token: string): Promise<{ ok: 0 | 1; message?: string }> {
-  let resData: ApiRes<{ ok: 0 | 1; message?: string }>;
+  // let resData: ApiRes<{ ok: 0 | 1; message?: string }>;
 
   try {
     if (!token) {
