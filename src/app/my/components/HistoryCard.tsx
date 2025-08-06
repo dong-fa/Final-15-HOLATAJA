@@ -26,7 +26,7 @@ export default function HistoryCard({ id, status, src, name, price, quantity, da
     <div className="flex flex-col sm:flex-row sm:items-center justify-between sm:gap-6 min-w-80 border-b border-lightgray px-4 py-4">
       <div className="flex flex-row gap-4">
         {/* Image */}
-        <Link href={`/products/${id}`}>
+        <Link href={`/products/${products_info[0].id}`}>
           {' '}
           <section className="grid shrink-0 rounded-xl w-[7rem] h-[7rem] min-w-28 min-h-28 overflow-hidden">
             <Image
