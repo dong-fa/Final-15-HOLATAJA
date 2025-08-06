@@ -33,7 +33,7 @@ export interface ProductInfo {
     option: string[];
     description: string;
     'function-tag': string[];
-    'soundfile-path': string;
+    soundfile: string;
   };
   shippingFees: number;
   seller_id: number;
