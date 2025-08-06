@@ -1,8 +1,14 @@
 @import 'tailwindcss';
+@font-face {
+  font-family: 'Pretendard Variable';
+  src: url('/font/woff2/PretendardVariable.woff2') format('woff2');
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+}
 
 @theme {
-  --font-sans: 'pretendard' sans-serif;
-
+  --font-sans: 'Pretendard Variable', 'Pretendard', ui-sans-serif, system-ui, sans-serif;
   --color-primary: #40a6d6;
   --color-secondary: #2e7aa3;
   --color-accent: #e6f4f9;
@@ -18,22 +24,22 @@
 
 @layer components {
   .title {
-    @apply text-2xl sm:text-[2rem] text-text font-bold leading-[140%];
+    @apply font-sans text-2xl sm:text-[2rem] text-text font-bold leading-[140%];
   }
   .sub-title {
-    @apply text-xl sm:text-2xl text-text font-bold leading-[140%];
+    @apply font-sans text-xl sm:text-2xl text-text font-bold leading-[140%];
   }
   .contents-title {
-    @apply text-[1.125rem] text-text font-semibold leading-[140%];
+    @apply font-sans text-[1.125rem] text-text font-semibold leading-[140%];
   }
   .label-l {
-    @apply text-[1.125rem] text-text font-semibold leading-[150%];
+    @apply font-sans text-[1.125rem] text-text font-semibold leading-[150%];
   }
   .label-m {
-    @apply text-base text-text font-normal leading-[150%];
+    @apply font-sans text-base text-text font-normal leading-[150%];
   }
   .label-s {
-    @apply text-[0.875rem] text-text font-normal leading-[150%];
+    @apply font-sans text-[0.875rem] text-text font-normal leading-[150%];
   }
 }
 
