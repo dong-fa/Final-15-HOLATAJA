@@ -73,7 +73,7 @@
 
 ## 💡 기획 구조도
 
-### 🎯 프로젝트 컨샙
+### 🎯 프로젝트 컨셉
 
 온라인 쇼핑몰에서는 흔히 접하기 어려운 인터랙티브한 경험을 제공합니다.<br>
 고객은 상품 상세 페이지에서 스위치의 정보를 확인하고, **타건음을 직접 들어보며 마치 오프라인 매장에서처럼 다양한 스위치를 비교 체험할 수 있습니다.**
@@ -125,6 +125,7 @@
 - 상세 페이지에서는 다음과 같은 기능을 제공합니다.
   - 수량 조절 및 옵션 선택
   - 찜하기 & 장바구니 담기
+  - 구매하기
   - 구매 후기 작성 및 Q&A 작성
 
 **✅ 핵심 기능 - ‘타건 사운드 체험’**  
@@ -199,9 +200,9 @@
 |  <div align="left">Design / Style</div>  | ![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/Tailwind%20CSS-%2306B6D4?style=for-the-badge&logo=Tailwind%20CSS&logoColor=white) ![Lucide](https://img.shields.io/badge/Lucide-%23F56565?style=for-the-badge&logo=Lucide&logoColor=black) |
 |    <div align="left">협업 도구</div>     | ![Discord](https://img.shields.io/badge/Discord-%235865F2?style=for-the-badge&logo=Discord&logoColor=white) ![Notion](https://img.shields.io/badge/Notion-%23000000?style=for-the-badge&logo=Notion&logoColor=white)                                                                                                                      |
 |    <div align="left">버전 관리</div>     | ![Github](https://img.shields.io/badge/Github-%23181717?style=for-the-badge&logo=Github&logoColor=white)                                                                                                                                                                                                                                  |
-|  <div align="left">상태 관리 도구</div>  | ![Zustand](https://img.shields.io/badge/Zustand-%23FF7E29?style=for-the-badge)<br>전역 상태 관리를 위한 가볍고 직관적인 라이브러리                                                                                                                                                                                                        |
+|  <div align="left">상태 관리 도구</div>  | ![Zustand](https://img.shields.io/badge/Zustand-%23FF7E29?style=for-the-badge)                                                                                                                                                                                                                                                            |
 |        <div align="left">DB</div>        | ![MongoDB](https://img.shields.io/badge/MongoDB-%2347A248?style=for-the-badge&logo=MongoDB&logoColor=black)                                                                                                                                                                                                                               |
-| <div align="left">유효성 검증 도구</div> | ![Zod](https://img.shields.io/badge/Zod-%233E67B1?style=for-the-badge&logo=Zod&logoColor=black)<br>스키마 기반의 TypeScript 친화적 검증 도구                                                                                                                                                                                              |
+| <div align="left">유효성 검증 도구</div> | ![Zod](https://img.shields.io/badge/Zod-%233E67B1?style=for-the-badge&logo=Zod&logoColor=black)                                                                                                                                                                                                                                           |
 |    <div align="left">개발 환경</div>     | ![VSCode](https://img.shields.io/badge/VSCode-%232F80ED?style=for-the-badge&logoColor=white)                                                                                                                                                                                                                                              |
 |       <div align="left">배포</div>       | ![Vercel](https://img.shields.io/badge/Vercel-%23000000?style=for-the-badge&logo=Vercel&logoColor=white&color=black)                                                                                                                                                                                                                      |
 
