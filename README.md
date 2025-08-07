@@ -1,12 +1,12 @@
 # ⌨️ 온라인 키보드 타건샵 - HOLATAJA
 
-![logo](/public/icon/holataja_logo.svg)
+<img src="https://github.com/user-attachments/assets/43fd8171-9487-4036-88cc-99f5c3005a1e"/>
 
 ## 📍 프로젝트 소개
 
 > 멋쟁이사자처럼 프론트엔드 부트캠프 13th Final Project<br>
 > 프로젝트명: HOLATAJA<br>
-> 개발기간: 2025.07.07 ~ 2025.08.08
+> 프로젝트 기간: 2025.07.07 ~ 2025.08.08
 
 **HOLATAJA**는 키보드를 직접 만져보지 않고도  
 **타건음과 스위치 특징을 온라인에서 체험하듯 비교할 수 있는 키보드 쇼핑몰 플랫폼**입니다.
@@ -73,11 +73,10 @@
 
 ## 💡 기획 구조도
 
-### 🎯 프로젝트 컨샙
+### 🎯 프로젝트 컨셉
 
-온라인 쇼핑몰에서 경험하기 힘든 인터렉티브한 경험을 제공하는 쇼핑몰입니다.<br>
-고객은 상품 상세 페이지에서 스위치의 정보를 확인하고,
-해당 스위치의 타건음을 들으며 **마치 오프라인 매장에서처럼 상품을 비교 체험할 수 있습니다.**
+온라인 쇼핑몰에서는 흔히 접하기 어려운 인터랙티브한 경험을 제공합니다.<br>
+고객은 상품 상세 페이지에서 스위치의 정보를 확인하고, **타건음을 직접 들어보며 마치 오프라인 매장에서처럼 다양한 스위치를 비교 체험할 수 있습니다.**
 
 ### 🔀 사용자 플로우
 
@@ -91,7 +90,7 @@
 
 ![메인화면](https://github.com/user-attachments/assets/c897b62a-b4c3-43f4-9d73-ae6b26fee9af)
 
-- 쇼핑몰 접속 시 현재 판매중인 상품이 페러셀 형태로 노출됩니다.
+- 쇼핑몰 접속 시 현재 판매중인 상품이 케러셀 형태로 노출됩니다.
 - 모든 주요 기능은 로그인 사용자만 이용 가능하며, 화면 우측 상단에서 로그인 및 회원가입을 진행할 수 있습니다.
 
 ---
@@ -119,12 +118,14 @@
 
 ### 🛒 상품 목록 & 상세 페이지
 
-![상품상세](https://github.com/user-attachments/assets/a6aa3d54-37a9-43c1-ac46-b88f802c6701)
+![상품상세1](https://github.com/user-attachments/assets/a6aa3d54-37a9-43c1-ac46-b88f802c6701)
+![상품상세2](https://github.com/user-attachments/assets/5852712f-54ed-4434-ac18-53c0acd7e62c)
 
 - 상품을 탭 또는 검색을 통해 필터링
 - 상세 페이지에서는 다음과 같은 기능을 제공합니다.
   - 수량 조절 및 옵션 선택
-  - 찜하기 & 장바구니 담기
+  - 찜하기
+  - 장바구니 담기 & 구매하기
   - 구매 후기 작성 및 Q&A 작성
 
 **✅ 핵심 기능 - ‘타건 사운드 체험’**  
@@ -172,21 +173,21 @@
 
 ### 🔍 측정 및 분석 결과 요약
 
-| 항목        | 웹     | 모바일 | 요약 내용                                                                                    |
-| ----------- | ------ | ------ | -------------------------------------------------------------------------------------------- |
-| 성능        | 99.075 | 90.275 | 모바일 성능 개선 필요                                                                        |
-| **SEO**     | 93.3   | 93.6   | ※ 보안을 위해 서치 제한 걸어둔 페이지 제외                                                   |
-| 접근성      | 73.3   | 71.35  | - aria-label 없는 아이콘 버튼에 aria-label 추가 필요 <br> - 라벨 없는 Input에 라벨 추가 필요 |
-| 권장사항    | 100    | 00     |                                                                                              |
-| 반응형      | 양호   | 양호   | 모든 기기에서 정상 동작                                                                      |
-| 코드 유효성 | O      | O      |                                                                                              |
+| 항목            | 웹     | 모바일 | 요약 내용                                                                                    |
+| --------------- | ------ | ------ | -------------------------------------------------------------------------------------------- |
+| **성능**        | 99.075 | 90.275 | 모바일 성능 개선 필요                                                                        |
+| **SEO**         | 93.3   | 93.6   | ※ 보안을 위해 서치 제한 걸어둔 페이지 제외                                                   |
+| **접근성**      | 73.3   | 71.35  | - aria-label 없는 아이콘 버튼에 aria-label 추가 필요 <br> - 라벨 없는 Input에 라벨 추가 필요 |
+| **권장사항**    | 100    | 100    |                                                                                              |
+| **반응형**      | 양호   | 양호   | 모든 기기에서 정상 동작                                                                      |
+| **코드 유효성** | O      | O      |                                                                                              |
 
 ### 📌 향후 개선 계획
 
 - 모바일 성능 개선
 - 접근성 강화
   - Label 없는 Input 수정
-  - aria-label 없은 아이콘 버튼 수정
+  - aria-label 없는 아이콘 버튼 수정
 
 ---
 
@@ -199,9 +200,9 @@
 |  <div align="left">Design / Style</div>  | ![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/Tailwind%20CSS-%2306B6D4?style=for-the-badge&logo=Tailwind%20CSS&logoColor=white) ![Lucide](https://img.shields.io/badge/Lucide-%23F56565?style=for-the-badge&logo=Lucide&logoColor=black) |
 |    <div align="left">협업 도구</div>     | ![Discord](https://img.shields.io/badge/Discord-%235865F2?style=for-the-badge&logo=Discord&logoColor=white) ![Notion](https://img.shields.io/badge/Notion-%23000000?style=for-the-badge&logo=Notion&logoColor=white)                                                                                                                      |
 |    <div align="left">버전 관리</div>     | ![Github](https://img.shields.io/badge/Github-%23181717?style=for-the-badge&logo=Github&logoColor=white)                                                                                                                                                                                                                                  |
-|  <div align="left">상태 관리 도구</div>  | ![Zustand](https://img.shields.io/badge/Zustand-%23FF7E29?style=for-the-badge)<br>전역 상태 관리를 위한 가볍고 직관적인 라이브러리                                                                                                                                                                                                        |
+|  <div align="left">상태 관리 도구</div>  | ![Zustand](https://img.shields.io/badge/Zustand-%23FF7E29?style=for-the-badge)                                                                                                                                                                                                                                                            |
 |        <div align="left">DB</div>        | ![MongoDB](https://img.shields.io/badge/MongoDB-%2347A248?style=for-the-badge&logo=MongoDB&logoColor=black)                                                                                                                                                                                                                               |
-| <div align="left">유효성 검증 도구</div> | ![Zod](https://img.shields.io/badge/Zod-%233E67B1?style=for-the-badge&logo=Zod&logoColor=black)<br>스키마 기반의 TypeScript 친화적 검증 도구                                                                                                                                                                                              |
+| <div align="left">유효성 검증 도구</div> | ![Zod](https://img.shields.io/badge/Zod-%233E67B1?style=for-the-badge&logo=Zod&logoColor=black)                                                                                                                                                                                                                                           |
 |    <div align="left">개발 환경</div>     | ![VSCode](https://img.shields.io/badge/VSCode-%232F80ED?style=for-the-badge&logoColor=white)                                                                                                                                                                                                                                              |
 |       <div align="left">배포</div>       | ![Vercel](https://img.shields.io/badge/Vercel-%23000000?style=for-the-badge&logo=Vercel&logoColor=white&color=black)                                                                                                                                                                                                                      |
 
@@ -211,8 +212,12 @@
 .
 ├── 📁 app
 ├── ├── 🔐 auth
-├── │   ├── 📝 signup
 ├── │   └── 🔓 login
+├── │   │   ├── 📄 page.tsx
+├── │   │   ├── 🧾 LoginForm.tsx
+├── │   └── 📝 signup
+├── │       ├── 📄 page.tsx
+├── │       └── 🧾 LoginForm.tsx
 ├── ├── 🛒 carts
 ├── │   ├── 📄 page.tsx
 ├── │   └── 🧩 components
@@ -235,7 +240,7 @@
 ├── ├── 🏷️ products
 ├── │   ├── 📄 page.tsx
 ├── │   └── 🆔 [id]
-├── │       ├── 📄 page.tsx
-├── │       └── 🧩 components
+├── │   │   └── 📄 page.tsx
+├── │   └── 🧩 components
 └── └── 🏠 page.tsx
 ```
