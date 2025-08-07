@@ -1,6 +1,7 @@
 # ⌨️ 온라인 키보드 타건샵 - HOLATAJA
 
-<img src="https://github.com/user-attachments/assets/fbffa56b-2f46-4dd8-94e9-cc19a8d48d84" style="width: 580px" width="50" height="50"/>
+<img src="https://github.com/user-attachments/assets/fbffa56b-2f46-4dd8-94e9-cc19a8d48d84" style="width: 580px height: 580px" />
+
 ## 📍 프로젝트 소개
 
 > 멋쟁이사자처럼 프론트엔드 부트캠프 13th Final Project<br>
