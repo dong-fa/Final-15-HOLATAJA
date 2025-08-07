@@ -1,6 +1,6 @@
 # ⌨️ 온라인 키보드 타건샵 - HOLATAJA
 
-<img src="https://github.com/user-attachments/assets/fbffa56b-2f46-4dd8-94e9-cc19a8d48d84" style="width: 400px height: 400px" />
+<img src="https://github.com/user-attachments/assets/43fd8171-9487-4036-88cc-99f5c3005a1e"/>
 
 ## 📍 프로젝트 소개
 
